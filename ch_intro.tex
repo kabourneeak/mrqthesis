@@ -1,0 +1,64 @@
+\chapter{Introduction}
+\label{:intro}
+
+In this thesis, we address the notion of \emph{Majority Range Searching}.  Range searching, in general, is among the most frequently executed type of problem in computer science. With a range search query, we are given a set of objects and asked to return those which satisfy some query range. Range searches can take many different forms. Searching for email received between two dates, looking for restaurants near your present location, or identifying what a video game player should see on their screen in any one frame; these are all examples of range searches.
+
+In computational geometry, range searching 
+
+
+* layout of chapter
+
+
+\section{Problem Statements}
+\label{:introduction:problems}
+
+This thesis proposes algorithms for several different kinds of majority range searches.  Each problem addresses a different type of geometric object to be queried, or a different type of query region.
+
+\paragraph{Querying Axis-Parallel Line Segments with an Axis-Parallel Rectangle}
+
+\paragraph{Querying Arbitrarily-Oriented Line Segments with an Axis-Parallel Rectangle}
+
+\paragraph{Querying Axis-Parallel Line Segments with an Arbitrarily-Oriented Slab}
+
+\paragraph{Querying Axis-Parallel Line Segments with the Intersection of Two Arbitrarily-Oriented Slabs}
+
+\paragraph{Querying Convex Polygons with an Axis-Parallel Rectangle}
+
+\paragraph{Querying Monotone Polygons with an Axis-Parallel Rectangle}
+
+
+
+\section{Summary of Contributions}
+\label{:introduction:contributions}
+
+XXX TODO
+
+A method for calculating the area of a convex polygon within a rectangle in $\BigOh{\log{n}}$ time with only
+$\BigOh{n}$ preprocessing time and space. This immediately gives rise to a method to answer majority enclosure queries in the same time and space.
+
+A method for calculating the area of a monotone polygon within a rectangle in $\BigOh{\log{n}}$ time with only
+$\BigOh{n \log{n}}$ preprocessing time and space. As with the convex polygon case, this immediately gives a method for answering majority enclosure queries in the same time and space.
+
+
+
+\section{Related Work}
+\label{:intro:related}
+
+\paragraph{Range Searching.} 
+XXX TODO
+
+\paragraph{Intersection Searching.} 
+XXX TODO
+
+
+\section{Organization of the Thesis}
+\label{:introduction:organization}
+
+The remainder of this thesis is organized in the following way. 
+Chapter~\ref{:prelim} reviews existing data structures and range searching techniques which we utilize in our own contributions.
+The next four chapters cover majority range searching queries on successively more sophisticated geometric objects, with Chapter~\ref{:rectangles} focusing on axis-parallel rectangles, Chapter~\ref{:slabs} on arbitrarily-oriented slabs, Chapter~\ref{:convexp} on convex polygons, and Chapter~\ref{:monotonep} on monotone polygons.
+
+The thesis concludes with Chapter~\ref{:conclusion} which summarizes our contributions and presents some open problems for possible future research.
+
+
+

@@ -1,0 +1,47 @@
+\chapter{Preliminaries}
+\label{:prelim}
+
+In this chapter, we outline the data structures and other techniques which we rely on for the formulation of solutions to our own contributions.
+
+\section{Range Trees}
+\label{:prelim:range-trees}
+
+XXX TODO
+\begin{enumerate}
+ \item 1D Range trees
+ \item Multi-level trees
+ \item Theorems about preprocessing, size, and query times.  For higher dimensional trees, fractional cascading can also be used.
+\end{enumerate}
+
+We use the following theorems on range trees, restated from \cite{debergch5}.
+
+\begin{theorem}
+\label{th:rangetree}
+Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A layered range tree for $P$ uses $\BigOh{n \log^{d-1}{n}}$ storage and it can be constructed in $\BigOh{n \log^{d-1}{n}}$ time. With this range tree one can report the points in $P$ that lie in a rectangular query range in $\BigOh{\log^{d-1}{n} + k}$ time where $k$ is the number of reported points.
+\end{theorem}
+
+We can augment each node of such a range tree with information about the size of its subtree, requiring only $\BigOh{1}$ additional space and pre-processing per node.  This allows us to count the number of items within a query rectangle rather than reporting them, as stated by the following Corollary.
+
+\begin{corollary}
+\label{cor:rangetree}
+Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A layered range tree for $P$ uses $\BigOh{n \log^{d-1}{n}}$ storage and it can be constructed in $\BigOh{n \log^{d-1}{n}}$ time. With this range tree one can count the points in $P$ that lie in a rectangular query range in $\BigOh{\log^{d-1}{n}}$.
+\end{corollary}
+
+
+\section{Chan's Disjoint Set Data-structure}
+\label{:prelim:chan}
+
+XXX TODO
+
+\section{Fractional Cascading}
+\label{:prelim:fractional-cascading}
+
+XXX TODO
+
+I'm not sure that we want to say anything here, actually.
+
+
+
+\section{Notation}
+\label{:prelim:notation}
+

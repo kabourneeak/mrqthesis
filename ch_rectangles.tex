@@ -1,0 +1,110 @@
+\chapter{Querying Segments with Axis-Parallel Rectangles}
+\label{:rectangles}
+
+In this chapter, we begin with the simplest case of majority range query.  Even with this simplified model, we will be able to identify where the main challenges of this problem domain lie and construct some techniques which we will use to solve many of the more complex problems.
+
+We will present two variations of the majority range search problem in this chapter. Both use axis-parallel rectangles as their query. Both variations will query over line segments, which are the simplest type of object which has a concept of ``majority''.  In the first variation, the line segments will also be axis-parallel, and we will relax this restriction, allowing segments of arbitrary orientation, for the second variation.
+
+%------------------------------------------------------------------------------
+\section{Axis-Parallel Segments}
+\label{:rectangles:ap}
+
+In this section we consider axis-parallel line segments in the plane which we wish to query with an axis-parallel rectangle.  This is the simplest case of majority range query as the objects and query are simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. 
+We will discuss only horizontal segments here.  The solution for vertical segments is identical, and we discuss how to combine the two approaches as the end of the section.
+
+We define our first problem as follows.
+
+\begin{problem}
+Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+\end{problem}
+
+
+\subsection{Definitions}
+\label{:rectangles:ap:defs}
+
+Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the left endpoint of its respective segment. We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\delta, \gamma)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
+
+For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
+
+
+\subsection{Decomposing the problem}
+\label{:rectangles:ap:approach}
+
+\begin{figure}
+\centering
+\includegraphics[width=1.00\columnwidth]{figures/fig_oo_cases}
+\caption[The different cases of axis-parallel segments]{An axis-parallel query on axis-parallel segments. Only horizontal segments are shown.}
+\label{:fig:rectangles:ap:cases}
+\end{figure}
+
+As Figure~\ref{:fig:rectangles:ap:cases} illustrates, there are several cases to consider regarding how a horizontal segment $s \in S$ may interact with $Q$. Cases $(1)$, $(2)$, and $(3)$, where $s$ is entirely left, entirely within, or entirely right of $Q$, respectively, are very similar to standard range searching where we look to find elements which are completely inside or completely outside of a query region.  
+
+Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \delta$.  We further subdivide case $(4)$ in to cases $(4a)$, where $s \in_\rho Q$ and $(4b)$ where $s \not \in_\rho Q$.  Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\delta$. Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \delta$ and $q > \delta$. 
+
+In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, crucially, neither $p$ nor $q$ are inside $Q$. As like the previous two cases, $s$ is in case $(6a)$ if $s \in_\rho Q$ and $(6b)$ if $s \not \in_\rho Q$.
+
+Our goal is to count all of the segments belonging to cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and none of the segments belonging to any other case.
+
+Our approach to solving this problem involves restricting and classifying segments step-by-step until, for some subset of segments, we are able to identify an expression representing its majority property.  Our solution proceeds as follows.
+
+\paragraph{Step 1.} As we are only considering horizontal segments for now, we only need to consider those segments which are neither above nor below $Q$, since they can never intersect $Q$ at all. Let $S_1 = \{ s \in S \st \beta \leq b \leq \gamma\}$. 
+
+\paragraph{Step 2.} Identify those segments which are not ``too long''.  Let $w = \delta - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its majority property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
+
+\paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint.  Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
+
+\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \delta - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
+
+\begin{proof}
+The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on showing that Step 4 only accepts segments from cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and rejects all others.
+
+Consider the segments in $S_L$, which we check against the majority property expression $\alpha - a < (1 - \rho) \cdot l$. That is, we are looking at how much of $s$ is outside of $Q$. Segments in case $(1)$ have $\alpha - a > l$, so they are correctly rejected. Segments in cases $(4a)$ and $(4b)$ are accepted or rejected quite straight-forwardly by this condition; that is, if not too much of $s$ is outside $Q$, then ``enough'' of $s$ must be inside.  
+
+The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  If we know that $s$ belongs to case $(6)$ (i.e., that it crosses both $\alpha$ and $\delta$) then we know that $|s \cap Q|$ is exactly $w$. After Step 2, we know that $|s| < w / \rho$, which implies that any segment in $S_L$ that crosses both $\alpha$ and $\delta$ must belong to case $(6a)$ and not case $(6b)$.
+
+\end{proof}
+
+
+\subsection{Answering the Query}
+\label{:rectangles:ap:analysis}
+
+Each of the steps in Section~\ref{:rectangles:ao:approach} can be expressed as an inequality between a single query variable and some parameters of each segment which are known during preprocessing time.
+
+Step 1 can be answered using a range tree keyed on the $y$-coordinates of each segment. Let this range tree be $T_1$, then the set $S_1$ corresponds to the segments contained in the $\BigOh{\log{n}}$ subtrees of $T_1$ between the values of $\beta$ and $\gamma$.
+
+Step 2 can be answered by a range tree keyed on the lengths of the segments.
+
+ 
+
+
+XXX TODO
+
+Combining the horizontal and vertical queries
+
+
+%------------------------------------------------------------------------------
+\section{Arbitrarily-Oriented Segments}
+\label{:rectangles:ao}
+
+XXX TODO
+
+\subsection{Problem Statement}
+\label{:rectangles:ao:ps}
+
+XXX TODO
+
+\subsection{The Approach}
+\label{:rectangles:ao:approach}
+
+XXX TODO
+
+\subsection{Analysis}
+\label{:rectangles:ao:analysis}
+
+XXX TODO
+
+%------------------------------------------------------------------------------
+\section{Conclusion}
+\label{:rectangles:concl}
+
+XXX TODO

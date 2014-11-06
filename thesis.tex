@@ -1,0 +1,122 @@
+\documentclass[12pt,letterpaper]{report}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACKAGES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[left=1.5in,right=1in,top=1in,bottom=1in,includeheadfoot]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage[numbers]{natbib}
+\usepackage{charter}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MISCELLANEOUS COMMANDS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\allowdisplaybreaks[1]
+%% Theorems, definitions, etc.
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}{Problem}[chapter]
+
+%% Latin abbreviations
+\newcommand{\apriori}{\textit{a priori }}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\ie}{\textit{i.e.}}
+
+%% Asymptotic notation
+\newcommand{\BigOh}[1]{O\!\left(#1\right)}
+\newcommand{\LittleOh}[1]{o\!\left(#1\right)}
+\newcommand{\BigOmega}[1]{\Omega\!\left(#1\right)}
+\newcommand{\LittleOmega}[1]{\omega\!\left(#1\right)}
+\newcommand{\BigTheta}[1]{\Theta\!\left(#1\right)}
+
+%% lines and segments
+\newcommand{\iline}[1]{\overline{#1}}
+
+%% Miscellaneous
+\newcommand{\st}{\;|\;}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HEADERS AND FOOTERS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
+\lhead{\nouppercase{\textsl{\leftmark}}}
+\rhead{\thepage}
+\chead{}
+\lfoot{}
+\rfoot{}
+\cfoot{}
+\renewcommand{\headrulewidth}{0pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE PAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{plain}
+\begin{document}
+\begin{titlepage}
+   \begin{center}
+      \vspace*{\fill}
+      \large
+      {\bf \LARGE Majority Range Queries}\\
+      \vspace{0.25in}
+      by\\
+      \vspace{0.25in}
+      Gregory Bint\\
+      \vspace{0.5in}
+      A thesis submitted to\\
+      the Faculty of Graduate and Postdoctoral Affairs\\
+      in partial fulfillment of the requirements for the degree of\\
+      \vspace{0.5in}
+      Master of Computer Science\\
+      \vspace{1.2in}
+      Carleton University\\
+      Ottawa, Ontario\\
+      \vspace{0.5in}
+      \copyright\ 2014\\
+      Gregory Bint
+      \vspace*{\fill}
+   \end{center}
+\end{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FRONT MATTER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\doublespacing
+\pagenumbering{roman}
+\setcounter{page}{2}
+\addcontentsline{toc}{chapter}{Abstract}
+\include{abstract}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\include{acknowledgements}
+\tableofcontents
+\listoffigures
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MAIN THESIS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\include{ch_intro}
+\include{ch_preliminaries}
+\include{ch_rectangles}
+\include{ch_slabs}
+\include{ch_convexp}
+\include{ch_monotonep}
+\include{ch_conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BACK MATTER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{references}
+\bibliographystyle{plainnat}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
