@@ -6,16 +6,21 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{mdwlist}
+\usepackage{enumerate}
+\usepackage[tworuled,algochapter]{algorithm2e} % Algorithms
 \usepackage{graphicx}
 \usepackage{setspace}
 \usepackage[numbers]{natbib}
 \usepackage{charter}
 \usepackage{setspace}
 \usepackage{fancyhdr}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MISCELLANEOUS COMMANDS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \allowdisplaybreaks[1]
+
 %% Theorems, definitions, etc.
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -40,8 +45,13 @@
 %% lines and segments
 \newcommand{\iline}[1]{\overline{#1}}
 
+%% polygons and area
+\newcommand{\area}[1]{area(#1)}
+
 %% Miscellaneous
 \newcommand{\st}{\;|\;}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -9,20 +9,19 @@ We will present two variations of the majority range search problem in this chap
 \section{Axis-Parallel Segments}
 \label{:rectangles:ap}
 
-In this section we consider axis-parallel line segments in the plane which we wish to query with an axis-parallel rectangle.  This is the simplest case of majority range query as the objects and query are simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. 
-We will discuss only horizontal segments here.  The solution for vertical segments is identical, and we discuss how to combine the two approaches as the end of the section.
+In this section we consider axis-parallel line segments in the plane which we wish to query with an axis-parallel rectangle.  This is the simplest case of majority range query as the objects and query are simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. We will discuss only horizontal segments here.  The solution for vertical segments is identical, and we discuss how to combine the two approaches as the end of the section.
 
 We define our first problem as follows.
 
 \begin{problem}
-Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by an axis-parallel query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
 
 \subsection{Definitions}
 \label{:rectangles:ap:defs}
 
-Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the left endpoint of its respective segment. We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\delta, \gamma)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
+Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the bottom one if $s_i$ is vertical). We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\delta, \gamma)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
 
 For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
 
@@ -53,14 +52,18 @@ Our approach to solving this problem involves restricting and classifying segmen
 
 \paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint.  Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
 
-\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \delta - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
+\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \delta - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
 
 \begin{proof}
-The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on showing that Step 4 only accepts segments from cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and rejects all others.
+The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on Step 4 and show that for each case, a segment belonging to that case is correctly accepted or rejected.
 
 Consider the segments in $S_L$, which we check against the majority property expression $\alpha - a < (1 - \rho) \cdot l$. That is, we are looking at how much of $s$ is outside of $Q$. Segments in case $(1)$ have $\alpha - a > l$, so they are correctly rejected. Segments in cases $(4a)$ and $(4b)$ are accepted or rejected quite straight-forwardly by this condition; that is, if not too much of $s$ is outside $Q$, then ``enough'' of $s$ must be inside.  
 
 The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  If we know that $s$ belongs to case $(6)$ (i.e., that it crosses both $\alpha$ and $\delta$) then we know that $|s \cap Q|$ is exactly $w$. After Step 2, we know that $|s| < w / \rho$, which implies that any segment in $S_L$ that crosses both $\alpha$ and $\delta$ must belong to case $(6a)$ and not case $(6b)$.
+
+XXX TODO
+
+Considering the segments in $S_R$ now, with the majority property expression $\delta - a \geq  \rho l$. Here we check the affirmative case and directly check that enough of a segment is in $Q$. For case $(2)$, $\delta - a \geq l$. Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.  On the other hand, for case $(3)$, $\delta - a < 0$ and all such segments are rejected. The final cases, $(5a)$ and $(5b)$ are straight-forwardly classified based on how much of the segment appears in $Q$.
 
 \end{proof}
 
@@ -68,36 +71,281 @@ The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation be
 \subsection{Answering the Query}
 \label{:rectangles:ap:analysis}
 
-Each of the steps in Section~\ref{:rectangles:ao:approach} can be expressed as an inequality between a single query variable and some parameters of each segment which are known during preprocessing time.
+We can answer this query by expressing it as an orthogonal range query in 4D. Specifically, each of the steps in Section~\ref{:rectangles:ao:approach} discriminates between which segments are included and which are excluded by examining an inequality made up of some of the input parameters of each segment against a query variable. We map each segment to a point in 4D where each component of the point is based on the segment parameters, and map our query rectangle $Q$ to a 4D box.
 
-Step 1 can be answered using a range tree keyed on the $y$-coordinates of each segment. Let this range tree be $T_1$, then the set $S_1$ corresponds to the segments contained in the $\BigOh{\log{n}}$ subtrees of $T_1$ between the values of $\beta$ and $\gamma$.
+We will check each of the majority expressions separately and then combine their results. The first expression is for segments whose left endpoint is left of $\alpha$. The majority expression $\alpha - a < (1 - \rho) \cdot l$ can be rewritten as $\alpha < a + (1-\rho) \cdot l$. Therefore, we map each segment $s_i$ to the 4D point $v_i = (b_i, \rho \cdot l_i, a_i, a_i + (1-\rho) \cdot l_i)$.  When querying, we want to return all such points found inside the query box
+\[
+[\beta, \gamma] \times (0, w] \times (-\infty, \alpha) \times (\alpha, \infty)
+\]
 
-Step 2 can be answered by a range tree keyed on the lengths of the segments.
+The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\delta - a \geq \rho l$ can be rewritten as $\delta \geq a + \rho l$. Therefore, we map each segment $s_i$ to the 4D point $v_i' = (b_i, \rho \cdot l_i, a_i, a_i + \rho l_i)$.  When querying, we want to return all such points found inside the query box
+\[
+[\beta, \gamma] \times (0, w] \times [\alpha, \infty) \times (-\infty, \delta]
+\]
 
- 
+By Corollary~\ref{cor:rangetree}, we can answer either such query by constructing a multi-level range tree.  Since our points are in 4D, such a tree would require $\BigOh{n \log^3{n}}$ time and space for preprocessing and could answer queries in $\BigOh{\log^3{n}}$ time.  To find all horizontal segments satisfying their majority property, we need to perform both queries and combine the results.  
+
+A second data structure and query does not change the asymptotic requirements of the algorithm, however, we do note that since the mapped points for both data structures have the same three first components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. At the third level of the multi-level tree, we instead create \emph{two} associate structures, one for each of the majority expressions, and query each one as needed. In a similar way, we can save a constant factor of time during our queries, since both queries consider the same values for their first two components.
 
 
-XXX TODO
+\paragraph{Vertical segments}
 
-Combining the horizontal and vertical queries
+The method for querying vertical segments is very similar to that for horizontal segments, except that we care about the height of $Q$ rather than its width, and need to consider symmetric coordinates of each segment when going through each of the 4 steps.
+
+Preprocessing and querying this extra orientation of segments costs us a constant factor of time, since the number of orientations remains fixed.  Returning the sum of the two counts, or reporting both sets of segments is straight-forward.
+
 
 
 %------------------------------------------------------------------------------
 \section{Arbitrarily-Oriented Segments}
 \label{:rectangles:ao}
 
-XXX TODO
+In this section, we relax the restriction that all segments should be axis-parallel; that is, each segment may have any arbitrary orientation with respect to one another.  It does not matter if they intersect. The problem statement is as follows.
 
-\subsection{Problem Statement}
-\label{:rectangles:ao:ps}
+\begin{problem}
+Given a set $S$ of $n$ arbitrarily-oriented line segments in the plane, and a fixed parameter $\rho$ such that $1/2 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by axis-parallel query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+\end{problem}
 
-XXX TODO
+This section, the query region $Q$, and the segment in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}.
 
-\subsection{The Approach}
+\subsection{Decomposing the Problem}
 \label{:rectangles:ao:approach}
 
-XXX TODO
+There are three principal cases to consider; those segments which have both endpoints inside $Q$, only one endpoint inside $Q$, or both endpoints outside $Q$.  
 
+The first case, where both endpoints are inside $Q$, is answered by mapping each segment to a point in 4D space and then using a multi-level range tree, just as we did in the previous section.  Specifically, we map each segment $s_i$ to the point $v_i = (a_i, b_i, c_i, d_i)$. The query $Q$ is mapped to the following 4D box
+\[
+[\alpha, \delta] \times [\beta, \gamma] \times [\alpha, \delta] \times [\beta, \gamma]
+\]
+
+In essence, we are just testing to ensure that both of the endpoints appear within the horizontal and vertical components of the query.
+
+The second case, where only one endpoint is inside $Q$ is solved using the exact same method as the first case, but on a virtual segment.  For each segment $s_i$, we create ``virtual'' segments which share endpoints with $s_i$.  Specifically, we define the segment $s_{i,p} \subseteq s_i$ where $s_i$ and $s_{i,p}$ share the endpoint $p_i$ and $|s_{i,p}| = \rho \cdot |s_i|$. Likewise, we define the segment $s_{i,q} \subseteq s_i$ where $s_i$ and $s_{i,q}$ share the endpoint $q$ and $|s_{i,q}| = \rho \cdot |s_i|$.
+
+Then, as a direct consequence of their construction, if $s_{i,p} \in Q$, then $s_i \in_\rho Q$, and if $s_{i,q} \in Q$, then $s_i \in_\rho Q$.  Counting both of these cases will double-count any segment which has both endpoints in $Q$, so we subtract any such segments to compensate.
+
+We can query these higher dimensional points by applying the multi-dimensional range tree method of Corollary~\ref{cor:rangetree}.
+
+
+\subsection{Both endpoints outside $Q$}
+\label{:rectangles:ao:bothout}
+
+Just as we saw in Section~\ref{:rectangles:ap:approach}, the case where both endpoints are outside of $Q$ will be the most challenging case to handle.
+
+We begin by partitioning the space around $Q$ into 8 regions by extending lines through its horizontal and vertical boundaries. These regions are numbered anti-clockwise from left-middle as $I, II, \ldots, VIII$; see Figure~\ref{fig:rectangles:ao:regions}). Any segment which passes through $Q$ but which has neither endpoint in $Q$ will have its endpoints in two distinct regions. Not every pair of regions is legal, however. For example, a segment with one endpoint in $I$ and another in $II$ cannot intersect $Q$.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.75\textwidth]{figures/fig_ao_regions}
+  \caption{The 8 regions surrounding $Q$.}
+  \label{fig:rectangles:ao:regions}
+\end{center}
+\end{figure}
+
+A segment which passes through $Q$ may involve any of the following pairs of regions, falling into 4 classes:
+
+\begin{enumerate}[i.]
+\item Parallel sides: $(I, V), (III, VII)$,
+\item Perpendicular sides: $(I, III), (III, V), (V,VII), (VII, I)$,
+\item Diagonal to Orthogonal: $(II, V)$, $(II, VII)$, $(IV, I)$, $(IV,VII)$, $(VI, I)$, $(VI, III)$, $(VIII, III)$, $(VIII, V)$,
+\item Diagonal to Diagonal: $(II, VI), (IV, VIII)$.
+\end{enumerate}
+
+We count for each case separately. For a segment $s \in S$, we can identify the regions of $p$ and $q$ using a 4-dimensional orthogonal range search. This classification allows us to determine which majority expressions we need to test in the second phase of the query. We develop expressions for deciding the majority property of each case below.
+
+In all cases, we require the following additional definitions. Let $o_i = (e_i, f_i)$ be the centre point of $s_i$.  We define the function $d(u,v)$ as the Euclidean distance between any two points $u$ and $v$. We define $L_i = d(p_i, q_i)/2$ to be exactly half the length of $s_i$ (therefore, $d(p_i, o_i) = d(q_i, o_i) = L_i$). As with our previous definitions, when we discuss any single, general segment $s \in S$, we will drop the $i$ subscripts for clarity.
+
+
+%------------------------------------------------------------------------------
+\subsubsection*{Class (i); e.g. $(p_1, p_2) \in (I, V)$}
+\label{:rectangles:ao:class1}
+
+Class (i) is concerned with segments which cross parallel sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in V$; the solution for the $(III, VII)$ case is similar.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.80\textwidth]{figures/fig_ao_case1}
+  \caption{An example of a segment in class (i), case $(I, V)$.}
+  \label{fig:rectangles:ao:case1}
+\end{center}
+\end{figure}
+
+Let $s \in S$ be a segment belonging to class (i), case $(I, V)$.
+Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  
+Let $u = (a, f)$ be the point vertically aligned with $p$ and horizontally aligned with $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\overline{u o}$ with the boundary of $Q$.  
+The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. 
+Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (\delta, f)$ is the intersection point of $\overline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
+
+We will test the majority property by checking that ``not too much of $s$ is outside of $Q$''. Specifically, we need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
+\[ 
+\frac{d(p, p')}{d(p, o)} = \frac{d(p, p')}{L} = \frac{d(u, u')}{d(u, o)} = \frac{2(\alpha - a)}{c - a}
+\]
+
+\noindent and 
+\[ 
+\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2(c - \delta)}{c - a}
+\]
+
+\noindent Thus,
+
+\[
+\begin{split} 
+\frac{d(p, p') + d(q, q')}{d(p, q)}
+%
+&= \frac{d(p, p') + d(q, q')}{2L} \\
+%
+&= \frac{1}{2} \left ( \frac{d(p, p')}{L} + \frac{d(q, q')}{L} \right ) \\
+%
+&= \frac{1}{2} \left ( \frac{2(\alpha - a)}{c - a} + \frac{2(c - \delta)}{c - a} \right ) \\
+%
+&= \frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} \\
+%
+&= \frac{\alpha - a + c - \delta}{c - a} \\
+%
+&= 1 + \frac{\alpha - \delta}{c - a} \\
+%
+\end{split}
+\]
+
+Therefore, the half-plane defined by $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ implies a half-plane defined by the query variables $\alpha$ and $\delta$ as $1 + \frac{\alpha - \delta}{c - a} \leq 1 - \rho$.  However, we can further simplify this to
+\[ 
+\rho(c - a) \leq \alpha - \delta 
+\]
+
+\noindent where the value of $\alpha - \delta$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
+
+When $o \not \in Q$, we cannot construct similar triangles in the same way, since we require the points of intersection between the triangles and $Q$.  However, since we know that any segment which \emph{is} majority enclosed by $Q$ will have its centre point in $Q$, when $o$ is outside of $Q$, it is sufficient for our purposes if our test condition always reports a failure in this case.
+
+
+We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\frac{\alpha - a}{c - a} > 0$ and $\frac{c - \delta}{c - a} > 0$. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is right of $\delta$, then $\frac{c - \delta}{c - a} > 1/2$. Therefore, the sum $\frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} > 1/2$ and is strictly larger than any allowable value for $(1 - \rho)$, resulting in the segment being rejected as desired.
+
+
+%------------------------------------------------------------------------------
+\subsubsection*{Class (ii); e.g. $(p_1, p_2) \in (I, III)$}
+\label{:rectanges:ao:class2}
+
+Class (ii) is concerned with segments which cross perpendicular sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in III$; the solutions for other cases of class (ii) are similar. These expressions are not so different from the ones given in class (i), however we will see that we get two independent variables instead of one, and this has ramifications for how we will construct our query data structure later.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.80\textwidth]{figures/fig_ao_case2}
+  \caption[An example of a segment in class (ii), case $(I, III)$.]{An example of a segment in class (ii), case $(I, III)$. This particular segment is not majority enclosed by $Q$ for any allowable value of $\rho$.}
+  \label{fig:rectangles:ao:case2}
+\end{center}
+\end{figure}
+
+Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  Let $u = (a, f)$ be the point under $p$ directly left of $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\overline{u o}$ with the boundary of $Q$.  The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. Likewise, let $v = (e, d)$ be the point left of $q$ directly under $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (e, \beta)$ is the intersection point of $\overline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case2}.
+
+We need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
+\[ 
+\frac{d(p, p')}{d(p, o)} = \frac{d(p, p')}{L} = \frac{d(u, u')}{d(u, o)} = \frac{2(\alpha - a)}{c - a}
+\]
+
+\noindent and 
+\[ 
+\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2(\beta - d)}{b - d}
+\]
+
+\noindent Thus,
+
+\[
+\begin{split} 
+\frac{d(p, p') + d(q, q')}{d(p, q)}
+%
+&= \frac{d(p, p') + d(q, q')}{2L} \\
+%
+&= \frac{1}{2} \left ( \frac{d(p, p')}{L} + \frac{d(q, q')}{L} \right ) \\
+%
+&= \frac{1}{2} \left ( \frac{2(\alpha - a)}{c - a} + \frac{2(\beta - d)}{b - d} \right ) \\
+%
+&= \frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \\
+%
+\end{split}
+\]
+
+Therefore, the half-plane defined by $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ implies a half-plane defined by two query variables $\alpha$ and $\beta$ as $\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho$.
+
+Just as in class (i), when $o \not \in Q$, we cannot construct appropriate similar triangles for our method, but it remains sufficient for the expressions to reject any such segment. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is below $\beta$, then $\frac{\beta - d}{b - d} > 1/2$. Their sum is therefore strictly greater than $1/2$, and larger than any allowable value for $(1 - \rho)$, rejecting the segment as desired.
+
+
+%------------------------------------------------------------------------------
+\subsubsection*{Class (iii); e.g. $(p_1, p_2) \in (I, IV)$}
+\label{:rectanges:ao:class3}
+
+Class (iii) is concerned with segments which have one endpoint in a corner region of $Q$, and the other endpoint in an orthogonal region of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in IV$; the solutions for other variations of Class (iii) are similar.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.45\textwidth]{figures/fig_ao_case3}
+  \hspace{1.0em}
+  \includegraphics[width=0.45\textwidth]{figures/fig_ao_case3b}
+  \caption[An example of a segment in class (iii), case $(I, IV)$.]{An example of segments from each subcase of in class (iii), case $(I, IV)$. The blue follows the proper handling of the subcase, while the red shows the incorrect handling.}
+  \label{fig:rectangles:ao:case3}
+\end{center}
+\end{figure}
+
+Assume for now that $o \in Q$. We need to consider two subcases: (a) $s$ crosses $\alpha$ and $\beta$ or (b) $s$ crosses $\alpha$ and $\delta$. See Figure~\ref{fig:rectangles:ao:case3} for examples. Subcase (a) is very nearly exactly the example presented for class (ii). In that case, the only use of the fact that the endpoints of $s$ were located in regions $I$ and $III$ was to imply that $s$ crossed $\alpha$ and $\beta$. As such, this subcase can use the same expression for testing $s$. Likewise, subcase (b) is similar to the example presented for class (i) and can use exactly that expression for testing $s$.
+
+Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check both subcases simultaneously.
+
+From class (i) and class (ii), we have the following expressions:
+\[ 
+\frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} \leq 1 - \rho
+\]
+
+\noindent and
+\[ 
+\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho
+\]
+
+If $s$ belongs to subcase (a), then $\frac{c - \delta}{c - a} \leq \frac{\beta - d}{b - d}$ since $\delta$ is farther right than the point where $s$ exits $Q$. Likewise, in subcase (b), $\frac{\beta - d}{b - d} \leq \frac{c - \delta}{c - a}$.  Therefore, in either subcase, the result of the correct expression is larger than the incorrect one, allowing us to correctly reject segments by blindly checking both conditions.  This also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
+
+
+% -----------------------------------------------------------------------------
+\subsubsection*{Class (iv); e.g. $(p_1, p_2) \in (II, VI)$}
+\label{:rectanges:ao:class4}
+
+Class (iv) is concerned with segments whose endpoints appear in diagonally opposite corner regions of $Q$. We present the details of the majority property for the case where $p \in II$ and $q \in VI$; the solution for the $(VI, VIII)$ case is similar.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.45\textwidth]{figures/fig_ao_case4a}
+  \hspace{1.0em}
+  \includegraphics[width=0.45\textwidth]{figures/fig_ao_case4b}
+
+  \vspace{2.0em}
+  
+  \includegraphics[width=0.45\textwidth]{figures/fig_ao_case4c}
+  \hspace{1.0em}
+  \includegraphics[width=0.45\textwidth]{figures/fig_ao_case4d}
+
+  \caption[An example of a segment in class (iv), case $(II, VI)$.]{An example of segments from each subcase of in class (iv), case $(II, VI)$. The blue follows the proper handling of the subcase, while the red shows the incorrect handling.}
+  \label{fig:rectangles:ao:case4}
+\end{center}
+\end{figure}
+
+Assume for now that $o \in Q$. As with class (iii), we need to consider several subcases depending on which sides of $Q$ are intersected by $s$:
+
+\begin{enumerate}[(a)]
+\item $s$ crosses $\alpha$ and $\gamma$,
+\item $s$ crosses $\alpha$ and $\delta$,
+\item $s$ crosses $\beta$ and $\gamma$,
+\item $s$ crosses $\beta$ and $\delta$,
+\end{enumerate}
+
+See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check all subcases simultaneously. The expression for subcase (b) comes directly from class (i).  Using similar techniques as in class (i) and class (ii), we develop the following set of expressions:
+
+\begin{align*}
+& (a) \quad \frac{\alpha - a}{c - a} + \frac{d - \gamma}{d - b} \leq 1 - \rho
+& (b) \quad \frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} \leq 1 - \rho \\
+& (c) \quad \frac{\beta  - b}{d - b} + \frac{d - \gamma}{d - b} \leq 1 - \rho  
+& (d) \quad \frac{\beta  - b}{d - b} + \frac{c - \delta}{c - a} \leq 1 - \rho \\
+\end{align*}
+
+To illustrate that checking all four conditions simultaneously yields correct results, consider what happens if $s$ belongs to subcase (a), where $s$ crosses $\alpha$ and $\gamma$. In these circumstances, $u'$ is above $\beta$, and we have that $\frac{\alpha - a}{c - a} \geq \frac{\beta - b}{d - b}$.  Likewise, $v'$ is left of $\delta$, so $\frac{d - \gamma}{d - b} \geq \frac{c - \delta}{c - a}$.  Therefore, the expression for (a) dominates the other expressions (i.e., $\text{(a)} \geq \text{(b)}$, $\text{(a)} \geq \text{(c)}$, and $\text{(a)} \geq \text{(d)}$), allowing us to identify qualifying segments for subcase (a) by blindly checking all conditions. This property is true for segments belonging to subcases (b), (c), and (d) as well. Furthermore, this test also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
+
+
+%------------------------------------------------------------------------------
 \subsection{Analysis}
 \label{:rectangles:ao:analysis}
 
@@ -108,3 +356,8 @@ XXX TODO
 \label{:rectangles:concl}
 
 XXX TODO
+
+The contributions, theorems of this chapter
+
+A note about $\rho > 1/2$ for the arbitrary-orientation case, that it is the only problem with this limitation in the thesis, and to please see the open problems section for more details
+
