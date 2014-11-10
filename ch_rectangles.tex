@@ -346,10 +346,40 @@ To illustrate that checking all four conditions simultaneously yields correct re
 
 
 %------------------------------------------------------------------------------
-\subsection{Analysis}
+\subsection{Construction and Querying}
 \label{:rectangles:ao:analysis}
 
+The method we have developed above takes a very case-by-case approach to solving the problem. There are two overall phases to the steps above. The first phase must identify segments falling into each of the 16 cases outlined above. For each case, the second phase must then identify those segments satisfying their respective majority property. 
+
+Broadly, our solution to this problem involves a multi-level range tree for the classification phase. At the innermost level of the range tree we store several distinct associate structures, one for each case, which can answer the majority property expressions required for that case; See Figure~\ref{fig:rectangles:ao:overview} for an illustration.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.80\textwidth]{figures/fig_ds}
+  \caption[An overview of the multi-level range tree required for arbitrarily-oriented segments]{An overview of the multi-level range tree and associated data structures for performing both the classification and majority property phases of the query.}
+  \label{fig:rectangles:ao:overview}
+\end{center}
+\end{figure}
+
+The details of constructing and querying an appropriate data structure follow. Recall that the query is input as four values $\alpha, \beta, \delta$, and $\gamma$ and that $S$ is the set of input segments $s_1, s_2, \ldots, s_n$.
+
+\paragraph{Step 1, Classification:} We maintain a four-dimensional multi-level orthogonal range tree where each segment $s_i \in S$ is represented as a 4-tuple on the values $(a_i, b_i, c_i, d_i)$. To identify all of the segments within a particular case, we define a query box on $\alpha, \beta, \delta$, and $\gamma$. Each component of this box is open (i.e., unbounded) on the side appropriate for the case. For example, in case $(II, VI)$, shown in Figure~\ref{fig:rectangles:ao:case4}, the open query box includes all points $(u, v, w, x)$ where $u < \alpha$, $v < \beta$, $w > \delta$, and $x > \gamma$.
+
+The range query identifies a set of subtrees on the innermost level representing all segments belonging to each case of each class, from which the query continues.
+
+\paragraph{Step 2, Majority Property:} For each innermost subtree from step 1, we associate additional structures as required for determining the majority property. For some cases, this structure will be another orthogonal range query, as in class $(i)$, and some subcases of classes $(iii)$ and $(iv)$.
+
+For the remaining cases (all in class $(ii)$, and the remaining subcases of classes $(iii)$ and $(iv)$), we will perform a half-plane range query. Each of these majority expressions is based on exactly two of the query inputs, so two-dimensional half-plane queries will suffice.  However, each majority expression uses different query variables and/or components of the input segments, so we need to construct a separate half-plane query structure for each level of half-plane queries that we need to perform.
+
+Let $S_{\mathcal{C}}$ be the set of input segments belonging to a particular class $\mathcal{C}$ as found by Step 1. Class $\mathcal{C}$ consists of 1 or more majority property expressions that need querying, 0 or more of which require the use of a half-plane range query. Let $m$ be one such majority property expression requiring the use of a half-plane query, and let $l_m(s)$ be a function which can map any $s \in S_{\mathcal{C}}$ to a line using the values of the endpoints of $s$ which are important in $m$. This gives us the set of lines $S_m^* = \{ l_m(s) \; | \; s \in S_{\mathcal{C}} \}$, upon which the half-plane structure is constructed.
+
+
 XXX TODO
+How we nest the different majority properties; orthogonal first, then half-plane
+How half-plane structures are queried, using Chan's method?
+
+
+
 
 %------------------------------------------------------------------------------
 \section{Conclusion}
@@ -359,5 +389,8 @@ XXX TODO
 
 The contributions, theorems of this chapter
 
+Open problems
+
 A note about $\rho > 1/2$ for the arbitrary-orientation case, that it is the only problem with this limitation in the thesis, and to please see the open problems section for more details
 
+Can we do more work in the classification phase, and need to check fewer majority expressions?

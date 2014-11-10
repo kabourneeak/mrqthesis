@@ -1,26 +1,481 @@
-\chapter{Majority Range Queries on Arbitrarily-Oriented Slabs}
+\chapter{Majority Range Queries with Arbitrarily-Oriented Slabs}
 \label{:slabs}
 
-In this chapter, 
+In this chapter, we show how we can answer majority range queries when the query region is in the form of an arbitrarily-oriented slab in the plane.  In Section~\ref{:slabs:two}, we extend our solution to the intersection of two slabs, which is a generalization of querying with an arbitrarily-oriented rectangle. In both cases, we are querying horizontal line segments.
+
+%------------------------------------------------------------------------------
+\section{Querying with One Slab}
+\label{:slabs:one}
+
+In this section, we develop a method for querying horizontal line segments which satisfy a majority enclosure property with respect to a single, arbitrarily-oriented slab.
 
 
-\section{Problem Definition}
-\label{:slabs:problem-definition}
+%------------------------------------------------------------------------------
+\subsection{Problem Definition}
+\label{:slabs:one:problem-definition}
+
+The formal statement of our problem is as follows.
+
+\begin{problem}
+We are given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$. Our query $Q$ is an arbitrarily-oriented (i.e., slanted) slab. We want to count the number of segments $s \in S$ satisfying the property $|s \cap Q| \geq \rho \cdot |s|$.
+\end{problem}
+
+Throughout this section, we use the following definitions. Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$. When discussing a single, general segment, we drop the $i$ subscripts for clarity.
+
+A query $Q$ is given as three inputs: $\alpha, \beta, w$ which we use to define an arbitrarily-oriented (i.e., slanted) slab. The left edge of the slab is defined by $L_1 : y = \alpha x + \beta$, while the right edge defined by $L_2: y = \alpha x + \beta - \alpha w$. Thus, $w$ is the horizontal width of $Q$.
+
+A segment $s \in S$ with length $|s|$ is sufficiently enclosed in $Q$ if and only if at least $\rho \cdot |s|$ of the segment is within $Q$. More precisely, we say that $s \in_\rho Q \Leftrightarrow |s \cap Q| \geq \rho \cdot |s|$. Otherwise, $s \not \in_\rho Q$.
+
+
+%------------------------------------------------------------------------------
+\subsection{The Approach}
+\label{:slabs:one:approach}
+
+Our queries will take place in three steps:
+
+\begin{enumerate}
+ \item Restrict our query to segments which are ``not too long'' to fit mostly inside $Q$.
+
+ \item Classify all segments depending on the location of their left endpoints. We are interested in those whose endpoints are left of $L_1$ and those which are between $L_1$ and $L_2$.
+
+ \item For each class of interesting segments, we test their majority property by checking that not too much of the segment resides outside of $Q$.
+
+\end{enumerate}
+
+To answer these queries, we will use a multi-level \emph{canonical sets} data structure, as described in Section~\ref{:prelim:chan}. We describe the different steps of the query in more detail here while Section~\ref{:slabs:one:analysis} describes the construction and analysis of the query data structure.
+
+
+%------------------------------------------------------------------------------
+\subsubsection{Restrict Length}
+\label{:slabs:one:details:restrict}
+
+The first step of the query is to perform a length test, as it simplifies some later queries.  In particular, we will first identify all segments which are not so long that they could never be sufficiently enclosed by $Q$. With the query parameter $w$ given, we know that only segments with length $l \leq w/\rho$ can ever be selected. Reworking the equation to $w \geq \rho l$ provides us a 1-dimensional range to query.  
+
+
+%------------------------------------------------------------------------------
+\subsubsection{Classify Endpoints}
+\label{:slabs:one:details:classify}
+
+There are two regions where we may find the left endpoints of segments for which we are interested in further examination:
+\begin{enumerate}
+ \item Segments with left endpoints left of $L_1$,
+ \item Segments with left endpoints between $L_1$ and $L_2$.
+\end{enumerate}
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.70\textwidth]{figures/fig_aoq_classification}
+  \caption{The query region $Q$ partitioned to allow querying of segment left endpoints.}
+  \label{fig:slabs:one:classification}
+\end{center}
+\end{figure}
+
+Any segments whose left endpoint appears right of $L_2$ cannot be sufficiently enclosed by $Q$. The two interesting regions are decomposed into 3 simplicies as shown in Figure~\ref{fig:slabs:one:classification}.
+
+The first region is the area left of $L_1$. This is actually a half-plane, but we can regard it as a degenerate simplex (or as a proper simplex if we bound the entire input region by a sufficiently large rectangle). All segments in this region can be identified by a single query, $Q_1$.
+
+The second region is the interior of $Q$, which we triangulate into two open simplicies (or, again, as two closed simplicies if we use a bounding rectangle) $Q_{2a}$ and $Q_{2b}$.
+
+%------------------------------------------------------------------------------
+\subsubsection{Check Majority Property}
+\label{:slabs:one:details:majority}
+
+
+For each left endpoint query, $Q_1$, $Q_{2a}$, and $Q_{2b}$, the final query step is to identify those segments which satisfy the majority property.
+
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.70\textwidth]{figures/fig_aoq_left_l1}
+  \caption{Segments whose left endpoints are left of $L_1$.}
+  \label{fig:slabs:one:aoq_left_l1}
+\end{center}
+\end{figure}
+
+\paragraph{Class $Q_1$, left endpoint left of $L_1$.} There are 4 subclasses of segments whose left endpoints are left of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l1}.
+
+\begin{enumerate}
+ \item The entire segment is left of $L_1$ (and should not be counted),
+
+ \item The segment intersects $L_1$, and the segment is mostly enclosed by $Q$,
+
+ \item The segment intersects $L_1$, but the segment is not mostly enclosed by $Q$ (and should not be counted),
+
+ \item The segment intersects both $L_1$ and $L_2$. 
+
+\end{enumerate}
+
+For these segments, we test their majority property as follows. Given a segment $s$ with left endpoint $p = (a,b)$, let $\overline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0).
+
+Let $(a', b)$ be the intersection point of $\overline{s}$ and $L_1$. Solving their respective equations gives $a' = \frac{b - \beta}{\alpha}$.
+
+It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $a' - a < (1 - \rho)l$. Expanding gives:
+\[
+\frac{\beta}{\alpha} > \frac{1}{\alpha} b - a - (1 - \rho)l 
+\]
+
+\noindent
+Which represents a half-plane in 2 dimensions:
+\[
+y > bx - a - (1 - \rho)l 
+\]
+
+\noindent
+A few notes: 
+\begin{itemize}
+ \item We know that $0 < |a' - a|$ since we are assured that $a$ is left of $L_1$.
+
+ \item This test will reject segments, as it should, from the 1st subcase since $a' - a > l$.
+
+ \item This test is sufficient for the 4th subcase, since, in Section \ref{:slabs:one:details:restrict}, we ensure that we only consider segments which are not too long.
+
+\end{itemize}
+
+
+%------------------------------------------------------------------------------
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.70\textwidth]{figures/fig_aoq_left_l2}
+  \caption{Segments whose left endpoints are between $L_1$ and $L_2$.}
+  \label{fig:slabs:one:aoq_left_l2}
+\end{center}
+\end{figure}
+
+\paragraph{Class $Q_{2a}$ and $Q_{2b}$, left endpoint between $L_1$ and $L_2$.}
+There are 3 subclasses of segments whose left-endpoints are between $L_1$ and $L_2$, as shown in Figure \ref{fig:slabs:one:aoq_left_l2}.
+\begin{enumerate}
+ \item The entire segment is between $L_1$ and $L_2$ (and $s \in Q \rightarrow s \in_\rho Q$),
+
+ \item The segment intersects $L_2$, and $s \in_\rho Q$,
+
+ \item The segment intersects $L_2$, but $s \not \in_\rho Q$,
+
+\end{enumerate}
+
+For these segments, we test their majority property by checking that not too much of the segment is \emph{right} of $L_2$. Given a segment $s$ with right endpoint $p = (a+l,b)$, let $\overline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0).
+
+Let $(a'', b)$ be the intersection point of $\overline{s}$ and $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.
+
+It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $(a + l) - a'' < (1 - \rho)l$. If the right endpoint of $s$ is left of $L_2$, then this expression will be negative, but that is fine. Expanding gives:
+\[
+\frac{\beta}{\alpha} - w < \frac{1}{\alpha} b - (a + l) + (1 - \rho)l 
+\]
+
+\noindent
+The expression represents a half-plane in 2 dimensions:
+\[
+y > bx - (a + l) - (1 - \rho)l 
+\]
+
+Note that the term $(a + l) - (1 - \rho)l$ is not based on any query inputs and is therefore a constant which can be calculated during preprocessing.
+
+
+%------------------------------------------------------------------------------
+\subsection{Construction and Analysis}
+\label{:slabs:one:analysis}
+
+As mentioned in Section \ref{:slabs:one:approach}, we will use a multi-level canonical sets data structure to perform this query.  To describe and analyze the structure, it is convenient to look at the innermost structures first, and then use those results to build up the outer structures.  Our solution depends heavily on the Canonical Subsets data structure described in Section~\ref{:prelim:chan}.
+
+
+%------------------------------------------------------------------------------
+\subsubsection{Length restriction}
+
+The innermost structure answers the length restriction query on a set $S$ of $n$ horizontal segments. This is easily answered using constructing a 1-dimensional range tree, as described in Section~\ref{:prelim:range-trees}, keyed on the segment lengths. The following lemma summarizes the time and space requirements of this structure.
+
+\begin{lemma}
+\label{lem:slabs:one:step1}
+Given a set of $n$ horizontal line segments, we can count all segments with length at most that of a given query parameter in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built with $\BigOh{n \log{n}}$ preprocessing time. With the same structure, we can report matching segments in $\BigOh{\log{n} + r}$ time, where $r$ is the number of reported elements.
+\end{lemma}
+
+
+% -----------------------------------------------------------------------------
+\subsubsection{Majority Property}
+
+To query segments having the majority property, we use the half-plane expressions we developed in Section \ref{:slabs:one:details:majority}.  There are two expressions, depending on whether the segment belongs in $Q_1$ or $Q_{2a}/Q_{2b}$. For each expression, we construct a separate data structure. We will examine $Q_1$ specifically, but the case for $Q_{2a}/Q_{2b}$ is similar.
+
+During the preprocessing step, each segment $s_i \in S$, $1 \leq i \leq n$ is mapped to a point $p_i$ located at $(x, bx - a - (1 - \rho))$. Let $P_1$ be the set of all such points. We perform a half-plane query with the line $y = \alpha\cdot x + \beta$, where $\alpha$ and $\beta$ are query inputs.
+
+By Theorem~\ref{th:chan}, we can answer this majority property query using a canonical subsets data structure for locating points within a query simplex. This structure consists of $k = \BigOh{n}$ canonical subsets, $C_1$ through $C_k$. With each $C_i$, we will associate the structure given by Lemma \ref{lem:slabs:one:step1}, constructed on the elements of that subset.
+
+The space required includes $\BigOh{n \log{n}}$ for the canonical subsets structure, plus
+\[
+\sum_{i}^{k}{|C_i|} \leq \BigOh{n\log{n}}
+\]
+
+\noindent for the associate data structures, for a combined space requirement of $\BigOh{n\log{n}}$.
+
+Preprocessing time includes $\BigOh{n\log{n}}$ for the canonical subsets structure, plus
+\[
+\sum_{i}^{k}{|C_i| \log{|C_i|}} 
+\leq \sum_{i}^{k}{|C_i| \log{n}} 
+\leq \BigOh{n\log{n}} \log{n} 
+\leq \BigOh{n \log^2{n}}
+\]
+
+\noindent for the associate data structures. The preprocessing time for the associate structures dominates that of the canonical subsets for a combined preprocessing time of $\BigOh{n\log^2{n}}$.
+
+Performing the majority property query requires $\BigOh{\sqrt{n}\log{n}}$ time and returns $k' = \BigOh{\sqrt{n}\log{n}}$ disjoint canonical sets. For each returned subset, the associated structure for length restriction must be queried, which requires the following query time:
+\[
+\sum_{i}^{k'}{\log{|C_i|}} 
+\leq \sum_{i}^{k'}{\log{n}} 
+\leq \log{n} \cdot \sum_{i}^{k'}{1}
+\leq \log{n} \BigOh{\sqrt{n}\log{n}}
+\leq \BigOh{\sqrt{n}\log^2{n}}
+\]
+
+\noindent
+for a total query time of $\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^2{n}} = \BigOh{\sqrt{n}\log^2{n}}$. The following lemma summarizes our results so far.
+
+\begin{lemma}
+\label{lem:slabs:one:step2}
+Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line \emph{and} which are not too long in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
+\end{lemma}
+
+
+% -----------------------------------------------------------------------------
+\subsubsection{Left-endpoint classification}
+
+To classify the left-endpoints of the segments into regions $Q_1$, $Q_{2a}$, and $Q_{2b}$, we use 3 simplex range searches. By Theorem~\ref{th:chan}, we can locate all left endpoints in $Q_1$ in $\BigOh{\sqrt{n}\log{n}}$ time using data structure of canonical subsets which requires $\BigOh{n \log{n}}$ size and space to construct. A similar structure can be created for $Q_{2a}/Q_{2b}$.
+
+The canonical subsets structure consists of $k = \BigOh{n}$ subsets, and to complete our overall query, we will construct and associated structure as described in Lemma \ref{lem:slabs:one:step2} with each, based on the elements within. Total space needed is $\BigOh{n \log{n}}$ for the canonical subsets, plus:
+\[
+\sum_{i}^{k}{|C_i| \log{|C_i|}} \leq \BigOh{n\log^2{n}}
+\]
+
+\noindent for the associated structures, for a total space requirement of $\BigOh{n\log^2{n}}$.
+
+Preprocessing time required is $\BigOh{n \log{n}}$ for the canonical subsets, plus
+\[
+\sum_{i}^{k}{|C_i| \log^2{|C_i|}} 
+\leq \sum_{i}^{k}{|C_i| \log^2{n}} 
+\leq \BigOh{n\log{n}} \log^2{n}
+\leq \BigOh{n \log^3{n}}
+\]
+
+\noindent
+for the associated structures, for a total preprocessing time of $\BigOh{n \log^3{n}}$.
+
+Query time is $\BigOh{\sqrt{n}\log{n}}$ to find the $k'$ disjoint canonical subsets of total size $\BigOh{\sqrt{n}\log{n}}$ representing the left endpoints of interest, plus
+\[
+\sum_{i}^{k'}{\BigOh{\sqrt{|C_i|}\log^2{|C_i|}}} 
+\leq \sum_{i}^{k'}{\BigOh{\sqrt{|C_i|}}\BigOh{\log^2{n}}} 
+\leq \BigOh{\sqrt{n}\log^3{n}}
+\]
+
+\noindent
+for querying the associated structures, for a total query time of $\BigOh{\sqrt{n} \log^3{n}}$. This completes the entire query as described in Section \ref{:slabs:one:problem-definition}, which we summarize with the following theorem.
+
+\begin{theorem}
+\label{thm:slabs:one}
+Given a set of $n$ horizontal line segments, we can locate all segments which satisfy the majority property for a given query slab in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
+\end{theorem}
+
+
+
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+\section{Querying with Two Slabs}
+\label{:slabs:two}
+
+We now consider a similar problem where the query is input as two slabs, and we are interested in those segments which are sufficiently enclosed in the intersection of the slabs.  When the two slabs are orthogonal to each other, this method will solve the problem of finding segments sufficiently enclosed by an arbitrarily oriented rectangle.
+
+
+
+% -----------------------------------------------------------------------------
+\subsection{Problem Definition}
+\label{:slabs:two:problem}
+
+The formal statement of this problem is as follows.
+
+\begin{problem}
+We are given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$. Our query $Q$ is an arbitrarily-oriented parallelogram specified as the intersection of two slabs. We want to count the number of segments $s \in S$  satisfying the property $|s \cap Q| \geq \rho \cdot |s|$.
+\end{problem}
+
+Throughout this section, we use the following definitions. Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$.
+
+A query region is an arbitrarily-oriented parallelogram, which is specified as the intersection of two slabs, $S_p$ and $S_n$, which have positive and negative slopes, respectively. See Figure \ref{fig:slabs:two:ds}.
+
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=0.90\textwidth]{figures/fig_ds_slabs}
+  \caption{A query parallelogram $Q$ formed by the inputs $\alpha$, $\beta$, $w_p$,
+  $\gamma$, $\delta$, and $w_n$.}
+  \label{fig:slabs:two:ds}
+\end{center}
+\end{figure}
+
+Specifically, a query is given as six inputs $\alpha, \beta, w_p, \gamma, \delta, w_n$, where $\alpha > 0$, $w_p > 0$, $w_n > 0$, and $\gamma < 0$. With these inputs, we define:
+
+\begin{itemize}
+ \item $L_1 : y = \alpha x + \beta$, the left edge of $S_p$,
+
+ \item $L_2 : y = \alpha (x - w_p) + \beta$, the right edge of $S_p$,
+
+ \item $L_3 : y = \delta x + \gamma$, the left edge of $S_n$,
+
+ \item $L_4 : y = \delta (x + w_n) + \gamma$, the right edge of $S_n$,
+
+ \item $S_p = \{ p \in \mathbb{R}^2 | (p \text{ is on or right of } L_1) \wedge (p \text{ is on or left of } L_2) \}$, a slab with positive slope,
+
+ \item $S_n = \{ p \in \mathbb{R}^2 | (p \text{ is on or right of } L_3) \wedge (p \text{ is on or left of } L_4) \}$, a slab with negative slope,
+
+ \item $Q = S_p \cap S_n$, the query parallelogram.
+
+\end{itemize}
+
+A segment $s \in S$ with length $l$ is sufficiently enclosed in $Q$ if and only if at least $\rho \cdot l$ of the segment is within $Q$. More precisely, we say that $s \in_\rho Q \Leftrightarrow |s \cap Q| \geq \rho \cdot l$. Otherwise, $s \not \in_\rho Q$.
+
+
+% -----------------------------------------------------------------------------
+\subsection{Approach}
+\label{:slabs:two:approach}
+
+Our queries will take the following steps:
+
+\begin{enumerate}
+ \item Decompose the parallelogram into three query subregions based on $y$-coordinates, and  isolate those segments which may interact with each subregion.
+
+ \item For each query subregion:
+ \begin{enumerate}
+  \item Identify the two lines out of $L_1, L_2, L_3,$ and $L_4$ which border the subregion,
+  \item Classify segments based on the location of their endpoints with respect to the border lines,
+  \item Check the majority property.
+ \end{enumerate}
+\end{enumerate}
+
+To answer these queries, we will use a multi-level \emph{canonical sets} as described in Section~\ref{:prelim:chan}. We first describe the different steps of the query in more detail, and then describe the construction and analysis of the query data structure.
+
+
+
+% -----------------------------------------------------------------------------
+\subsubsection{Decomposition}
+
+\begin{figure}
+\begin{center}
+  \includegraphics[width=0.85\textwidth]{figures/fig_ds_wpwn}
+  \caption[Decomposition of the query region $Q$]{Decomposition of the query region $Q$. The orientation of $Q$ depends on the relative widths of the slabs which define it.}
+  \label{fig:slabs:two:wpwn}
+\end{center}
+\end{figure}
+
+The query region, $Q$, is decomposed into three subregions, $Q_a$, $Q_b$, and $Q_c$, by extending horizontal lines through each vertex of $Q$. These lines determine three horizontal strips $Y_a$, $Y_b$, and $Y_c$, each containing their respective subregion of $Q$. See Figure~\ref{fig:slabs:two:wpwn}.
+
+The widths of the two slabs created by the query inputs determine the overall orientation of $Q$. When $w_p < w_n$, the center parallelogram, $Q_b$, is defined by $L_1$ and $L_2$, and when $w_p > w_n$, $Q_b$ is defined by $L_3$ and $L_4$. When $w_p = w_n$, $Q_b$ disappears, and we don't need to continue further query steps on it.
+
+After partitioning the segments according to whether they fall into $Y_a$, $Y_b$, or $Y_c$, we continue the query for each partition against the appropriate query subregion.
+
+
+\subsubsection{Querying the Subregions}
+
+Each subregion is determined by two lines based on our query inputs. For $Q_a$, it is always $L_1$ on the left and $L_4$ on the right. Likewise, for $Q_c$, it is always $L_3$ on the left and $L_2$ on the right. For $Q_b$, it is either $L_1$ and $L_2$ or  $L_3$ and $L_4$.
+
+We will examine $Q_a$ specifically, but the solutions for the other two zones is quite similar, differing only by the equations of the lines which define the subregion.
+
+The solution for $Q_b$ can either be solved as detailed below, or as an instance of the \emph{Single Slab Majority Query} problem presented in Section~\ref{:slabs:one}.
+
+
+\subsubsection{Endpoint Classification}
+
+Let $s \in S$ be a horizontal line segment defined by $(a, b, l)$.  Let $\overline{s}$ be the line through $s$, defined by the equation $y = b$.  Let $(a', b) = \overline{s} \cap L_1$ and $(a'', b) = \overline{s} \cap L_4$, then $a' = \frac{b - \beta}{\alpha}$ and $a'' = \frac{b - \gamma}{\delta} + w_n$.
+
+We classify the endpoints of $s$, namely $(a, b)$ and $(a + l, b)$ with respect to their position left or right of $L_1$ and $L_4$. We can accomplish this with simplex range searching. Since $b$ is common to all points, we are interested in the following relationships:
+
+\begin{enumerate}
+ \item If $a < a'$ and
+
+ \begin{enumerate}
+  \item If $a + l < a'$, then $s$ is entirely left of $Q_a$, and is not counted.
+  \item If $a' < a + l < a''$, then $s$ intersects $L_1$ only.
+  \item If $a'' < a + l$, then $s$ intersects $L_1$ and $L_4$.
+ \end{enumerate}
+
+ \item If $a' < a < a''$ and
+ \begin{enumerate}
+  \item If $a' < a + l < a''$, then $s$ is entirely within $Q_a$, thus $s \in_\rho Q_a$, and it is counted.
+  \item If $a'' < a + l$, then $s$ intersects $L_4$ only.
+ \end{enumerate}
+
+ \item If $a'' < a$ and
+ \begin{enumerate}
+  \item If $a'' < a + l$, then $s$ is entirely right of $Q_a$, and is not counted.
+ \end{enumerate}
+\end{enumerate}
+
+None of the segments in Cases 1(a) and 3(a) are counted, and all of the segments in Case 2(a) \emph{are} counted. All segments falling into the remaining cases need to be tested for their majority property.
+
+
+\subsubsection{Majority Property}
+
+For Case 1(b), we know that $s$ only crosses $L_1$. In this case, we can either check that enough of $s$ is inside $Q_a$, or we can check that not too much of $s$ is \emph{outside} of $Q_a$.  We will check the latter condition, which gives the following expression.
+\[
+\begin{split}
+a' - a &< (1 - \rho)l \\
+%
+\frac{b - \beta}{\alpha} - a &< (1 - \rho)l \\
+%
+\frac{b}{\alpha} - \frac{\beta}{\alpha} &< a + (1 - \rho)l \\
+%
+\frac{\beta}{\alpha} &> b\cdot \frac{1}{\alpha} - a - (1-\rho)l
+%
+\end{split}
+\]
+
+\noindent For Case 2(b), where $s$ crosses only $L_4$ we may check that enough of $s$ is inside $Q_a$, or that not too much is outside of $Q_a$. In this case, we will check the former condition, which gives the following expression.
+\[
+\begin{split}
+a'' - a &\geq \rho l \\
+%
+\frac{b - \gamma}{\delta} + w_n - a &\geq \rho l \\
+%
+\frac{b}{\delta} - \frac{\gamma}{\delta} + w_n &\geq a + \rho l \\
+%
+- \frac{\gamma}{\delta} + w_n &\geq -b \frac{1}{\delta} + a + \rho l \\
+%
+\frac{\gamma}{\delta} - w_n &\leq b \frac{1}{\delta} - a - \rho l \\
+%
+\end{split}
+\]
+
+\noindent Both of these expressions are half-plane expressions in two variables.  Finally, for Case 1(c), we know that both endpoints of $s$ are outside of $Q_a$, so we only need to measure the width of $s \cap Q_a$.  Specifically, we require that:
+\[
+\begin{split} 
+a'' - a' &\geq \rho l \\
+%
+\frac{b - \gamma}{\delta} + w_n - \frac{b - \beta}{\alpha} &\geq \rho l \\
+%
+\frac{b}{\delta} - \frac{\gamma}{\delta} + w_n - \frac{b}{\alpha} + \frac{\beta}{\alpha} &\geq \rho l \\
+%
+b \cdot \left ( \frac{1}{\delta} - \frac{1}{\alpha} \right ) + \left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right ) &\geq \rho l \\
+%
+\left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right ) &\geq -b \cdot \left (\frac{1}{\delta} - \frac{1}{\alpha} \right ) + \rho l \\
+%
+\left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right ) &\geq b \cdot \left (\frac{1}{\alpha} - \frac{1}{\delta} \right ) + \rho l \\
+%
+\end{split}
+\]
+
+\noindent
+which is once again a half-plane expression in two variables (the expressions consisting only of query variables can be calculated in $\BigOh{1}$ time during the query).
+
+
+% -----------------------------------------------------------------------------
+\subsection{Construction and Analysis}
+\label{:slabs:two:analysis}
 
 XXX TODO
 
-\section{The Approach}
-\label{:slabs:approach}
 
-
-XXX TODO
-
-\section{Analysis}
-\label{:slabs:analysis}
-
-XXX TODO
-
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
 \section{Conclusion}
 \label{:slabs:concl}
 
 XXX TODO
+
+Open Problems
+
+* Get rid of the 1/2 limitation on the two slab case.
+
+* Arbitrarily oriented segments. Not conceptually hard, but quickly turn into higher dimensional problems
+

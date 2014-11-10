@@ -3,12 +3,14 @@
 
 In this chapter, we outline the data structures and other techniques which we rely on for the formulation of solutions to our own contributions.
 
+%------------------------------------------------------------------------------
 \section{Range Trees}
 \label{:prelim:range-trees}
 
 XXX TODO
+
 \begin{enumerate}
- \item 1D Range trees
+ \item 1D Range trees; say something about how we can store summary information at the inner nodes, like counts, etc.
  \item Multi-level trees
  \item Theorems about preprocessing, size, and query times.  For higher dimensional trees, fractional cascading can also be used.
 \end{enumerate}
@@ -28,11 +30,19 @@ Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A laye
 \end{corollary}
 
 
+%------------------------------------------------------------------------------
 \section{Chan's Disjoint Set Data-structure}
 \label{:prelim:chan}
 
 XXX TODO
 
+\begin{theorem}[Corollary 7.3, part $i$, in Chan\cite{chan2012}]
+\label{th:chan}
+We can form $O(n)$ canonical subsets of total size $O(n \log{n})$ in $O(n \log{n})$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq O(\sqrt{n}\log{n})$ in time $O(\sqrt{n}\log{n})$ w.h.p.$(n)$.
+\end{theorem}
+
+
+%------------------------------------------------------------------------------
 \section{Fractional Cascading}
 \label{:prelim:fractional-cascading}
 
@@ -41,7 +51,15 @@ XXX TODO
 I'm not sure that we want to say anything here, actually.
 
 
-
+%------------------------------------------------------------------------------
 \section{Notation}
 \label{:prelim:notation}
+
+Do we have any global notation?  I don't think so;  we don't really want the reader to have to flip back to chapter 2 always anyway.
+
+
+%------------------------------------------------------------------------------
+\section{A word about ``Majority''}
+
+This work was originally inspired by a problem that involved selecting objects which were truly \emph{mostly} inside a query region; that is, where more than half of the object needed to appear in the query region to be counted.  In working on the problems presented in this thesis, however, we have found that many of our techniques work for any fixed proportion of the object, even proportions less than half.
 
