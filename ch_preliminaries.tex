@@ -43,25 +43,3 @@ Restated with $d=2$.
 We can form $O(n)$ canonical subsets of total size $O(n \log{n})$ in $O(n \log{n})$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq O(\sqrt{n}\log{n})$ in time $O(\sqrt{n}\log{n})$ w.h.p.$(n)$.
 \end{theorem}
 
-
-%------------------------------------------------------------------------------
-\section{Fractional Cascading}
-\label{:prelim:fractional-cascading}
-
-XXX TODO
-
-I'm not sure that we want to say anything here, actually.
-
-
-%------------------------------------------------------------------------------
-\section{Notation}
-\label{:prelim:notation}
-
-Do we have any global notation?  I don't think so;  we don't really want the reader to have to flip back to chapter 2 always anyway.
-
-
-%------------------------------------------------------------------------------
-\section{A word about ``Majority''}
-
-This work was originally inspired by a problem that involved selecting objects which were truly \emph{mostly} inside a query region; that is, where more than half of the object needed to appear in the query region to be counted.  In working on the problems presented in this thesis, however, we have found that many of our techniques work for any fixed proportion of the object, even proportions less than half.
-

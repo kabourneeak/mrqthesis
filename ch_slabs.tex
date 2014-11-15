@@ -115,6 +115,10 @@ It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outsi
 \]
 
 \noindent
+XXX TODO instead of just saying "it's a half-plane", we could present the point mapping and line mapping right here.
+
+We can test for segments satisfying this inequality using a half-plane query where we map each segment $s_i$ to a corresponding dual point $p_i = (x,y)$, and query with the inequality $y \leq bx + c$.
+
 Which represents a half-plane in 2 dimensions:
 \[
 y > bx - a - (1 - \rho)l 
@@ -428,6 +432,8 @@ a' - a &< (1 - \rho)l \\
 %
 \end{split}
 \]
+
+XXX TODO restate all of these in the correct way, where `y' is all input variables.  Give the half-plane dual conversions right here.
 
 \noindent For Case 2(b), where $s$ crosses only $L_4$ we may check that enough of $s$ is inside $Q_a$, or that not too much is outside of $Q_a$. In this case, we will check the former condition, which gives the following expression.
 \[

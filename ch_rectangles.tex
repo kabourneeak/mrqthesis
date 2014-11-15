@@ -1,15 +1,15 @@
 \chapter{Querying Segments with Axis-Parallel Rectangles}
 \label{:rectangles}
 
-In this chapter, we begin with the simplest case of majority range query.  Even with this simplified model, we will be able to identify where the main challenges of this problem domain lie and construct some techniques which we will use to solve many of the more complex problems.
+In this chapter, we begin with a simple environment for performing majority range queries. Even with this simplified model, we will be able to identify where the main challenges of this problem domain lie and construct some techniques which we will use to solve many of the more complex problems.
 
-We will present two variations of the majority range search problem in this chapter. Both use axis-parallel rectangles as their query. Both variations will query over line segments, which are the simplest type of object which has a concept of ``majority''.  In the first variation, the line segments will also be axis-parallel, and we will relax this restriction, allowing segments of arbitrary orientation, for the second variation.
+We will present two variations of the majority range search problem in this chapter. Both use axis-parallel rectangles as their query. Both variations will query over line segments, which are the simplest type of object which has a concept of majority. In the first variation, the line segments will also be axis-parallel, whereas in Section~\ref{:rectangles:ao}, we allow segments of arbitrary orientation.
 
 %------------------------------------------------------------------------------
 \section{Axis-Parallel Segments}
 \label{:rectangles:ap}
 
-In this section we consider axis-parallel line segments in the plane which we wish to query with an axis-parallel rectangle.  This is the simplest case of majority range query as the objects and query are simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. We will discuss only horizontal segments here.  The solution for vertical segments is identical, and we discuss how to combine the two approaches as the end of the section.
+In this section we consider axis-parallel line segments in the plane which will be queries with axis-parallel rectangles.  This is the simplest 2D environment on which we can perform a majority range query as the objects and query region are both simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. We will discuss only horizontal segments here.  The solution for vertical segments is identical, and we discuss how to combine the two approaches at the end of the section.
 
 We define our first problem as follows.
 
@@ -21,7 +21,7 @@ Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed par
 \subsection{Definitions}
 \label{:rectangles:ap:defs}
 
-Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the bottom one if $s_i$ is vertical). We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\delta, \gamma)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
+Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\delta, \gamma)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
 
 For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
 
@@ -36,11 +36,11 @@ For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly,
 \label{:fig:rectangles:ap:cases}
 \end{figure}
 
-As Figure~\ref{:fig:rectangles:ap:cases} illustrates, there are several cases to consider regarding how a horizontal segment $s \in S$ may interact with $Q$. Cases $(1)$, $(2)$, and $(3)$, where $s$ is entirely left, entirely within, or entirely right of $Q$, respectively, are very similar to standard range searching where we look to find elements which are completely inside or completely outside of a query region.  
+As Figure~\ref{:fig:rectangles:ap:cases} illustrates, there are several cases to consider regarding how a horizontal segment $s \in S$ may interact with $Q$. Cases $(1)$, $(2)$, and $(3)$, where $s$ is entirely left, entirely within, or entirely right of $Q$, respectively, are exactly an instance of  standard range searching problems where we look to find elements which are completely inside or completely outside of a query region.  
 
-Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \delta$.  We further subdivide case $(4)$ in to cases $(4a)$, where $s \in_\rho Q$ and $(4b)$ where $s \not \in_\rho Q$.  Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\delta$. Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \delta$ and $q > \delta$. 
+Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \delta$.  We further subdivide case $(4)$ in to cases where, for some appropriate value of $\rho$, $s \in_\rho Q$ in case $(4a)$ and $s \not \in_\rho Q$ in case $(4b)$.  Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\delta$. Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \delta$ and $q > \delta$. 
 
-In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, crucially, neither $p$ nor $q$ are inside $Q$. As like the previous two cases, $s$ is in case $(6a)$ if $s \in_\rho Q$ and $(6b)$ if $s \not \in_\rho Q$.
+In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, crucially, neither $p$ nor $q$ are inside $Q$. As like in cases $(4)$ and $(5)$, $s$ is in case $(6a)$ if $s \in_\rho Q$ and $(6b)$ if $s \not \in_\rho Q$.
 
 Our goal is to count all of the segments belonging to cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and none of the segments belonging to any other case.
 
@@ -52,18 +52,16 @@ Our approach to solving this problem involves restricting and classifying segmen
 
 \paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint.  Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
 
-\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \delta - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
+\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \delta - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
 
 \begin{proof}
 The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on Step 4 and show that for each case, a segment belonging to that case is correctly accepted or rejected.
 
 Consider the segments in $S_L$, which we check against the majority property expression $\alpha - a < (1 - \rho) \cdot l$. That is, we are looking at how much of $s$ is outside of $Q$. Segments in case $(1)$ have $\alpha - a > l$, so they are correctly rejected. Segments in cases $(4a)$ and $(4b)$ are accepted or rejected quite straight-forwardly by this condition; that is, if not too much of $s$ is outside $Q$, then ``enough'' of $s$ must be inside.  
 
-The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  If we know that $s$ belongs to case $(6)$ (i.e., that it crosses both $\alpha$ and $\delta$) then we know that $|s \cap Q|$ is exactly $w$. After Step 2, we know that $|s| < w / \rho$, which implies that any segment in $S_L$ that crosses both $\alpha$ and $\delta$ must belong to case $(6a)$ and not case $(6b)$.
+The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  After Step 2, we know that $|s| < \frac{w}{\rho}$, which implies that any segment in $s \in S_L$ that crosses both $\alpha$ and $\delta$ must satisfy $s \in_\rho Q$, since $|s \cap Q|$ is exactly $w$, and $w$ is sufficient. This property allows us to avoid explicitly deciding if $s$ crosses $\delta$, since if not too much of $s$ is outside $Q$, $s$ either crosses only $\alpha$ and case $(4)$ holds, or it crosses $\alpha$ and $\delta$, and $w$ is sufficient.
 
-XXX TODO
-
-Considering the segments in $S_R$ now, with the majority property expression $\delta - a \geq  \rho l$. Here we check the affirmative case and directly check that enough of a segment is in $Q$. For case $(2)$, $\delta - a \geq l$. Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.  On the other hand, for case $(3)$, $\delta - a < 0$ and all such segments are rejected. The final cases, $(5a)$ and $(5b)$ are straight-forwardly classified based on how much of the segment appears in $Q$.
+Considering the segments in $S_R$ now, against the majority property expression $\delta - a \geq  \rho l$ for $s \in S_R$. This expression checks the affirmative case, that is, that enough of $s$ is inside $Q$. For case $(2)$, $\delta - a \geq l$. Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.  On the other hand, for case $(3)$, $\delta - a < 0$ and all such segments are rejected. The final cases, $(5a)$ and $(5b)$ are straight-forwardly classified based on how much of the segment appears in $Q$.
 
 \end{proof}
 
@@ -71,21 +69,37 @@ Considering the segments in $S_R$ now, with the majority property expression $\d
 \subsection{Answering the Query}
 \label{:rectangles:ap:analysis}
 
-We can answer this query by expressing it as an orthogonal range query in 4D. Specifically, each of the steps in Section~\ref{:rectangles:ao:approach} discriminates between which segments are included and which are excluded by examining an inequality made up of some of the input parameters of each segment against a query variable. We map each segment to a point in 4D where each component of the point is based on the segment parameters, and map our query rectangle $Q$ to a 4D box.
+Each of the steps in Section~\ref{:rectangles:ao:approach} includes or excludes segments by examining several inequalities. Each inequality is made up of some of the input parameters of each segment and a single query variable. To perform the query, we will map each segment to a point in 4D where each component of the point is based on the segment input parameters corresponding to one of our inequalities, and map the query variables given by $Q$ to a 4D box.  The query can then be answered using a multi-level range tree.
 
-We will check each of the majority expressions separately and then combine their results. The first expression is for segments whose left endpoint is left of $\alpha$. The majority expression $\alpha - a < (1 - \rho) \cdot l$ can be rewritten as $\alpha < a + (1-\rho) \cdot l$. Therefore, we map each segment $s_i$ to the 4D point $v_i = (b_i, \rho \cdot l_i, a_i, a_i + (1-\rho) \cdot l_i)$.  When querying, we want to return all such points found inside the query box
+Recall that for every $s \in S$, we have $s = (a, b, l)$ as the $x$-coordinate of the left endpoint, $y$-coordinate of the left endpoint, and length of the segment, respectively.  The query region $Q$ has width $w = \delta - \alpha$. Let $v$ be the 4D point we create which corresponds to $s$.
+
+The first two conditions we need to check are the same for all cases. We first isolate segments based directly on their $y$-coordinate; thus, the first component of $v$ will be $b$, and the first component of our 4D query box will be $[\beta, \gamma]$.  We next want to include only segments where $l \leq \frac{w}{\rho}$. We can rewrite this as $\rho l \leq w$. Thus, the second component of $v$ will be $\rho l$, and the second component of our query box will be $(0, w)$.
+
+Our segments are next classified on whether their left endpoint is left or right of $\alpha$. To do this, we set the third component of $v$ to $a$, and the third component of the query box to either $(-\infty, \alpha)$ or $[\alpha, \infty)$ as appropriate.
+
+Finally, we need to check the majority expressions. We have two cases to check, and we will combine their results later. The first expression is for segments whose left endpoint is left of $\alpha$. The majority expression $\alpha - a < (1 - \rho) \cdot l$ can be rewritten as $\alpha < a + (1-\rho) \cdot l$. Therefore, we set the fourth component of $v$ to $a + (1 - \rho) \cdot l$, and the fourth component of the query box to $(\alpha, \infty)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the 4D point 
+\[ 
+v_i = (b_i, \rho \cdot l_i, a_i, a_i + (1-\rho) \cdot l_i)
+\]
+
+\noindent and is queried by the 4D query box
 \[
 [\beta, \gamma] \times (0, w] \times (-\infty, \alpha) \times (\alpha, \infty)
 \]
 
-The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\delta - a \geq \rho l$ can be rewritten as $\delta \geq a + \rho l$. Therefore, we map each segment $s_i$ to the 4D point $v_i' = (b_i, \rho \cdot l_i, a_i, a_i + \rho l_i)$.  When querying, we want to return all such points found inside the query box
+The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\delta - a \geq \rho l$ can be rewritten as $\delta \geq a + \rho l$. Therefore, we set the fourth component of $v$ to $a + \rho l$, and the fourth component of the query box to $(-\infty, \delta)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the point
+\[
+v_i' = (b_i, \rho \cdot l_i, a_i, a_i + \rho l_i)
+\]
+
+\noindent and is queried by the box
 \[
 [\beta, \gamma] \times (0, w] \times [\alpha, \infty) \times (-\infty, \delta]
 \]
 
-By Corollary~\ref{cor:rangetree}, we can answer either such query by constructing a multi-level range tree.  Since our points are in 4D, such a tree would require $\BigOh{n \log^3{n}}$ time and space for preprocessing and could answer queries in $\BigOh{\log^3{n}}$ time.  To find all horizontal segments satisfying their majority property, we need to perform both queries and combine the results.  
+By Corollary~\ref{cor:rangetree}, we can answer either of these queries by constructing a multi-level range tree.  As our points are in 4D, such a tree would require $\BigOh{n \log^3{n}}$ time and space for preprocessing and could answer queries in $\BigOh{\log^3{n}}$ time.  To find all horizontal segments satisfying their majority property, we need to perform both queries and combine the results.  
 
-A second data structure and query does not change the asymptotic requirements of the algorithm, however, we do note that since the mapped points for both data structures have the same three first components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. At the third level of the multi-level tree, we instead create \emph{two} associate structures, one for each of the majority expressions, and query each one as needed. In a similar way, we can save a constant factor of time during our queries, since both queries consider the same values for their first two components.
+A second data structure and query does not change the asymptotic requirements of the algorithm, however, we do note that since the mapped points for both data structures have the same three first components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. At the third level of the multi-level tree, we create \emph{two} associate structures, one for each of the majority expressions, and query each one as needed. In a similar way, we can save a constant factor of time during our queries, since both queries consider the same values for their first two components.
 
 
 \paragraph{Vertical segments}
@@ -211,6 +225,7 @@ Therefore, the half-plane defined by $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1
 \[ 
 \rho(c - a) \leq \alpha - \delta 
 \]
+XXX TODO I think this is wrong! I forgot to carry through a negative
 
 \noindent where the value of $\alpha - \delta$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
 
