@@ -420,32 +420,28 @@ a' - a &< (1 - \rho)l \\
 %
 \frac{b - \beta}{\alpha} - a &< (1 - \rho)l \\
 %
-\frac{b}{\alpha} - \frac{\beta}{\alpha} &< a + (1 - \rho)l \\
-%
-\frac{\beta}{\alpha} &> b\cdot \frac{1}{\alpha} - a - (1-\rho)l
+b \frac{1}{\alpha} - \frac{\beta}{\alpha} &< a + (1 - \rho)l \\
 %
 \end{split}
 \]
 
-XXX TODO restate all of these in the correct way, where `y' is all input variables.  Give the half-plane dual conversions right here.
+We can query for segments matching this expression by performing a half-plane query on an appropriate dual-space, just as we did in Section~\ref{:slabs:one:details:majority}. For this expression in particular, we map each segment $s$ to a dual-point with coordinates $(b, a + (1-\rho)l)$, and query with the half-plane $y > \frac{1}{\alpha} - \frac{\beta}{\alpha}$.
 
-\noindent For Case 2(b), where $s$ crosses only $L_4$ we may check that enough of $s$ is inside $Q_a$, or that not too much is outside of $Q_a$. In this case, we will check the former condition, which gives the following expression.
+For Case 2(b), where $s$ crosses only $L_4$ we may check that enough of $s$ is inside $Q_a$, or that not too much is outside of $Q_a$. In this case, we will check the former condition, which gives the following expression.
 \[
 \begin{split}
 a'' - a &\geq \rho l \\
 %
 \frac{b - \gamma}{\delta} + w_n - a &\geq \rho l \\
 %
-\frac{b}{\delta} - \frac{\gamma}{\delta} + w_n &\geq a + \rho l \\
-%
-- \frac{\gamma}{\delta} + w_n &\geq -b \frac{1}{\delta} + a + \rho l \\
-%
-\frac{\gamma}{\delta} - w_n &\leq b \frac{1}{\delta} - a - \rho l \\
+b \cdot \frac{1}{\delta} - \frac{\gamma}{\delta} + w_n &\geq a + \rho l \\
 %
 \end{split}
 \]
 
-\noindent Both of these expressions are half-plane expressions in two variables.  Finally, for Case 1(c), we know that both endpoints of $s$ are outside of $Q_a$, so we only need to measure the width of $s \cap Q_a$.  Specifically, we require that:
+This expression can be queried by mapping each segment $s$ to a dual-point with coordinates $(b, a + \rho l)$ and locating those which satisfy the half-plane $y \leq \frac{1}{\delta} x - \frac{\gamma}{\delta} + w_n$.
+
+Finally, for Case 1(c), we know that both endpoints of $s$ are outside of $Q_a$, so we only need to measure the width of $s \cap Q_a$.  Specifically, we require that:
 \[
 \begin{split} 
 a'' - a' &\geq \rho l \\
@@ -456,15 +452,15 @@ a'' - a' &\geq \rho l \\
 %
 b \cdot \left ( \frac{1}{\delta} - \frac{1}{\alpha} \right ) + \left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right ) &\geq \rho l \\
 %
-\left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right ) &\geq -b \cdot \left (\frac{1}{\delta} - \frac{1}{\alpha} \right ) + \rho l \\
-%
-\left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right ) &\geq b \cdot \left (\frac{1}{\alpha} - \frac{1}{\delta} \right ) + \rho l \\
-%
 \end{split}
 \]
 
-\noindent
-which is once again a half-plane expression in two variables (the expressions consisting only of query variables can be calculated in $\BigOh{1}$ time during the query).
+This expression can be queried by mapping each segment $s$ to a dual-point with coordinates $(b, \rho l)$ and locating those which satisfy the half-plane
+\[
+y \leq \left ( \frac{1}{\delta} - \frac{1}{\alpha} \right ) \cdot x + \left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right )
+\]
+
+\noindent where the expressions consisting only of query variables can be calculated in $\BigOh{1}$ time during the query.
 
 
 % -----------------------------------------------------------------------------
@@ -476,18 +472,7 @@ We will use the multi-level canonical sets data structure described in Section~\
 
 \subsubsection{Check Majority Property}
 
-To check for segments having the majority property, we use the half-plane equations we developed in Section~\ref{:slabs:two:approach}.  There are three different expressions we may need to check, depending on the classification of the left and right endpoints, and thus the exact data structure built at this step depends on the steps that come before it.  
-
-Each segment $s_i \in S$ is mapped to a point $p_i$ and then queried against a half plane.
-\begin{itemize}
-  \item For Case $1(b)$, $p_i = (x, bx - a - (1 - \rho)l)$, and the half-plane is defined by the line $y = \alpha x + \beta$. XXX TODO Fix line equation
-  
-  \item For Case $1(c)$, $p_i = (x, bx - a - \rho l)$, and the half-plane is defined by the line $y = \alpha x + \beta$. XXX TODO Fix line equation
-
-  \item For Case $2(b)$, $p_i = (x, bx + \rho l)$, and the half-plane is defined by the line $y = \alpha x + \beta$. XXX TODO Fix line equation
-\end{itemize}
-
-By Theorem~\ref{:prelim:chan}, we can answer such a half-plane query directly using a disjoint canonical subsets data structure.  The following lemma summarizes this step.
+To check for segments having the majority property, we use the half-plane dual-spaces we developed in Section~\ref{:slabs:two:approach}. By Theorem~\ref{:prelim:chan}, we can answer such a half-plane query directly using a canonical subsets data structure, yielding the following lemma.
 
 \begin{lemma}
 \label{lem:slabs:two:step1}
