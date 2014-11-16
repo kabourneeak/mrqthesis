@@ -50,7 +50,7 @@ In order to create an area formula for the entire polygon, we decompose $P$ into
 
 We begin by sorting all of the vertices by their $x$-coordinates. If two vertices share the same $x$-coordinate (no more than two can do so, since $P$ is monotone), we can skip the duplicate without any other change to the algorithm. However, for ease of discussion, we will assume that every vertex has a distinct $x$-coordinate.
 
-Let $\overline{x}$ be the vertical line through a point $x$, and let $P_U$ and $P_L$ be the upper and lower chains of $P$, respectively. The sequence of lines $\overline{x_1}, \overline{x_2}, \ldots, \overline{x_n}$ passes through the leftmost vertex of $P$, the next leftmost, and so on from left to right to the rightmost vertex.  For every line $\overline{x_i}$, let $x_i = \overline{x_i} \cap P_U$ and $x_i' = \overline{x_i} \cap P_L$ be the intersections of $\overline{x_i}$ with the upper and lower chains of $P$, respectively.
+Let $\overline{x}$ be the vertical line through $(x,0)$, and let $P_U$ and $P_L$ be the upper and lower chains of $P$, respectively. The sequence of lines $\overline{x_1}, \overline{x_2}, \ldots, \overline{x_n}$ passes through the leftmost vertex of $P$, the next leftmost, and so on from left to right to the rightmost vertex.  For every line $\overline{x_i}$, let $x_i = \overline{x_i} \cap P_U$ and $x_i' = \overline{x_i} \cap P_L$ be the intersections of $\overline{x_i}$ with the upper and lower chains of $P$, respectively.
 
 As we walk from left to right over both $P_U$ and $P_L$ simultaneously, we keep track of $e_i$ and $e_i'$, the edges of $P_U$ and $P_L$, respectively, which are intersected by $\overline{x_i}$, and upon which reside the points $x_i$ and $x_i'$. Where $\overline{x_i}$ intersects a vertex of $P_U$ or $P_L$, 
 we store the edge to the right of that vertex as the corresponding value of $e_i$ or $e_i'$.
@@ -161,16 +161,16 @@ After completing the previous step, we have a set of regions, and their area for
 
 To complete the preprocessing for our horizontal slab query, we will process our regional area formulas into a list of multi-region formulas. This list will contain a multi-region formula for each of the $\BigOh{n}$ critical heights over all $R_i$. Specifically, for each such critical height, we store a quadratic equation that can return the area below a given query line across all regions anywhere between that critical height and the next one above it.
 
-We begin by collecting tuples of the critical heights from our regional formulas. For every region $R_i$, we collect $(y, R)$ for $y = h_0, h_1, h_2, h_3$ and $R = R_i$. Let $\mathcal{Y}$ be the list of all such tuples across all regions, sorted by $y$ values from lowest to highest. The multi-region formula for each value of $y$ is based on the one for its predecessor value in $\mathcal{Y}$.
+We begin by collecting tuples of the critical heights from our regional formulas. For every region $R_i$, we collect $(y, R)$ for $y = h_0, h_1, h_2, h_3$ and $R = R_i$. Let $\mathcal{Y}$ be the list of all such tuples across all regions, sorted by $y$-values from lowest to highest. The multi-region formula for each value of $y$ is based on the one for its predecessor value in $\mathcal{Y}$.
 
-If we suppose for a moment that each value of $y$ is distinct, then for each $y$ value there is exactly one region $R$ which is transitioning from one phase of growth to another. That is, looking at the piecewise function $F(R, h)$ which determines the area of $R$ below a query line, a new piece of that function is taking over. To update the multi-region formula, we need to subtract the coefficients of $R$ for its previous phase of growth so that they no longer influence the formula, and then add in the coefficients for the new phase.
+If we suppose for a moment that each value of $y$ is distinct, then for each $y$-value there is exactly one region $R$ which is transitioning from one phase of growth to another. That is, looking at the piecewise function $F(R, h)$ which determines the area of $R$ below a query line, a new piece of that function is taking over. To update the multi-region formula, we need to subtract the coefficients of $R$ for its previous phase of growth so that they no longer influence the formula, and then add in the coefficients for the new phase.
 
 In practice, this algorithm does not require the values of $y$ to be distinct. Instead, several values of $y$ will be collapsed into a single critical height in the list of multi-region formulas. Algorithm \ref{alg:monotonep:mf} gives the details of this process more formally.
 
 \begin{algorithm}
 \LinesNumbered
 \DontPrintSemicolon
-\caption{BuildMasterFormula}
+\caption{BuildMultiRegionFormula}
 \label{alg:monotonep:mf}
 \SetKwFunction{fSort}{sort}
 \KwIn{List of regions $\mathcal{R} = R_1, R_2, \ldots, R_{n-1}$}
@@ -182,7 +182,7 @@ $\mathcal{Y} \gets \mathcal{Y} \cup \{ (y,R) \;|\; y \in \{R.h_0, R.h_1, R.h_2, 
 }
 \fSort{$\mathcal{Y}$ on $y$}\;
 \BlankLine
-$y' \gets $ minimum $y$ value in $\mathcal{Y}$\;
+$y' \gets $ minimum $y$-value in $\mathcal{Y}$\;
 $F(P, y') \gets $ coefficients $A,B,C$ set to 0\;
 \BlankLine
 \ForEach{$y, R$ in $\mathcal{Y}$}
@@ -205,7 +205,7 @@ $H \gets $ the list of all $F(P, h)$ created above\;
 \KwRet{$H$}
 \end{algorithm}
 
-The output of this algorithm is the list $H$ of multi-region formulas. Since $\mathcal{Y}$ was sorted by $y$ value, $H$ will be as well.
+The output of this algorithm is the list $H$ of multi-region formulas. Since $\mathcal{Y}$ was sorted by $y$-value, $H$ will be as well.
 
 
 % -----------------------------------------------------------------------------
@@ -286,10 +286,10 @@ Instead, we need to generate new coefficients for each critical height of $h$ th
 \begin{algorithm}
 \LinesNumbered
 \DontPrintSemicolon
-\caption{BuildMasterFormulaTree}
+\caption{BuildMultiRegionFormulaTree}
 \label{alg:monotonep:bmft}
 \SetKwFunction{fSort}{sort}
-\SetKwFunction{fBMFT}{BuildMasterFormulaTree}
+\SetKwFunction{fBMFT}{BuildMultiRegionFormulaTree}
 \KwIn{List of regions $\mathcal{R} = R_1, R_2, \ldots, R_{n-1}$}
 \BlankLine
 \If{$|\mathcal{R}| = 1$}{
@@ -345,7 +345,7 @@ A_c
 = \sum_{k=i+1}^{j-1} F(R_k, h_\gamma) - F(R_k, h_\beta)
 \]
 
-Performing this sum naively takes $\BigOh{n}$ time as there may be a linear number of regions spanned by $Q$.  However, using $T$, we can answer this query for any values of $i$ and $j$ by checking at most $\BigOh{\log{n}}$ subtrees. At each subtree, we require $\BigOh{\log{n}}$ time to find the correct formula, for a total query time of $\BigOh{\log^2{n}}$.  However, since each subtree queries for the same value of $h$, we can reduce this query time by a factor of $\BigOh{\log{n}}$ using fractional cascading.\cite{cg-fc-86, cg-fc2-86}
+Performing this sum naively takes $\BigOh{n}$ time as there may be a linear number of regions spanned by $Q$.  However, using $T$, we can answer this query for any values of $i$ and $j$ by checking at most $\BigOh{\log{n}}$ subtrees. At each subtree, we require $\BigOh{\log{n}}$ time to find the correct formula, for a total query time of $\BigOh{\log^2{n}}$.  However, since each subtree queries for the same value of $h$, we can reduce this query time to only $\BigOh{\log{n}}$ by using fractional cascading.\cite{cg-fc-86, cg-fc2-86}
 
 If $\alpha = x_i$, then $A_i = F(R_i, h_\gamma) - F(R_i, h_\beta)$. In general, however, $x_i < \alpha < x_{i+1}$, and we cannot use our precalculated area formulas. Fortunately, the area $R_i \cap P$ is a polygon of $\BigOh{1}$ complexity, specifically a trapezoid, so its area can be calculated directly in $\BigOh{1}$ time. The vertices of $R_i \cap P$ are:
 \begin{itemize}

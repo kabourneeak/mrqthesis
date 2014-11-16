@@ -1,7 +1,7 @@
 \chapter{Majority Range Queries on Convex Polygons}
 \label{:convexp}
 
-In this chapter, we show how we can answer majority range queries on convex polygons. The main contribution of this section is a method to calculate the area of a convex polygon appearing within a query rectangle. With the enclosed area in hand, deciding on a given majority property is straight-forward.
+In this chapter, we show how we can answer majority range queries on convex polygons. The main contribution of this section is a method to calculate the area of a convex polygon appearing within a query rectangle. With the enclosed area in hand, deciding on majority enclosure is straight-forward.
 
 
 %------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ In this chapter, we show how we can answer majority range queries on convex poly
 \label{:convexp:problem-definition}
 
 \begin{problem}
-We are given a convex polygon $P$ consisting of $n$ edges and a fixed parameter $\rho$ such that $0 < \rho \leq 1$. We want to determine whether at least $\rho \cdot \area{P}$ is enclosed by an axis-parallel query rectangle $Q$.
+We are given a convex polygon $P$ consisting of $n$ edges and a fixed parameter $\rho$ such that $0 < \rho \leq 1$. We want to determine whether at least $\rho \cdot \area{P}$ is enclosed by a query rectangle $Q$.
 \end{problem}
 
 Throughout this chapter we use the following definitions. The polygon $P$ is defined by its edges $E = e_1, e_2, \ldots, e_{n-1}, e_n$, given in clockwise order, where $e_n$ and $e_1$ share a vertex to close the polygon.  A \emph{chord} of $P$ is a straight line segment incident to two edges which partitions $P$ into two regions.
@@ -24,8 +24,7 @@ A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$
 \end{center}
 \end{figure}
 
-We say that $P$ is \emph{mostly} enclosed by $Q$ if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$.
-
+We say that $P$ is \emph{mostly} enclosed by $Q$ if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$. Throughout this chapter we will assume that $Q$ is an axis-parallel rectangle for ease of discussion. In Section~\ref{:convexp:remarks} we will show how to use our method even when $Q$ has no fixed orientation.
 
 %------------------------------------------------------------------------------
 \section{Overview of the algorithm}
@@ -88,8 +87,8 @@ $T \gets $ Create new node with left child $T_l$ and right child $T_r$\;
 $l(T) \gets l(T_l)$\;
 $r(T) \gets r(T_r)$\;
 $v_m \gets $ vertex between $e_m$ and $e_{m+1}$\;
-$v_l \gets $ vertex of $e_1$ farthest along the path from $v_m$\;
-$v_r \gets $ vertex of $e_n$ farthest along the path from $v_m$\;
+$v_l \gets $ vertex of $e_1$ not shared with $e_2$\;
+$v_r \gets $ vertex of $e_n$ not shared with $e_{n-1}$\;
 $a \gets $ area of triangle $\Delta v_l v_m v_r$\;
 $a(T) \gets a + a(T_l) + a(T_r)$\;
 \BlankLine
@@ -158,7 +157,7 @@ We can find all entrance/exit pairs with the following steps.
 
 Figure \ref{fig:convexp:chord} shows an example. In the figure, $e_\beta$ is an edge that enters into $Q$, while $e_\gamma'$ is the corresponding exit edge. Both $e_\alpha'$ and $e_\alpha$ are nil. The corners of $Q$ at $(\alpha, \beta)$ and $(\alpha, \gamma)$ are outside of $P$.
 
-\begin{figure}[t]
+\begin{figure}
 \begin{center}
   \includegraphics[width=0.50\textwidth]{figures/fig_cvp_chord}
   \caption[A query $Q$ intersecting $P$ at points $s$ and $t$]{A query $Q$ intersecting $P$ at points $s$ and $t$. The segment $st$ is a chord of $P$ through the interior of $Q$.}
@@ -204,6 +203,27 @@ Querying involves several steps given below. Each of these steps requires only $
 
 
 %------------------------------------------------------------------------------
+\section{Remarks}
+\label{:convexp:remarks}
+
+Our method works for a query rectangle which has any orientation; that is, $Q$ need not be axis-parallel. Nearly all of the steps involved in calculating the area are only concerned with edges of $P$ and intersection points of lines through the boundaries of $Q$. The only place we use the axis-parallel property of $Q$ is in Section~\ref{:convexp:intersections} where we calculate those intersection points of $P$ and $Q$.
+
+We can allow for $Q$ to be arbitrarily-oriented by modifying our intersection testing in the following way.  During preprocessing, we calculate $c$, the center point of $P$, which can be done in $\BigOh{n}$ time. Let $\iline{l}$ be a line through any boundary of $Q$ and let $\iline{c}$ be the line perpendicular to $\iline{l}$ through the center point of $P$.  The line $\iline{c}$ crosses the boundary of $P$ in two places, and, using a binary search on the edges of $P$, we can identify the edges $e_a$ and $e_b$ that $\iline{c}$ crosses. These two edges divide $P$ into two chains, $E_{ab}$ and $E_{ba}$. We can now perform a binary search on each of these chains looking for intersections with $\iline{l}$ (which may or may not cross $P$ at all). Figure~\ref{fig:convexp:ao} illustrates this process.
+
+\begin{figure}
+\begin{center}
+  \includegraphics[width=0.60\textwidth]{figures/fig_cvp_ao}
+  \caption{Locating the intersections of $P$ with an arbitrarily-oriented $Q$.}
+  \label{fig:convexp:ao}
+\end{center}
+\end{figure}
+
+XXX TODO write about convex $k$-gon
+
+Recent work by \cite{XXX} gives an alternate method for calculating the area of a convex polygon cut by a segment joining any two vertices.  This method requires only $\BigOh{n}$ preprocessing time and space, and can answer area queries in $\BigOh{1}$ time. We could use this method to reduce the time needed to find the area within each cap of $P$ to $\BigOh{1}$ with no increase in the cost of our preprocessing. However, calculating the area of a rectangle still requires us to expend $\BigOh{\log{n}}$ time locating the points of intersection between $P$ and $Q$, so our overall query time remains the same.
+
+
+%------------------------------------------------------------------------------
 \section{Conclusion}
 \label{:convexp:concl}
 
@@ -220,7 +240,3 @@ There exists an algorithm which preprocesses a convex polygon $P$ in $\BigOh{n}$
 \label{cor:convexp:mp}
 Given a convex polygon $P$, and query rectangle $Q$, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we can determine if $\area{Q \cap P} \geq \rho \cdot \area{P}$ in $\BigOh{\log{n}}$ time using a data structure requiring only $\BigOh{n}$ preprocessing time and space.
 \end{corollary}
-
-
-XXX TODO  Does this work if we tilt the rectangle?  i.e., does it have to be axis-parallel? Either the answer is yes, or it is no, and the reason should be stated here.
-
