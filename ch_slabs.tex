@@ -1,7 +1,7 @@
 \chapter{Majority Range Queries with Arbitrarily-Oriented Slabs}
 \label{:slabs}
 
-In this chapter, we show how we can answer majority range queries over horizontal line segments for queries in the form of an arbitrarily-oriented slab in the plane.  In Section~\ref{:slabs:two}, we extend our solution to the intersection of two slabs, which is a generalization of querying with an arbitrarily-oriented rectangle.
+In this chapter, we show how we can answer majority range queries over horizontal line segments for queries in the form of an arbitrarily-oriented slab in the plane.  In Section~\ref{:slabs:two}, we extend our solution to allow a query region which is the intersection of two slabs; this type of query is a generalization of querying with an arbitrarily-oriented rectangle.
 
 %------------------------------------------------------------------------------
 \section{Querying with One Slab}
@@ -36,7 +36,7 @@ Identifying the segments which meet our enclosure property takes place in three 
 \begin{enumerate}
  \item Restrict ourselves to segments which are ``not too long'' to fit mostly inside $Q$.
 
- \item Classify all segments depending on the location of their left endpoints. We are interested in those whose endpoints are left of $L_1$ and those which are between $L_1$ and $L_2$.
+ \item Classify all segments depending on the location of their left endpoints. We are interested in those segments whose endpoints are left of $L_1$ and those which are between $L_1$ and $L_2$.
 
  \item For each class of interesting segments, we test their majority property.
 
@@ -49,7 +49,7 @@ To answer these queries, we will use a multi-level \emph{canonical sets} data st
 \subsubsection{Restrict Length}
 \label{:slabs:one:details:restrict}
 
-The first step of the query is to perform a length test, as it simplifies some later queries.  We want to identify all segments which are not so long that they could never be sufficiently enclosed by $Q$, regardless of their position. With the query parameter $w$ given, we know that only segments with length $l \leq \frac{w}{\rho}$ can ever be selected. Reworking the equation to $w \geq \rho l$ provides us a 1-dimensional orthogonal range to query.
+The first step of the query is to perform a length test, as it simplifies some later queries.  We want to identify all segments which are not so long that they could never be sufficiently enclosed by $Q$, regardless of their position. With the query parameter $w$ given, we know that only segments with length $l \leq \frac{w}{\rho}$ can ever be selected. Reworking the equation to $w \geq \rho l$ provides us a 1-dimensional orthogonal range to query. Let $S_1 = \{ s \in S \st l \rho \leq w \}$.
 
 
 %------------------------------------------------------------------------------
@@ -63,26 +63,16 @@ Broadly speaking, there are three different regions where we may find the left e
  \item Right of $L_2$.
 \end{enumerate}
 
-However, only those segments belonging to cases 1 and 2 are interesting to us, since any segments whose left endpoint appears right of $L_2$ cannot be sufficiently enclosed by $Q$. The two interesting regions are decomposed as shown in Figure~\ref{fig:slabs:one:classification} for further refinement.
+However, only those segments belonging to cases 1 and 2 are interesting to us, since any segments whose left endpoint appears right of $L_2$ cannot be sufficiently enclosed by $Q$. We will see that simply partitioning segments as left or right of $L_1$ is sufficient, as we can discriminate between cases 2 and 3 when testing the majority property.
 
-\begin{figure}[t]
-\begin{center}
-  \includegraphics[width=0.80\textwidth]{figures/fig_aoq_classification}
-  \caption{The query region $Q$ partitioned to allow querying of segment left endpoints.}
-  \label{fig:slabs:one:classification}
-\end{center}
-\end{figure}
-
-The first region is the area left of $L_1$. This is actually a half-plane, but we can regard it as a degenerate simplex (or as a proper simplex if we bound the entire input region by a sufficiently large rectangle). All segments in this region can be identified by a single query, $Q_1$.
-
-The second region is the interior of $Q$, which we triangulate into two open simplicies (or, again, as two closed simplicies if we use a bounding rectangle) $Q_{2a}$ and $Q_{2b}$.
+Identifying segments whose left endpoints appear to one side of $L_1$ can be accomplished using a half-plane query directly on the positions of the left endpoints and with $L_1$ itself.  Let $S_L = \{ s \in S_1 \st p \text{ is left of } L_1 \}$, and let $S_R = \{ s \in S_1 \st p \text{ is right of } L_1 \}$.
 
 
 %------------------------------------------------------------------------------
 \subsubsection{Check Majority Property}
 \label{:slabs:one:details:majority}
 
-For each left endpoint query, $Q_1$, $Q_{2a}$, and $Q_{2b}$, the final query step is to identify those segments which satisfy the majority property.
+For each set $S_L$ and $S_R$, the final query step is to identify those segments which satisfy the majority property.
 
 \begin{figure}[t]
 \begin{center}
@@ -92,7 +82,7 @@ For each left endpoint query, $Q_1$, $Q_{2a}$, and $Q_{2b}$, the final query ste
 \end{center}
 \end{figure}
 
-\paragraph{Class $Q_1$, left endpoint left of $L_1$.} There are 4 subclasses of segments whose left endpoints are left of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l1}.
+\paragraph{Set $S_L$, left endpoint left of $L_1$.} There are 4 subcases of segments whose left endpoints are left of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l1}.
 
 \begin{enumerate}
  \item The entire segment is left of $L_1$ (and should not be counted),
@@ -105,38 +95,34 @@ For each left endpoint query, $Q_1$, $Q_{2a}$, and $Q_{2b}$, the final query ste
 
 \end{enumerate}
 
-For these segments, we test their majority property as follows. Given a segment $s$ with left endpoint $p = (a,b)$, let $\overline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0).
+For these segments, we test their majority property as follows. Given a segment $s$ with left endpoint $p = (a,b)$, let $\iline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0). Let $(a', b)$ be the intersection point of $\iline{s}$ and $L_1$. Solving their respective equations gives $a' = \frac{b - \beta}{\alpha}$. It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $a' - a < (1 - \rho)l$. 
 
-Let $(a', b)$ be the intersection point of $\overline{s}$ and $L_1$. Solving their respective equations gives $a' = \frac{b - \beta}{\alpha}$.
+\begin{proof}
+We look at each subcase to show that this single test is enough to identify all segments correctly. First, the test directly identifies segments belonging to subcases 2 or 3. This test will also reject segments, as we desire, from subcase 1 since $a' - a > l$ and cannot satisfy the majority property for any allowed value of $\rho$. 
 
-It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $a' - a < (1 - \rho)l$. Expanding gives:
+Finally, this test is also sufficient for the 4th subcase owing to the length restriction step we perform in Section\ref{:slabs:one:details:restrict}. That is, after the length restriction step, we know that $|s| < \frac{w}{\rho}$, where $w$ is the width of the query slab. Since any segment in subcase 4 has the property $|s \cap Q| = w$, this implies that $s \in_rho Q$.
+\end{proof}
+
+We test for segments satisfying $a' - a < (1 - \rho)l$ using a half-plane query. Expanding this expression gives:
 \[
-\frac{\beta}{\alpha} > \frac{1}{\alpha} b - a - (1 - \rho)l 
+\begin{split}
+a' - a &< (1 - \rho)l \\
+%
+\frac{b - \beta}{\alpha} - a &< (1 - \rho)l \\
+%
+a + (1 - \rho)l &> \frac{1}{\alpha} b - \frac{\beta}{\alpha}  \\
+\end{split}
 \]
 
-\noindent
-XXX TODO instead of just saying "it's a half-plane", we could present the point mapping and line mapping right here.
-
-We can test for segments satisfying this inequality using a half-plane query where we map each segment $s_i$ to a corresponding dual point $p_i = (x,y)$, and query with the inequality $y \leq bx + c$.
-
-Which represents a half-plane in 2 dimensions:
+From this inequality, we can construct an appropriate dual-space to perform the half-plane query. We map each segment $s$ to a dual-point with coordinates $(b, a + (1-\rho)l)$. Segments matching the majority expression then correspond to the dual-points satisfying the half-plane
 \[
-y > bx - a - (1 - \rho)l 
+y > \frac{1}{\alpha} - \frac{\beta}{\alpha}
 \]
-
-\noindent
-A few notes: 
-\begin{itemize}
- \item We know that $0 < |a' - a|$ since we are assured that $a$ is left of $L_1$.
-
- \item This test will reject segments, as it should, from the 1st subcase since $a' - a > l$.
-
- \item This test is sufficient for the 4th subcase. In Section \ref{:slabs:one:details:restrict}, we ensure that we only consider segments which are not too long.  That is, if the segment is in subcase 4, then $|s \cap Q| = w$, and since $w \geq \rho l$, it is sufficient.
-
-\end{itemize}
-
 
 %------------------------------------------------------------------------------
+
+\paragraph{Set $S_R$, left endpoint right of $L_1$.}
+There are 4 subclasses of segments whose left-endpoints are right of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l2}.
 
 \begin{figure}[t]
 \begin{center}
@@ -146,35 +132,43 @@ A few notes:
 \end{center}
 \end{figure}
 
-\paragraph{Class $Q_{2a}$ and $Q_{2b}$, left endpoint between $L_1$ and $L_2$.}
-There are 3 subclasses of segments whose left-endpoints are between $L_1$ and $L_2$, as shown in Figure \ref{fig:slabs:one:aoq_left_l2}.
 
 \begin{enumerate}
- \item The entire segment is between $L_1$ and $L_2$. Since $s \in Q \rightarrow s \in_\rho Q$, these segments should be counted.
+ \item The entire segment is between $L_1$ and $L_2$. Since $s \in Q \rightarrow s \in_\rho Q$, this segment should be counted.
 
- \item The segment intersects $L_2$, and $s \in_\rho Q$,
+ \item The entire segment is right of $L_2$. No part of $s$ is in $Q$, so it should not be counted.
 
- \item The segment intersects $L_2$, but $s \not \in_\rho Q$,
+ \item The segment intersects $L_2$, and $s \in_\rho Q$.
+
+ \item The segment intersects $L_2$, but $s \not \in_\rho Q$.
 
 \end{enumerate}
 
-For these segments, we test their majority property by checking that not too much of the segment is \emph{right} of $L_2$. Given a segment $s$ with right endpoint $q = (a+l,b)$, let $\overline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0).
-
-Let $(a'', b)$ be the intersection point of $\overline{s}$ and $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.
-
-It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $(a + l) - a'' < (1 - \rho)l$. If $q$ is left of $L_2$, then this expression will be negative, but that will still satisfy the inequality and include $s$, as desired. Expanding the expression gives:
+For these segments, we test their majority property by checking that ``enough of the segment is inside of $Q$''.  Just as we did with the segments of $S_L$, let $\iline{s}$ be the horizontal line through $s$.  Let $(a'', b)$ be the intersection point of $\iline{s}$ with $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.  We will show:
 \[
-\frac{\beta}{\alpha} - w < \frac{1}{\alpha} b - (a + l) + (1 - \rho)l 
+a'' - a \geq \rho l \imply s \in_rho Q
 \]
 
-\noindent
-which represents a half-plane in 2 dimensions:
+\begin{proof}
+We look at each subcase. If $s \in S_R$ belongs to subcase 1, we have that $a'' - a > l$, which is certainly greater than $\rho l$. If $s$ belongs to subcase 2, then $a'' - a < 0$ since $a$ is right of $a''$, and $s$ will not be counted.  Finally, the correctness of this test is straight-forward when $s$ is in either subcase 3 or 4, since the expression directly measures $|s \cap Q|$.
+\end{proof}
+
+We test for segments satisfying $a'' - a \geq \rho l$ using a half-plane query.  Expanding this expression gives:
 \[
-y > bx - (a + l) - (1 - \rho)l 
+\begin{split}
+a'' - a &\geq \rho l \\
+%
+\frac{b - \beta}{\alpha} + w - a &\geq \rho l \\
+%
+\rho l + a &\leq \frac{1}{\alpha} b - \frac{\beta}{\alpha} + w
+%
+\end{split}
 \]
 
-Note that the term $(a + l) - (1 - \rho)l$ is not based on any query inputs and is therefore a constant which can be calculated during preprocessing.
-
+From this inequality, we can construct an appropriate dual-space to perform the half-lane query.  We map each segment $s$ to a dual-point with coordinates $(b, \rho l + a)$. Segments matching the majority expression then correspond to the dual-points satisfying the half-plane 
+\[
+y \leq \frac{1}{\alpha} x - \frac{\beta}{\alpha} + w
+\]
 
 %------------------------------------------------------------------------------
 \subsection{Construction and Analysis}

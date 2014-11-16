@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20140820112333" modified="D:20141113114722"/>
+<ipe version="70005" creator="Ipe 7.1.5">
+<info created="D:20140820112333" modified="D:20141115202753"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -232,30 +232,35 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<path layer="alpha" stroke="black" pen="fat">
+<path layer="alpha" matrix="0.769231 0 0 1 25.8462 0" stroke="black" pen="fat">
 128 576 m
 256 768 l
 </path>
-<path stroke="black" pen="fat">
+<path matrix="0.769231 0 0 1 25.8462 0" stroke="black" pen="fat">
 320 576 m
 448 768 l
 </path>
-<text transformations="translations" pos="112 560" stroke="black" type="label" width="68.518" height="6.926" depth="1.93" valign="baseline">$L_1: y = \alpha x + \beta$</text>
-<text transformations="translations" pos="304 560" stroke="black" type="label" width="94.505" height="6.926" depth="1.93" valign="baseline">$L_2: y = \alpha x + \beta - \alpha w$</text>
-<path matrix="1 0 0 1 192 0" stroke="blue" pen="heavier">
+<text matrix="0.769231 0 0 1 6.84615 0" transformations="translations" pos="112 560" stroke="black" type="label" width="68.518" height="6.926" depth="1.93" valign="baseline">$L_1: y = \alpha x + \beta$</text>
+<text matrix="0.769231 0 0 1 5.84615 0" transformations="translations" pos="304 560" stroke="black" type="label" width="94.505" height="6.926" depth="1.93" valign="baseline">$L_2: y = \alpha x + \beta - \alpha w$</text>
+<path matrix="0.769231 0 0 1 173.538 0" stroke="blue" pen="heavier">
 96 752 m
 192 752 l
 </path>
-<path matrix="1 0 0 1 -16 -32" stroke="blue" pen="heavier">
+<path matrix="0.769231 0 0 1 13.5385 -32.1" stroke="blue" pen="heavier">
 304 720 m
 432 720 l
 </path>
-<path matrix="1 0 0 1 224 -64" stroke="blue" pen="heavier">
+<path matrix="0.769231 0 0 1 198.154 -64.1" stroke="blue" pen="heavier">
 96 688 m
 224 688 l
 </path>
-<use name="mark/disk(sx)" pos="384 752" size="normal" stroke="blue"/>
-<use name="mark/disk(sx)" pos="416 688" size="normal" stroke="blue"/>
-<use name="mark/disk(sx)" pos="448 624" size="normal" stroke="blue"/>
+<path matrix="0.769231 0 0 1 301.538 -32" stroke="blue" pen="heavier">
+96 752 m
+192 752 l
+</path>
+<text matrix="1 0 0 1 -7 -18" transformations="translations" pos="240 768" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(1)</text>
+<text matrix="1 0 0 1 -7 -2" transformations="translations" pos="368 720" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(2)</text>
+<text matrix="1 0 0 1 9 -2" transformations="translations" pos="224 688" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(3)</text>
+<text matrix="1 0 0 1 1 -2" transformations="translations" pos="256 624" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(4)</text>
 </page>
 </ipe>

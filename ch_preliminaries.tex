@@ -40,6 +40,64 @@ Restated with $d=2$.
 
 \begin{theorem}[Corollary 7.3, part $i$, in Chan\cite{chan2012}]
 \label{th:chan}
-We can form $O(n)$ canonical subsets of total size $O(n \log{n})$ in $O(n \log{n})$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq O(\sqrt{n}\log{n})$ in time $O(\sqrt{n}\log{n})$ w.h.p.$(n)$.
+We can form $O(n)$ canonical subsets of total size $O(n \log{n})$ in $O(n \log{n})$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq O(\sqrt{n}\log{n})$ in time $O(\sqrt{n}\log{n})$ w.h.p. $(n)$.
 \end{theorem}
 
+XXX TODO Can I just show some example analysis here?
+
+This structure is particularly well-suited to multi-level query structures, as we can associate additional data structures with each of the canonical subsets.
+
+Given an associate data structure which requires $f(n)$ preprocessing space, $g(n)$ preprocessing time, and $h(n)$ query time, we have the following corollary.
+
+\begin{corollary}
+\label{cor:chan}
+With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. If this associated structure requires $\BigOh{n\log^f{n}}$ preprocessing space, $\BigOh{n \log^g{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^h{n}}$ query time, where $f, g, h \in O(1), f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+\end{corollary}
+
+\begin{proof}
+The preprocessing space of the structure requires $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
+\[
+\begin{split}
+\sum_{i=1}^k{|C_i| \log^f{|C_i|}}
+&\leq \sum_{i=1}^k{|C_i| \log^f{n}} \\
+%
+&\leq \BigOh{\log^f{n}} \cdot \sum_{i=1}^k{|C_i|} \\
+%
+&\leq \BigOh{n\log^{f+1}{n}}
+\end{split}
+\]
+
+\noindent for the associate structures, for a total space complexity of $\BigOh{n \log{n}} + \BigOh{n\log^{f+1}{n}} = \BigOh{n\log^{f+1}{n}}$.
+
+Preprocessing time is calculated using similar reasoning, and includes the $\BigOh{n \log{n}}$ time for creating the canonical subsets structure itself, plus
+\[
+\begin{split}
+\sum_{i=1}^k{|C_i| \log^g{|C_i|}}
+&\leq \sum_{i=1}^k{|C_i| \log^g{n}} \\
+%
+&\leq \BigOh{\log^g{n}} \cdot \sum_{i=1}^k{|C_i|} \\
+%
+&\leq \BigOh{n\log^{g+1}{n}}
+\end{split}
+\]
+
+\noindent for building the associate structures, for a total time complexity of $\BigOh{n \log{n}} + \BigOh{n\log^{g+1}{n}} = \BigOh{n\log^{g+1}{n}}$.
+
+Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the elements found by the top-level canonical subsets query, plus
+\[
+\begin{split}
+\sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{|C_i|}}} 
+&\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{n}}} \\
+%
+&\leq \BigOh{\log^h{n}} \cdot \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}}} \\
+%
+&\leq \BigOh{\sqrt{n}\log^{h+1}{n}} \\
+\end{split}
+\]
+
+\noindent to query the appropriate associated data structures, for a total query time of 
+\[
+\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^{h+1}{n}} = \BigOh{\sqrt{n}\log^{h+1}{n}}
+\]
+
+\end{proof}

@@ -114,18 +114,18 @@ Preprocessing and querying this extra orientation of segments costs us a constan
 \section{Arbitrarily-Oriented Segments}
 \label{:rectangles:ao}
 
-In this section, we relax the restriction that all segments should be axis-parallel; that is, each segment may have any arbitrary orientation with respect to one another.  It does not matter if they intersect. The problem statement is as follows.
+In this section, we relax the restriction that all segments should be axis-parallel; that is, we allow that each segment may have any arbitrary orientation with respect to one another.  It does not matter if segments intersect. The problem statement is as follows.
 
 \begin{problem}
 Given a set $S$ of $n$ arbitrarily-oriented line segments in the plane, and a fixed parameter $\rho$ such that $1/2 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by axis-parallel query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
-This section, the query region $Q$, and the segment in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}.
+This section, the query region $Q$, and the segments in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}.
 
 \subsection{Decomposing the Problem}
 \label{:rectangles:ao:approach}
 
-There are three principal cases to consider; those segments which have both endpoints inside $Q$, only one endpoint inside $Q$, or both endpoints outside $Q$.  
+There are three principal cases to consider; those segments which have both endpoints inside $Q$, those with only one endpoint inside $Q$, and those with both endpoints outside $Q$.  
 
 The first case, where both endpoints are inside $Q$, is answered by mapping each segment to a point in 4D space and then using a multi-level range tree, just as we did in the previous section.  Specifically, we map each segment $s_i$ to the point $v_i = (a_i, b_i, c_i, d_i)$. The query $Q$ is mapped to the following 4D box
 \[
@@ -134,7 +134,7 @@ The first case, where both endpoints are inside $Q$, is answered by mapping each
 
 In essence, we are just testing to ensure that both of the endpoints appear within the horizontal and vertical components of the query.
 
-The second case, where only one endpoint is inside $Q$ is solved using the exact same method as the first case, but on a virtual segment.  For each segment $s_i$, we create ``virtual'' segments which share endpoints with $s_i$.  Specifically, we define the segment $s_{i,p} \subseteq s_i$ where $s_i$ and $s_{i,p}$ share the endpoint $p_i$ and $|s_{i,p}| = \rho \cdot |s_i|$. Likewise, we define the segment $s_{i,q} \subseteq s_i$ where $s_i$ and $s_{i,q}$ share the endpoint $q$ and $|s_{i,q}| = \rho \cdot |s_i|$.
+The second case, where only one endpoint is inside $Q$ is solved using the exact same method as the first case, but on a ``virtual'' segment.  For each segment $s_i$, we create virtual segments which share endpoints with $s_i$.  Specifically, we define the segment $s_{i,p} \subseteq s_i$ where $s_i$ and $s_{i,p}$ share the endpoint $p_i$ and $|s_{i,p}| = \rho \cdot |s_i|$. Likewise, we define the segment $s_{i,q} \subseteq s_i$ where $s_i$ and $s_{i,q}$ share the endpoint $q$ and $|s_{i,q}| = \rho \cdot |s_i|$.
 
 Then, as a direct consequence of their construction, if $s_{i,p} \in Q$, then $s_i \in_\rho Q$, and if $s_{i,q} \in Q$, then $s_i \in_\rho Q$.  Counting both of these cases will double-count any segment which has both endpoints in $Q$, so we subtract any such segments to compensate.
 
@@ -146,7 +146,7 @@ We can query these higher dimensional points by applying the multi-dimensional r
 
 Just as we saw in Section~\ref{:rectangles:ap:approach}, the case where both endpoints are outside of $Q$ will be the most challenging case to handle.
 
-We begin by partitioning the space around $Q$ into 8 regions by extending lines through its horizontal and vertical boundaries. These regions are numbered anti-clockwise from left-middle as $I, II, \ldots, VIII$; see Figure~\ref{fig:rectangles:ao:regions}). Any segment which passes through $Q$ but which has neither endpoint in $Q$ will have its endpoints in two distinct regions. Not every pair of regions is legal, however. For example, a segment with one endpoint in $I$ and another in $II$ cannot intersect $Q$.
+We begin by partitioning the space around $Q$ into 8 regions by extending lines through its horizontal and vertical boundaries. These regions are labelled anti-clockwise from left-middle as $I, II, \ldots, VIII$; see Figure~\ref{fig:rectangles:ao:regions}). Any segment which passes through $Q$ but which has neither endpoint in $Q$ will have its endpoints in two distinct regions. Not every pair of regions is legal, however. For example, a segment with one endpoint in region $I$ and another in region $II$ cannot intersect $Q$.
 
 \begin{figure}[t]
 \begin{center}
@@ -165,13 +165,13 @@ A segment which passes through $Q$ may involve any of the following pairs of reg
 \item Diagonal to Diagonal: $(II, VI), (IV, VIII)$.
 \end{enumerate}
 
-We count for each case separately. For a segment $s \in S$, we can identify the regions of $p$ and $q$ using a 4-dimensional orthogonal range search. This classification allows us to determine which majority expressions we need to test in the second phase of the query. We develop expressions for deciding the majority property of each case below.
+We will query for each case separately and combine our results at the end. For a segment $s \in S$, we can identify the regions of $p$ and $q$ using a 4-dimensional orthogonal range search. This classification allows us to determine which majority expressions we need to test in the second phase of the query. We develop expressions for deciding the majority property of each case below.
 
 In all cases, we require the following additional definitions. Let $o_i = (e_i, f_i)$ be the centre point of $s_i$.  We define the function $d(u,v)$ as the Euclidean distance between any two points $u$ and $v$. We define $L_i = d(p_i, q_i)/2$ to be exactly half the length of $s_i$ (therefore, $d(p_i, o_i) = d(q_i, o_i) = L_i$). As with our previous definitions, when we discuss any single, general segment $s \in S$, we will drop the $i$ subscripts for clarity.
 
 
 %------------------------------------------------------------------------------
-\subsubsection*{Class (i); e.g. $(p_1, p_2) \in (I, V)$}
+\subsubsection*{Class (i); e.g., $(p_1, p_2) \in (I, V)$}
 \label{:rectangles:ao:class1}
 
 Class (i) is concerned with segments which cross parallel sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in V$; the solution for the $(III, VII)$ case is similar.
@@ -192,16 +192,15 @@ Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizont
 
 We will test the majority property by checking that ``not too much of $s$ is outside of $Q$''. Specifically, we need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
-\frac{d(p, p')}{d(p, o)} = \frac{d(p, p')}{L} = \frac{d(u, u')}{d(u, o)} = \frac{2(\alpha - a)}{c - a}
+\frac{d(p, p')}{d(p, o)} = \frac{d(p, p')}{L} = \frac{d(u, u')}{d(u, o)} = \frac{2 d(u, u')}{2 d(u, o)} = \frac{2(\alpha - a)}{c - a}
 \]
 
 \noindent and 
 \[ 
-\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2(c - \delta)}{c - a}
+\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2 d(v, v')}{2 d(v, o)} = \frac{2(c - \delta)}{c - a}
 \]
 
 \noindent Thus,
-
 \[
 \begin{split} 
 \frac{d(p, p') + d(q, q')}{d(p, q)}
@@ -221,22 +220,20 @@ We will test the majority property by checking that ``not too much of $s$ is out
 \end{split}
 \]
 
-Therefore, the half-plane defined by $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ implies a half-plane defined by the query variables $\alpha$ and $\delta$ as $1 + \frac{\alpha - \delta}{c - a} \leq 1 - \rho$.  However, we can further simplify this to
+Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can instead be evaluated as $1 + \frac{\alpha - \delta}{c - a} \leq 1 - \rho$, which is based on two query variables $\alpha$ and $\delta$.  We can further simplify the expression to
 \[ 
-\rho(c - a) \leq \alpha - \delta 
+\rho(c - a) \leq \delta - \alpha
 \]
-XXX TODO I think this is wrong! I forgot to carry through a negative
 
-\noindent where the value of $\alpha - \delta$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
+\noindent where the value of $\delta - \alpha$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
 
-When $o \not \in Q$, we cannot construct similar triangles in the same way, since we require the points of intersection between the triangles and $Q$.  However, since we know that any segment which \emph{is} majority enclosed by $Q$ will have its centre point in $Q$, when $o$ is outside of $Q$, it is sufficient for our purposes if our test condition always reports a failure in this case.
-
+When $o \not \in Q$, we cannot construct similar triangles in the same way, since we require the points of intersection between the triangles and $Q$.  However, since we know that any segment which \emph{is} majority enclosed by $Q$ will have its centre point in $Q$, it is sufficient for our purposes if our test condition always reports a failure when $o$ is outside of $Q$.
 
 We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\frac{\alpha - a}{c - a} > 0$ and $\frac{c - \delta}{c - a} > 0$. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is right of $\delta$, then $\frac{c - \delta}{c - a} > 1/2$. Therefore, the sum $\frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} > 1/2$ and is strictly larger than any allowable value for $(1 - \rho)$, resulting in the segment being rejected as desired.
 
 
 %------------------------------------------------------------------------------
-\subsubsection*{Class (ii); e.g. $(p_1, p_2) \in (I, III)$}
+\subsubsection*{Class (ii); e.g., $(p_1, p_2) \in (I, III)$}
 \label{:rectanges:ao:class2}
 
 Class (ii) is concerned with segments which cross perpendicular sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in III$; the solutions for other cases of class (ii) are similar. These expressions are not so different from the ones given in class (i), however we will see that we get two independent variables instead of one, and this has ramifications for how we will construct our query data structure later.
@@ -253,16 +250,15 @@ Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ wit
 
 We need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
-\frac{d(p, p')}{d(p, o)} = \frac{d(p, p')}{L} = \frac{d(u, u')}{d(u, o)} = \frac{2(\alpha - a)}{c - a}
+\frac{d(p, p')}{d(p, o)} = \frac{d(p, p')}{L} = \frac{d(u, u')}{d(u, o)} =  \frac{2 d(u, u')}{2 d(u, o)} = \frac{2(\alpha - a)}{c - a}
 \]
 
 \noindent and 
 \[ 
-\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2(\beta - d)}{b - d}
+\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2 d(v, v')}{2 d(v, o)} = \frac{2(\beta - d)}{b - d}
 \]
 
 \noindent Thus,
-
 \[
 \begin{split} 
 \frac{d(p, p') + d(q, q')}{d(p, q)}
@@ -278,13 +274,35 @@ We need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1
 \end{split}
 \]
 
-Therefore, the half-plane defined by $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ implies a half-plane defined by two query variables $\alpha$ and $\beta$ as $\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho$.
+Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can be tested by checking the equivalent inequality $\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho$, defined on the two query variables $\alpha$ and $\beta$. We will perform this test using a half-plane range query. To construct an appropriate dual-space, we reorder the expression as follows:
+\[
+\begin{split}
+\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} &\leq 1 - \rho \\
+%
+\frac{\alpha}{c-a} - \frac{a}{c-a} + \frac{\beta}{b-d} - \frac{d}{b-d} &\leq 1 - \rho \\
+%
+\alpha \cdot \frac{1}{c-a} + \beta \cdot \frac{1}{b-d} &\leq (1 - \rho) + \frac{a}{c-a} + \frac{d}{b-d} \\
+%
+\alpha + \beta \cdot \frac{c-a}{b-d} &\leq \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \\
+%
+\end{split}
+\]
+
+We then map each segment $s$ to a point with coordinates
+\[
+\left (\frac{c-a}{b-d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )
+\]
+
+\noident Segments matching the majority expression correspond to dual points satisfying the half-plane 
+\[
+y \geq \beta \cdot x + \alpha
+\]
 
 Just as in class (i), when $o \not \in Q$, we cannot construct appropriate similar triangles for our method, but it remains sufficient for the expressions to reject any such segment. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is below $\beta$, then $\frac{\beta - d}{b - d} > 1/2$. Their sum is therefore strictly greater than $1/2$, and larger than any allowable value for $(1 - \rho)$, rejecting the segment as desired.
 
 
 %------------------------------------------------------------------------------
-\subsubsection*{Class (iii); e.g. $(p_1, p_2) \in (I, IV)$}
+\subsubsection*{Class (iii); e.g., $(p_1, p_2) \in (I, IV)$}
 \label{:rectanges:ao:class3}
 
 Class (iii) is concerned with segments which have one endpoint in a corner region of $Q$, and the other endpoint in an orthogonal region of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in IV$; the solutions for other variations of Class (iii) are similar.
@@ -317,7 +335,7 @@ If $s$ belongs to subcase (a), then $\frac{c - \delta}{c - a} \leq \frac{\beta -
 
 
 % -----------------------------------------------------------------------------
-\subsubsection*{Class (iv); e.g. $(p_1, p_2) \in (II, VI)$}
+\subsubsection*{Class (iv); e.g., $(p_1, p_2) \in (II, VI)$}
 \label{:rectanges:ao:class4}
 
 Class (iv) is concerned with segments whose endpoints appear in diagonally opposite corner regions of $Q$. We present the details of the majority property for the case where $p \in II$ and $q \in VI$; the solution for the $(VI, VIII)$ case is similar.
@@ -348,7 +366,7 @@ Assume for now that $o \in Q$. As with class (iii), we need to consider several 
 \item $s$ crosses $\beta$ and $\delta$,
 \end{enumerate}
 
-See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check all subcases simultaneously. The expression for subcase (b) comes directly from class (i).  Using similar techniques as in class (i) and class (ii), we develop the following set of expressions:
+See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check all subcases simultaneously. The expression for subcase (b) comes directly from class (i).  Using similar techniques as we did in class (i) and class (ii), we develop the following set of expressions:
 
 \begin{align*}
 & (a) \quad \frac{\alpha - a}{c - a} + \frac{d - \gamma}{d - b} \leq 1 - \rho
@@ -356,6 +374,8 @@ See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. Our initi
 & (c) \quad \frac{\beta  - b}{d - b} + \frac{d - \gamma}{d - b} \leq 1 - \rho  
 & (d) \quad \frac{\beta  - b}{d - b} + \frac{c - \delta}{c - a} \leq 1 - \rho \\
 \end{align*}
+
+Subcases (b) and (c) can be simplified to orthogonal range queries, while subcases (a) and (d) will need to be mapped to appropriate half-plane queries as we saw in class (ii).
 
 To illustrate that checking all four conditions simultaneously yields correct results, consider what happens if $s$ belongs to subcase (a), where $s$ crosses $\alpha$ and $\gamma$. In these circumstances, $u'$ is above $\beta$, and we have that $\frac{\alpha - a}{c - a} \geq \frac{\beta - b}{d - b}$.  Likewise, $v'$ is left of $\delta$, so $\frac{d - \gamma}{d - b} \geq \frac{c - \delta}{c - a}$.  Therefore, the expression for (a) dominates the other expressions (i.e., $\text{(a)} \geq \text{(b)}$, $\text{(a)} \geq \text{(c)}$, and $\text{(a)} \geq \text{(d)}$), allowing us to identify qualifying segments for subcase (a) by blindly checking all conditions. This property is true for segments belonging to subcases (b), (c), and (d) as well. Furthermore, this test also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
 
@@ -366,7 +386,7 @@ To illustrate that checking all four conditions simultaneously yields correct re
 
 The method we have developed above takes a very case-by-case approach to solving the problem. There are two overall phases to the steps above. The first phase must identify segments falling into each of the 16 cases outlined above. For each case, the second phase must then identify those segments satisfying their respective majority property. 
 
-Broadly, our solution to this problem involves a multi-level range tree for the classification phase. At the innermost level of the range tree we store several distinct associate structures, one for each case, which can answer the majority property expressions required for that case; See Figure~\ref{fig:rectangles:ao:overview} for an illustration.
+Broadly, our solution to this problem uses the multi-level range tree introduced in Section~\ref{:prelim:range-trees} for the classification phase. At the innermost level of the range tree we store several distinct associate structures, one for each case of each class, which can answer the majority property expressions required for that case; See Figure~\ref{fig:rectangles:ao:overview} for an illustration.
 
 \begin{figure}[t]
 \begin{center}
@@ -378,15 +398,88 @@ Broadly, our solution to this problem involves a multi-level range tree for the 
 
 The details of constructing and querying an appropriate data structure follow. Recall that the query is input as four values $\alpha, \beta, \delta$, and $\gamma$ and that $S$ is the set of input segments $s_1, s_2, \ldots, s_n$.
 
-\paragraph{Step 1, Classification:} We maintain a four-dimensional multi-level orthogonal range tree where each segment $s_i \in S$ is represented as a 4-tuple on the values $(a_i, b_i, c_i, d_i)$. To identify all of the segments within a particular case, we define a query box on $\alpha, \beta, \delta$, and $\gamma$. Each component of this box is open (i.e., unbounded) on the side appropriate for the case. For example, in case $(II, VI)$, shown in Figure~\ref{fig:rectangles:ao:case4}, the open query box includes all points $(u, v, w, x)$ where $u < \alpha$, $v < \beta$, $w > \delta$, and $x > \gamma$.
+\paragraph{Step 1, Classification:} We maintain a four-dimensional multi-level orthogonal range tree where each segment $s_i \in S$ is represented as a 4-tuple on the values $(a_i, b_i, c_i, d_i)$. To identify all of the segments within a particular case, we define a query box on $\alpha, \beta, \delta$, and $\gamma$. Each component of this box is open (i.e., unbounded) on the side appropriate for the case. For example, in case $(II, VI)$, shown in Figure~\ref{fig:rectangles:ao:case4}, the open query box is defined as
+\[
+(-\infty, \alpha) \times (-\infty, \beta) \times (\delta, \infty) \times (\gamma, \infty)
+\]
+
+\noindent which will include all points $(u, v, w, x)$ where $u < \alpha$, $v < \beta$, $w > \delta$, and $x > \gamma$.
 
 The range query identifies a set of subtrees on the innermost level representing all segments belonging to each case of each class, from which the query continues.
 
-\paragraph{Step 2, Majority Property:} For each innermost subtree from step 1, we associate additional structures as required for determining the majority property. For some cases, this structure will be another orthogonal range query, as in class $(i)$, and some subcases of classes $(iii)$ and $(iv)$.
+\paragraph{Step 2, Majority Property:} For each innermost subtree from step 1, we associate additional structures as required for testing appropriate majority expressions. For some cases, this structure will include additional orthogonal range queries, as in class $(i)$, and some subcases of classes $(iii)$ and $(iv)$.
 
-For the remaining cases (all in class $(ii)$, and the remaining subcases of classes $(iii)$ and $(iv)$), we will perform a half-plane range query. Each of these majority expressions is based on exactly two of the query inputs, so two-dimensional half-plane queries will suffice.  However, each majority expression uses different query variables and/or components of the input segments, so we need to construct a separate half-plane query structure for each level of half-plane queries that we need to perform.
+For the remaining cases (all in class $(ii)$, and the remaining subcases of classes $(iii)$ and $(iv)$), we will perform at least one half-plane range query, using the dual spaces we developed in Section~\ref{:rectangles:ao:bothout}. The half-plane queries will be carried out using canonical subset structures introduced in Section~\ref{:prelim:chan}, which lend themselves particularly well to multi-level query structures.
 
-Let $S_{\mathcal{C}}$ be the set of input segments belonging to a particular class $\mathcal{C}$ as found by Step 1. Class $\mathcal{C}$ consists of 1 or more majority property expressions that need querying, 0 or more of which require the use of a half-plane range query. Let $m$ be one such majority property expression requiring the use of a half-plane query, and let $l_m(s)$ be a function which can map any $s \in S_{\mathcal{C}}$ to a line using the values of the endpoints of $s$ which are important in $m$. This gives us the set of lines $S_m^* = \{ l_m(s) \; | \; s \in S_{\mathcal{C}} \}$, upon which the half-plane structure is constructed.
+
+\subsubsection{Analysis}
+
+By Theorem~\ref{th:rangetree}, we can perform the classification step using a multi-level range tree which requires $\BigOh{n\log^3{n}}$ storage and preprocessing time.  At the innermost level of this multi-level range tree, we attach several distinct associate structures: one for each case of each class, which can test the majority expression for that case. Each case of class (iv) requires us to test four majority expressions, and as a result, requires the deepest multi-level structure for querying.  
+
+Two of these expressions are orthogonal, which we test using a multi-level range tree. Theorem~\ref{th:rangetree} gives us the following lemma.
+
+\begin{lemma}
+\label{lem:rect:ao:step1}
+Given a set of $n$ line segments belonging to class (iv), we can test the two orthogonal majority expressions using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ preprocessing time. We can query this structure in $\BigOh{\log{n}}$ time.
+\end{lemma}
+
+The remaining two expressions are half-plane. By Theorem~\ref{th:chan}, we can answer one of those half-plane expressions using a canonical subset structures. This structure consists of $k = \BigOh{n}$ canonical subsets $C_1$ through $C_k$. With each canonical subset, we associate the structure from Lemma~\ref{lem:rect:ao:step1}.
+
+Space required for such a structure includes $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
+\[
+\sum_{i=1}^k{|C_i| \log{|C_i|}}
+\leq \sum_{i=1}^k{|C_i| \log{n}} 
+\leq \BigOh{n\log^2{n}}
+\]
+
+\noindent for the associate structures, for a total space complexity of $\BigOh{n\log^2{n}}$. Preprocessing time is calculated using identical reasoning and is also $\BigOh{n\log^2{n}}$.
+
+Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the segments which pass the first half-plane majority expression, plus
+\[
+\sum_{i=1}^{k'}{\BigOh{\log{|C_i|}}} 
+\leq \sum_{i=1}^{k'}{\BigOh{\log{n}}}
+\leq \BigOh{\log{n}} \cdot \sum_{i=1}^{k'}{1}
+\leq \BigOh{\sqrt{n}\log^2{n}}
+\]
+
+\noindent for a total query time of $\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^2{n}} = \BigOh{\sqrt{n}\log^2{n}}$. The following lemma summarizes our results so far.
+
+\begin{lemma}
+\label{lem:rect:ao:step2}
+Given a set of $n$ line segments belonging to class (iv), we can test the two orthogonal majority expressions, and one of the half-plane majority expressions, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^2{n}}$ preprocessing time. We can query this structure in $\BigOh{\sqrt{n}\log^2{n}}$ time.
+\end{lemma}
+
+Querying the final half-plane majority expression requires another canonical subsets structure. With each canonical subset, we associate the structure from Lemma~\ref{lem:rect:ao:step2}.
+
+Space required for such a structure includes $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
+\[
+\sum_{i=1}^k{|C_i| \log^2{|C_i|}}
+\leq \sum_{i=1}^k{|C_i| \log^2{n}} 
+\leq \BigOh{n\log^3{n}}
+\]
+
+\noindent for the associate structures, for a total space complexity of $\BigOh{n\log^3{n}}$. Preprocessing time is calculated using identical reasoning and is also $\BigOh{n\log^3{n}}$.
+
+Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the segments which pass the final half-plane majority expression, plus
+\[
+\begin{split}
+\sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^2{|C_i|}}} 
+&\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^2{n}}} \\
+%
+&\leq \BigOh{\log^2{n}} \cdot \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}}} \\
+%
+&\leq \BigOh{\sqrt{n}\log^3{n}} \\
+\end{split}
+\]
+
+\noindent for a total query time of $\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^3{n}} = \BigOh{\sqrt{n}\log^3{n}}$. The following lemma summarizes our results so far.
+
+\begin{lemma}
+\label{lem:rect:ao:step3}
+Given a set of $n$ line segments belonging to class (iv), we can test the two orthogonal majority expressions, and the two half-plane majority expressions, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^3{n}}$ preprocessing time. We can query this structure in $\BigOh{\sqrt{n}\log^3{n}}$ time.
+\end{lemma}
+
+
 
 
 XXX TODO
