@@ -7,26 +7,43 @@ In this chapter, we outline the data structures and other techniques which we re
 \section{Range Trees}
 \label{:prelim:range-trees}
 
-XXX TODO
+A range tree is a binary search tree that allows us to search for elements satisfying a 1D query interval. Given a set of $n$ elements, $A = \{a_1, a_2, \ldots, a_n\}$, each expressing a scalar key value $v_1, v_2, \ldots, v_n$, a range tree $T$ can identify the elements whose key falls between two values $\alpha$ and $\beta$, where $\alpha \leq \beta$.  That is, the search identified the following set:
+\[
+\{ a_i \in A \st \alpha \leq v_i \leq \beta \}
+\]
 
-\begin{enumerate}
- \item 1D Range trees; say something about how we can store summary information at the inner nodes, like counts, etc.
- \item Multi-level trees
- \item Theorems about preprocessing, size, and query times.  For higher dimensional trees, fractional cascading can also be used.
-\end{enumerate}
+This search can be done in $\BigOh{\log{n}}$ time with only $\BigOh{n}$ space and $\BigOh{n\log{n}}$ pre-processing time.  Reporting the matching elements can be done in $\BigOh{\log{n} + k}$ time, where $k$ is the number of elements reported. 
 
-We use the following theorems on range trees, restated from \cite{debergch5}.
+However, all of these properties are also true of a regular binary search on a sorted array, so why are range trees interesting? To answer this, we look at a simple example of a range tree. Suppose $A$ is a set of 2D points embedded in the plane, and that, for our query, we wish to identify all points whose $x$-coordinate is between $\alpha$ and $\beta$.  To answer this query, we can construct a range tree $T$ where each point $a_i$, $1 \leq i \leq n$ is represented by leaf node whose key value is set to the $x$-coordinate of $a_i$; that is, where $v_i = a_i.x$.
+
+When we query $T$ for $\alpha$ and $\beta$, we identify two paths through $T$ in $\BigOh{\log{n}}$ time. The leaf with key value $\alpha$ (or with the successor value to $\alpha$, if the exact value is not present) is $a_\alpha$ and is the leftmost point in $A$ matching our query.  Similarly, the leaf with key value $\beta$ (or with the  predecessor to $\beta$, if the exact value is not present) is $a_\beta$ and is the rightmost point in $A$ matching our query. Since the leaves in a binary search tree are sorted, the sequence of points from $a_\alpha$ to $a_\beta$ are exactly the points we need to identify. We can report these points with an inorder traversal.
+
+\begin{figure}
+\begin{center}
+  \includegraphics[width=0.40\textwidth]{figures/fig_pre_range1d}
+  \caption{A 1D range tree and the subtrees identified by a query.}
+  \label{fig:pre:range1d}
+\end{center}
+\end{figure}
+
+What makes range trees such versatile structures is not simply that they identify the query elements, but rather due to the way that they group the identified elements into at most $\BigOh{\log{n}}$ disjoint subsets. These subsets are precisely the elements found in the ``inner'' subtrees along the path from $a_\alpha$ to $a_\beta$, as illustrated in Figure~\ref{fig:pre:range1d}.
+
+With each non-leaf node of $T$, we can store additional information about the subset represented by its subtree.  The, during query time, we only need to consider the information stored at $\BigOh{\log{n}}$ nodes rather than the $\BigOh{n}$ elements they represent. Continuing our example on 2D points, with only $\BigOh{1}$ extra space per node, we could store which point has the highest $y$-coordinate in each subtree.  Then, we can use our range tree to find the highest point between two $x$-coordinates in $\BigOh{\log{n}}$ time.
+
+We are not limited to just storing simple values with each node, however. With each node, we can associate an entire additional data structure, constructed on the elements represented by that node. In particular, we can store another range tree which is based on some other property of each element.  When we query this two-level range tree, our query at the first level identifies $\BigOh{\log{n}}$ subsets. Each subset represents elements which satisfy a particular query condition. Then, for each subset, we query the associated data structure to identify elements satisfying a second query condition.  The elements identified here satisfy both conditions. This technique can be repeated to create \emph{multi-level range trees} with more than just two levels.
+
+The following theorems on range trees, restated from \cite{debergch5}, detail the construction and query times of multi-level range trees.
 
 \begin{theorem}
 \label{th:rangetree}
-Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A layered range tree for $P$ uses $\BigOh{n \log^{d-1}{n}}$ storage and it can be constructed in $\BigOh{n \log^{d-1}{n}}$ time. With this range tree one can report the points in $P$ that lie in a rectangular query range in $\BigOh{\log^{d-1}{n} + k}$ time where $k$ is the number of reported points.
+Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A multi-level range tree for $P$ uses $\BigOh{n \log^{d-1}{n}}$ storage and it can be constructed in $\BigOh{n \log^{d-1}{n}}$ time. With this range tree one can report the points in $P$ that lie in a rectangular query range in $\BigOh{\log^{d-1}{n} + k}$ time where $k$ is the number of reported points.
 \end{theorem}
 
-We can augment each node of such a range tree with information about the size of its subtree, requiring only $\BigOh{1}$ additional space and pre-processing per node.  This allows us to count the number of items within a query rectangle rather than reporting them, as stated by the following Corollary.
+If each node of the range tree is augmented with information about the size of its subtree, then we can count the number of items within a query rectangle rather than reporting them. The following corollary summarizes this.
 
 \begin{corollary}
 \label{cor:rangetree}
-Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A layered range tree for $P$ uses $\BigOh{n \log^{d-1}{n}}$ storage and it can be constructed in $\BigOh{n \log^{d-1}{n}}$ time. With this range tree one can count the points in $P$ that lie in a rectangular query range in $\BigOh{\log^{d-1}{n}}$.
+Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A multi-level range tree for $P$ uses $\BigOh{n \log^{d-1}{n}}$ storage and it can be constructed in $\BigOh{n \log^{d-1}{n}}$ time. With this range tree one can count the points in $P$ that lie in a rectangular query range in $\BigOh{\log^{d-1}{n}}$ time.
 \end{corollary}
 
 

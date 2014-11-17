@@ -16,7 +16,7 @@ Throughout this chapter we use the following definitions. The polygon $P$ is def
 
 A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$ and $(\delta, \gamma)$, respectively. See Figure \ref{fig:convexp:example} for an example.
 
-\begin{figure}[t]
+\begin{figure}
 \begin{center}
   \includegraphics[width=0.50\textwidth]{figures/fig_cvp_example}
   \caption[A convex polygon $P$ and query box $Q$]{The query region $Q$ formed by the inputs $\alpha$, $\beta$, $\delta$,  $\gamma$, and a convex polygon $P$.}
@@ -45,7 +45,7 @@ To achieve a fast query time, our algorithm requires some preprocessing on $P$ t
   
  \end{enumerate}
 
- \item Assuming that $P$ and $Q$ \emph{do} intersect, the assembled collection of all such entrance and exit points from the previous step, as well as any corners of $Q$ which are inside $P$ define $P_I$. We can also think of this as the space on the inside sides of all the segments $st$. $P_I$ is a polygon of not more than 8 edges. $P_I \subseteq Q$, so we must calculate its area as part of our determination.
+ \item Assuming that $P$ and $Q$ \emph{do} intersect, the assembled collection of all such entrance and exit points from the previous step, as well as any corners of $Q$ which are inside $P$ define $P_I$. We can also think of this as the space on the inside sides of all the chords. $P_I$ is a polygon of not more than 8 edges. $P_I \subseteq Q$, so we must calculate its area as part of our determination.
  
 \end{enumerate}
 
@@ -148,7 +148,7 @@ We can find all entrance/exit pairs with the following steps.
  
  \item Starting anywhere in the list, scan for a non-nil entrance point (a non-prime edge).
  
- \item Find the subsequent non-nil exit point, by continuing to walk the list circular order.
+ \item Find the subsequent non-nil exit point, by continuing to walk the list in circular order.
  
  \item Mark any corners of $Q$ which are bypassed as outside of $P$. There is a corner after each prime edge in the circular list in the previous step. The corners which remain inside will be important later.
  
