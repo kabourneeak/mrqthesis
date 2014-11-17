@@ -265,8 +265,8 @@ h
 <text matrix="1 0 0 1 -3 -2" transformations="translations" pos="256 640" stroke="black" type="label" width="11.125" height="9.803" depth="2.79" valign="baseline" size="Large">$Q$</text>
 <text transformations="translations" pos="64 512" stroke="black" type="label" width="48.967" height="6.926" depth="1.93" valign="baseline">$y = \alpha x + \beta$</text>
 <text matrix="1 0 0 1 -20 0" transformations="translations" pos="192 512" stroke="black" type="label" width="80.629" height="7.472" depth="2.85" valign="baseline">$y = \alpha (x - w_p) + \beta$</text>
-<text transformations="translations" pos="272 512" stroke="black" type="label" width="46.912" height="6.926" depth="1.93" valign="baseline">$y = \delta x + \gamma$</text>
-<text matrix="1 0 0 1 -13 0" transformations="translations" pos="400 512" stroke="black" type="label" width="79.393" height="7.473" depth="2.49" valign="baseline">$y = \delta (x + w_n) + \gamma$</text>
+<text transformations="translations" pos="272 512" stroke="black" type="label" width="46.912" height="6.926" depth="1.93" valign="baseline">$y = \gamma x + \delta$</text>
+<text matrix="1 0 0 1 -13 0" transformations="translations" pos="400 512" stroke="black" type="label" width="79.393" height="7.473" depth="2.49" valign="baseline">$y = \gamma (x + w_n) + \delta$</text>
 <path stroke="blue" fill="violet" dash="dashed" arrow="normal/normal" rarrow="normal/normal" tiling="falling">
 112 560 m
 240 560 l

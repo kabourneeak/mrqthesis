@@ -237,7 +237,7 @@ h
 255.099 608 l
 </path>
 <text matrix="1 0 0 1 3.4611 36.5824" transformations="translations" pos="176 560" stroke="black" type="label" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -26.2586 21.1121" transformations="translations" pos="352 688" stroke="black" type="label" valign="baseline">$(\delta, \gamma)$</text>
+<text matrix="1 0 0 1 -26.2586 21.1121" transformations="translations" pos="352 688" stroke="black" type="label" valign="baseline">$(\gamma, \delta)$</text>
 <path matrix="0.75 0 0 0.75 48 176" stroke="black">
 192 704 m
 192 576 l
@@ -275,6 +275,6 @@ h
 <use name="mark/disk(sx)" pos="271.694 715.681" size="normal" stroke="black"/>
 <use name="mark/disk(sx)" pos="282.663 600.748" size="normal" stroke="black"/>
 <text matrix="1 0 0 1 -1 -2" transformations="translations" pos="248 600" stroke="black" type="label" valign="baseline">$e_\beta$</text>
-<text matrix="1 0 0 1 -3 1" transformations="translations" pos="240 712" stroke="black" type="label" valign="baseline">$e_\gamma&apos;$</text>
+<text matrix="1 0 0 1 -3 1" transformations="translations" pos="240 712" stroke="black" type="label" valign="baseline">$e_\delta&apos;$</text>
 </page>
 </ipe>

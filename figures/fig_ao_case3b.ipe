@@ -270,7 +270,7 @@ h
 </path>
 <use matrix="1 0 0 1 -96 -64" name="mark/disk(sx)" pos="384 768" size="normal" stroke="black"/>
 <text matrix="1 0 0 1 -13 4" transformations="translations" pos="112 592" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\delta, \gamma)$</text>
+<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <path stroke="black" pen="heavier">
 112 696 m
 336 600 l
@@ -291,8 +291,8 @@ h
 <text matrix="1 0 0 1 -5 -7" transformations="translations" pos="135.959 646.157" stroke="blue" type="label" width="8.498" height="7.49" depth="0" valign="baseline">$u&apos;$</text>
 <text matrix="1 0 0 1 15 -17" transformations="translations" pos="210.294 668.827" stroke="black" type="label" width="4.829" height="4.289" depth="0" valign="baseline">$o$</text>
 <text matrix="1 0 0 1 19 0" transformations="translations" pos="272 624" stroke="black" type="label" width="7.6" height="7.497" depth="1.93" valign="baseline">$q&apos;$</text>
-<text matrix="1 0 0 1 5 -20" transformations="translations" pos="272 672" stroke="blue" type="label" width="9.201" height="7.491" depth="2.82" valign="baseline">$v_\delta&apos;$</text>
-<text matrix="1 0 0 1 -20 -20" transformations="translations" pos="352 672" stroke="blue" type="label" width="9.201" height="4.294" depth="1.49" valign="baseline">$v_\delta$</text>
+<text matrix="1 0 0 1 5 -20" transformations="translations" pos="272 672" stroke="blue" type="label" width="9.201" height="7.491" depth="2.82" valign="baseline">$v_\gamma&apos;$</text>
+<text matrix="1 0 0 1 -20 -20" transformations="translations" pos="352 672" stroke="blue" type="label" width="9.201" height="4.294" depth="1.49" valign="baseline">$v_\gamma$</text>
 <use matrix="1 0 0 1 -64 -16" name="mark/disk(sx)" pos="288 624" size="normal" stroke="red"/>
 <use matrix="1 0 0 1 -96 -24" name="mark/disk(sx)" pos="320 624" size="normal" stroke="red"/>
 <text matrix="1 0 0 1 -83 -19" transformations="translations" pos="296 632" stroke="red" type="label" width="10.203" height="7.487" depth="4.18" valign="baseline">$v_\beta&apos;$</text>

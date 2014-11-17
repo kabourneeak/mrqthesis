@@ -307,21 +307,21 @@ A query region is an arbitrarily-oriented parallelogram, which is specified as t
 \begin{center}
   \includegraphics[width=0.90\textwidth]{figures/fig_ds_slabs}
   \caption{A query parallelogram $Q$ formed by the inputs $\alpha$, $\beta$, $w_p$,
-  $\gamma$, $\delta$, and $w_n$.}
+  $\delta$, $\gamma$, and $w_n$.}
   \label{fig:slabs:two:ds}
 \end{center}
 \end{figure}
 
-Specifically, a query is given as six inputs $\alpha, \beta, w_p, \gamma, \delta, w_n$, where $\alpha > 0$, $w_p > 0$, $w_n > 0$, and $\gamma < 0$. With these inputs, we define:
+Specifically, a query is given as six inputs $\alpha, \beta, w_p, \delta, \gamma, w_n$, where $\alpha > 0$, $w_p > 0$, $w_n > 0$, and $\delta < 0$. With these inputs, we define:
 
 \begin{itemize}
  \item $L_1 : y = \alpha x + \beta$, the left edge of $S_p$,
 
  \item $L_2 : y = \alpha (x - w_p) + \beta$, the right edge of $S_p$,
 
- \item $L_3 : y = \delta x + \gamma$, the left edge of $S_n$,
+ \item $L_3 : y = \gamma x + \delta$, the left edge of $S_n$,
 
- \item $L_4 : y = \delta (x + w_n) + \gamma$, the right edge of $S_n$,
+ \item $L_4 : y = \gamma (x + w_n) + \delta$, the right edge of $S_n$,
 
  \item $S_p = \{ p \in \mathbb{R}^2 | (p \text{ is on or right of } L_1) \wedge (p \text{ is on or left of } L_2) \}$, a slab with positive slope,
 
@@ -383,7 +383,7 @@ The solution for $Q_b$ can either be solved as detailed below, or as an instance
 
 \subsubsection{Endpoint Classification}
 
-Let $s \in S$ be a horizontal line segment defined by $(a, b, l)$.  Let $\overline{s}$ be the line through $s$, defined by the equation $y = b$.  Let $(a', b) = \overline{s} \cap L_1$ and $(a'', b) = \overline{s} \cap L_4$, be the intersection points of $\overline{s}$ with $L_1$ and $L_4$, respectively, then $a' = \frac{b - \beta}{\alpha}$ and $a'' = \frac{b - \gamma}{\delta} + w_n$.
+Let $s \in S$ be a horizontal line segment defined by $(a, b, l)$.  Let $\overline{s}$ be the line through $s$, defined by the equation $y = b$.  Let $(a', b) = \overline{s} \cap L_1$ and $(a'', b) = \overline{s} \cap L_4$, be the intersection points of $\overline{s}$ with $L_1$ and $L_4$, respectively, then $a' = \frac{b - \beta}{\alpha}$ and $a'' = \frac{b - \delta}{\gamma} + w_n$.
 
 We classify the endpoints of $s$, namely $p = (a, b)$ and $q = (a + l, b)$ with respect to their position left or right of $L_1$ and $L_4$. We can accomplish this with simplex range searching. Since $b$ is common to all points, we are interested in the following relationships:
 
@@ -432,32 +432,32 @@ For Case 2(b), where $s$ crosses only $L_4$ we may check that enough of $s$ is i
 \begin{split}
 a'' - a &\geq \rho l \\
 %
-\frac{b - \gamma}{\delta} + w_n - a &\geq \rho l \\
+\frac{b - \delta}{\gamma} + w_n - a &\geq \rho l \\
 %
-b \cdot \frac{1}{\delta} - \frac{\gamma}{\delta} + w_n &\geq a + \rho l \\
+b \cdot \frac{1}{\gamma} - \frac{\delta}{\gamma} + w_n &\geq a + \rho l \\
 %
 \end{split}
 \]
 
-This expression can be queried by mapping each segment $s$ to a dual-point with coordinates $(b, a + \rho l)$ and locating those which satisfy the half-plane $y \leq \frac{1}{\delta} x - \frac{\gamma}{\delta} + w_n$.
+This expression can be queried by mapping each segment $s$ to a dual-point with coordinates $(b, a + \rho l)$ and locating those which satisfy the half-plane $y \leq \frac{1}{\gamma} x - \frac{\delta}{\gamma} + w_n$.
 
 Finally, for Case 1(c), we know that both endpoints of $s$ are outside of $Q_a$, so we only need to measure the width of $s \cap Q_a$.  Specifically, we require that:
 \[
 \begin{split} 
 a'' - a' &\geq \rho l \\
 %
-\frac{b - \gamma}{\delta} + w_n - \frac{b - \beta}{\alpha} &\geq \rho l \\
+\frac{b - \delta}{\gamma} + w_n - \frac{b - \beta}{\alpha} &\geq \rho l \\
 %
-\frac{b}{\delta} - \frac{\gamma}{\delta} + w_n - \frac{b}{\alpha} + \frac{\beta}{\alpha} &\geq \rho l \\
+\frac{b}{\gamma} - \frac{\delta}{\gamma} + w_n - \frac{b}{\alpha} + \frac{\beta}{\alpha} &\geq \rho l \\
 %
-b \cdot \left ( \frac{1}{\delta} - \frac{1}{\alpha} \right ) + \left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right ) &\geq \rho l \\
+b \cdot \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) + \left ( \frac{\beta}{\alpha} - \frac{\delta}{\gamma} + w_n \right ) &\geq \rho l \\
 %
 \end{split}
 \]
 
 This expression can be queried by mapping each segment $s$ to a dual-point with coordinates $(b, \rho l)$ and locating those which satisfy the half-plane
 \[
-y \leq \left ( \frac{1}{\delta} - \frac{1}{\alpha} \right ) \cdot x + \left ( \frac{\beta}{\alpha} - \frac{\gamma}{\delta} + w_n \right )
+y \leq \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) \cdot x + \left ( \frac{\beta}{\alpha} - \frac{\delta}{\gamma} + w_n \right )
 \]
 
 \noindent where the expressions consisting only of query variables can be calculated in $\BigOh{1}$ time during the query.

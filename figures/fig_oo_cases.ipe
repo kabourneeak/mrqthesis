@@ -240,7 +240,7 @@ h
 h
 </path>
 <text matrix="1 0 0 1 54 20" transformations="translations" pos="112 592" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -46 4" transformations="translations" pos="448 768" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\delta, \gamma)$</text>
+<text matrix="1 0 0 1 -46 4" transformations="translations" pos="448 768" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <use matrix="1 0 0 1 64 16" name="mark/disk(sx)" pos="128 608" size="normal" stroke="black"/>
 <use matrix="1 0 0 1 -48 0" name="mark/disk(sx)" pos="448 768" size="normal" stroke="black"/>
 <path matrix="1 0 0 1 80 0" stroke="blue" pen="heavier">

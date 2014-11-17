@@ -16,7 +16,7 @@ We are given a monotone polygon $P$ consisting of $n$ vertices and a fixed param
 
 Throughout this chapter, we will use the following definitions. The input is a polygon $P$ embedded in the plane and is monotone with respect to the $x$-axis (i.e., from left to right). $P$ is defined by its vertices $v_1, v_2, \ldots, v_n$, where $v_n$ and $v_1$ share an edge to close the polygon. 
 
-A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$ and $(\delta, \gamma)$, respectively. See Figure~\ref{fig:monotonep:query-example} for an example.
+A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. See Figure~\ref{fig:monotonep:query-example} for an example.
 
 \begin{figure}[t]
 \begin{center}
@@ -212,16 +212,16 @@ The output of this algorithm is the list $H$ of multi-region formulas. Since $\m
 \subsection{Querying the Multi-Region Formulas}
 \label{:monotonep:query-mf}
 
-We are now ready to query horizontal slabs against $P$. The area function $F(P,h)$ is essentially a very big piecewise function given by Algorithm \ref{alg:monotonep:mf} in the form of a sorted list $H$. Given two horizontal lines defining our query slab, located at $\beta$ and $\gamma$, $\beta \leq \gamma$, our query requires only a few steps.
+We are now ready to query horizontal slabs against $P$. The area function $F(P,h)$ is essentially a very big piecewise function given by Algorithm \ref{alg:monotonep:mf} in the form of a sorted list $H$. Given two horizontal lines defining our query slab, located at $\beta$ and $\delta$, $\beta \leq \delta$, our query requires only a few steps.
 
 \begin{enumerate}
 \item Our query parameter $\beta$ will not generally correspond to a critical height of $h$. Perform a binary search on $H$ to find the formula stored with the \emph{predecessor} of $\beta$. Denote this formula as $F_\beta$. Evaluating $F_\beta(P, \beta)$ tells us the area of $P$ below $\beta$.
 
-\item For $\gamma$, we perform another binary search on $H$ to find $F_\gamma$ such that $F_\gamma(P, \gamma)$ tells us the area of $P$ below $\gamma$.
+\item For $\delta$, we perform another binary search on $H$ to find $F_\delta$ such that $F_\delta(P, \delta)$ tells us the area of $P$ below $\delta$.
 
 \item We can now calculate the area inside the query slab as
 \[ 
-\area{S \cap P} = F_\gamma(P, \gamma) - F_\beta(P, \beta)
+\area{S \cap P} = F_\delta(P, \delta) - F_\beta(P, \beta)
 \]
 
 \end{enumerate}
@@ -323,13 +323,13 @@ In the last step of the algorithm we create a list of formulas over all regions,
 \end{center}
 \end{figure}
 
-Our query rectangle $Q$ is given by the lower-left and upper-right coordinates $(\alpha, \beta)$ and $(\delta, \gamma)$, respectively. We define $h_\beta$ and $h_\gamma$ as the horizontal lines through $\beta$ and $\gamma$, respectively, which we can use as inputs to our region area formulas.
+Our query rectangle $Q$ is given by the lower-left and upper-right coordinates $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. We define $h_\beta$ and $h_\delta$ as the horizontal lines through $\beta$ and $\delta$, respectively, which we can use as inputs to our region area formulas.
 
-Let $\overline{\alpha}$ and $\overline{\delta}$ be vertical lines through $\alpha$ and $\delta$, respectively. Using a binary search on the $x$-values of $P$, we can identify the regions which $\overline{\alpha}$ and $\overline{\delta}$ pass through. Recall from the construction of the list of regions, $\mathcal{R}$, that if $\overline{\alpha}$ passes between $x_i$ and $x_{i+1}$, then it passes through region $R_i$, which stores the edges $e_i$ and $e_i'$ that define its top and bottom.
+Let $\overline{\alpha}$ and $\overline{\gamma}$ be vertical lines through $\alpha$ and $\gamma$, respectively. Using a binary search on the $x$-values of $P$, we can identify the regions which $\overline{\alpha}$ and $\overline{\gamma}$ pass through. Recall from the construction of the list of regions, $\mathcal{R}$, that if $\overline{\alpha}$ passes between $x_i$ and $x_{i+1}$, then it passes through region $R_i$, which stores the edges $e_i$ and $e_i'$ that define its top and bottom.
 
 Given $e_i$ and $e_i'$, we define the intersection points between $\overline{\alpha}$ and the edges as $s = e_i \cap \overline{\alpha}$ and $s' = e_i' \cap \overline{\alpha}$.
 
-Let $V(Q)$ be the vertical slab defined by $Q$; that is, the vertical area between $\overline{\alpha}$ and $\overline{\delta}$. We can calculate the area of $Q \cap P$ by considering how $Q$ interacts with the following areas:
+Let $V(Q)$ be the vertical slab defined by $Q$; that is, the vertical area between $\overline{\alpha}$ and $\overline{\gamma}$. We can calculate the area of $Q \cap P$ by considering how $Q$ interacts with the following areas:
 
 \begin{enumerate}
  \item The leftmost region, where $R_i \not \subset V(Q)$. Let $A_i = R_i \cap Q$.
@@ -342,24 +342,24 @@ See Figure \ref{fig:monotonep:extra} for an example. We begin with the center re
 \[
 A_c
 = \left ( \bigcup_{k=i+1}^{j-1}{R_k} \right ) \cap P 
-= \sum_{k=i+1}^{j-1} F(R_k, h_\gamma) - F(R_k, h_\beta)
+= \sum_{k=i+1}^{j-1} F(R_k, h_\delta) - F(R_k, h_\beta)
 \]
 
 Performing this sum naively takes $\BigOh{n}$ time as there may be a linear number of regions spanned by $Q$.  However, using $T$, we can answer this query for any values of $i$ and $j$ by checking at most $\BigOh{\log{n}}$ subtrees. At each subtree, we require $\BigOh{\log{n}}$ time to find the correct formula, for a total query time of $\BigOh{\log^2{n}}$.  However, since each subtree queries for the same value of $h$, we can reduce this query time to only $\BigOh{\log{n}}$ by using fractional cascading.\cite{cg-fc-86, cg-fc2-86}
 
-If $\alpha = x_i$, then $A_i = F(R_i, h_\gamma) - F(R_i, h_\beta)$. In general, however, $x_i < \alpha < x_{i+1}$, and we cannot use our precalculated area formulas. Fortunately, the area $R_i \cap P$ is a polygon of $\BigOh{1}$ complexity, specifically a trapezoid, so its area can be calculated directly in $\BigOh{1}$ time. The vertices of $R_i \cap P$ are:
+If $\alpha = x_i$, then $A_i = F(R_i, h_\delta) - F(R_i, h_\beta)$. In general, however, $x_i < \alpha < x_{i+1}$, and we cannot use our precalculated area formulas. Fortunately, the area $R_i \cap P$ is a polygon of $\BigOh{1}$ complexity, specifically a trapezoid, so its area can be calculated directly in $\BigOh{1}$ time. The vertices of $R_i \cap P$ are:
 \begin{itemize}
- \item Its top-left: the lower of $(\alpha, s)$ and $(\alpha, \gamma)$,
+ \item Its top-left: the lower of $(\alpha, s)$ and $(\alpha, \delta)$,
 
  \item Its bottom-left: the higher of $(\alpha, s')$ and $(\alpha, \beta)$,
 
- \item Its top-right: the lower of the point $x_{i+1}$ and  $h_\gamma \cap \overline{x_{i+1}}$, and
+ \item Its top-right: the lower of the point $x_{i+1}$ and  $h_\delta \cap \overline{x_{i+1}}$, and
 
  \item Its bottom-right: the higher of the point $x_{i+1}'$ and $h_\beta \cap \overline{x_{i+1}}$.
 
 \end{itemize}
 
-Likewise, if $\delta = x_j$, then $A_j = 0$. But, in general, $x_j < \delta < x_{j+1}$, and, again, we cannot use our precalculated area formulas. The area $R_j \cap P$ is also trapezoid, however, so its area can also be calculated directly.
+Likewise, if $\gamma = x_j$, then $A_j = 0$. But, in general, $x_j < \gamma < x_{j+1}$, and, again, we cannot use our precalculated area formulas. The area $R_j \cap P$ is also trapezoid, however, so its area can also be calculated directly.
 
 With all three area calculations completed, we need only make a final determination about 
 \[

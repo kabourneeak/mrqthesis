@@ -310,7 +310,7 @@ h
 <text matrix="1 0 0 1 -10 -6" transformations="translations" pos="204.846 668.237" stroke="black" type="label" width="4.67" height="4.289" depth="0" valign="baseline">$s$</text>
 <text matrix="1 0 0 1 5 -2" transformations="translations" pos="348.042 677.112" stroke="black" type="label" width="3.598" height="6.128" depth="0" valign="baseline">$t$</text>
 <text matrix="1 0 0 1 -13 2" transformations="translations" pos="365.202 541.609" stroke="black" type="label" width="6.393" height="7.49" depth="0" valign="baseline">$t&apos;$</text>
-<text matrix="1 0 0 1 -9 2" transformations="translations" pos="370.527 751.669" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\delta, \gamma)$</text>
+<text matrix="1 0 0 1 -9 2" transformations="translations" pos="370.527 751.669" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <text matrix="1 0 0 1 -5 -2" transformations="translations" pos="168.752 526.817" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
 <use name="mark/square(sx)" pos="192 528" size="normal" stroke="black"/>
 <use name="mark/square(sx)" pos="360 752" size="normal" stroke="black"/>

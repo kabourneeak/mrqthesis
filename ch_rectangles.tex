@@ -21,7 +21,7 @@ Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed par
 \subsection{Definitions}
 \label{:rectangles:ap:defs}
 
-Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\delta, \gamma)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
+Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\gamma, \delta)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
 
 For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
 
@@ -38,7 +38,7 @@ For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly,
 
 As Figure~\ref{:fig:rectangles:ap:cases} illustrates, there are several cases to consider regarding how a horizontal segment $s \in S$ may interact with $Q$. Cases $(1)$, $(2)$, and $(3)$, where $s$ is entirely left, entirely within, or entirely right of $Q$, respectively, are exactly an instance of  standard range searching problems where we look to find elements which are completely inside or completely outside of a query region.  
 
-Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \delta$.  We further subdivide case $(4)$ in to cases where, for some appropriate value of $\rho$, $s \in_\rho Q$ in case $(4a)$ and $s \not \in_\rho Q$ in case $(4b)$.  Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\delta$. Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \delta$ and $q > \delta$. 
+Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \gamma$.  We further subdivide case $(4)$ in to cases where, for some appropriate value of $\rho$, $s \in_\rho Q$ in case $(4a)$ and $s \not \in_\rho Q$ in case $(4b)$.  Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\gamma$. Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \gamma$ and $q > \gamma$. 
 
 In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, crucially, neither $p$ nor $q$ are inside $Q$. As like in cases $(4)$ and $(5)$, $s$ is in case $(6a)$ if $s \in_\rho Q$ and $(6b)$ if $s \not \in_\rho Q$.
 
@@ -46,22 +46,22 @@ Our goal is to count all of the segments belonging to cases $(2)$, $(4a)$, $(5a)
 
 Our approach to solving this problem involves restricting and classifying segments step-by-step until, for some subset of segments, we are able to identify an expression representing its majority property.  Our solution proceeds as follows.
 
-\paragraph{Step 1.} As we are only considering horizontal segments for now, we only need to consider those segments which are neither above nor below $Q$, since they can never intersect $Q$ at all. Let $S_1 = \{ s \in S \st \beta \leq b \leq \gamma\}$. 
+\paragraph{Step 1.} As we are only considering horizontal segments for now, we only need to consider those segments which are neither above nor below $Q$, since they can never intersect $Q$ at all. Let $S_1 = \{ s \in S \st \beta \leq b \leq \delta\}$. 
 
-\paragraph{Step 2.} Identify those segments which are not ``too long''.  Let $w = \delta - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its majority property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
+\paragraph{Step 2.} Identify those segments which are not ``too long''.  Let $w = \gamma - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its majority property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
 
 \paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint.  Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
 
-\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \delta - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
+\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \gamma - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
 
 \begin{proof}
 The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on Step 4 and show that for each case, a segment belonging to that case is correctly accepted or rejected.
 
 Consider the segments in $S_L$, which we check against the majority property expression $\alpha - a < (1 - \rho) \cdot l$. That is, we are looking at how much of $s$ is outside of $Q$. Segments in case $(1)$ have $\alpha - a > l$, so they are correctly rejected. Segments in cases $(4a)$ and $(4b)$ are accepted or rejected quite straight-forwardly by this condition; that is, if not too much of $s$ is outside $Q$, then ``enough'' of $s$ must be inside.  
 
-The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  After Step 2, we know that $|s| < \frac{w}{\rho}$, which implies that any segment in $s \in S_L$ that crosses both $\alpha$ and $\delta$ must satisfy $s \in_\rho Q$, since $|s \cap Q|$ is exactly $w$, and $w$ is sufficient. This property allows us to avoid explicitly deciding if $s$ crosses $\delta$, since if not too much of $s$ is outside $Q$, $s$ either crosses only $\alpha$ and case $(4)$ holds, or it crosses $\alpha$ and $\delta$, and $w$ is sufficient.
+The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  After Step 2, we know that $|s| < \frac{w}{\rho}$, which implies that any segment in $s \in S_L$ that crosses both $\alpha$ and $\gamma$ must satisfy $s \in_\rho Q$, since $|s \cap Q|$ is exactly $w$, and $w$ is sufficient. This property allows us to avoid explicitly deciding if $s$ crosses $\gamma$, since if not too much of $s$ is outside $Q$, $s$ either crosses only $\alpha$ and case $(4)$ holds, or it crosses $\alpha$ and $\gamma$, and $w$ is sufficient.
 
-Considering the segments in $S_R$ now, against the majority property expression $\delta - a \geq  \rho l$ for $s \in S_R$. This expression checks the affirmative case, that is, that enough of $s$ is inside $Q$. For case $(2)$, $\delta - a \geq l$. Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.  On the other hand, for case $(3)$, $\delta - a < 0$ and all such segments are rejected. The final cases, $(5a)$ and $(5b)$ are straight-forwardly classified based on how much of the segment appears in $Q$.
+Considering the segments in $S_R$ now, against the majority property expression $\gamma - a \geq  \rho l$ for $s \in S_R$. This expression checks the affirmative case, that is, that enough of $s$ is inside $Q$. For case $(2)$, $\gamma - a \geq l$. Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.  On the other hand, for case $(3)$, $\gamma - a < 0$ and all such segments are rejected. The final cases, $(5a)$ and $(5b)$ are straight-forwardly classified based on how much of the segment appears in $Q$.
 
 \end{proof}
 
@@ -71,9 +71,9 @@ Considering the segments in $S_R$ now, against the majority property expression 
 
 Each of the steps in Section~\ref{:rectangles:ao:approach} includes or excludes segments by examining several inequalities. Each inequality is made up of some of the input parameters of each segment and a single query variable. To perform the query, we will map each segment to a point in 4D where each component of the point is based on the segment input parameters corresponding to one of our inequalities, and map the query variables given by $Q$ to a 4D box.  The query can then be answered using a multi-level range tree.
 
-Recall that for every $s \in S$, we have $s = (a, b, l)$ as the $x$-coordinate of the left endpoint, $y$-coordinate of the left endpoint, and length of the segment, respectively.  The query region $Q$ has width $w = \delta - \alpha$. Let $v$ be the 4D point we create which corresponds to $s$.
+Recall that for every $s \in S$, we have $s = (a, b, l)$ as the $x$-coordinate of the left endpoint, $y$-coordinate of the left endpoint, and length of the segment, respectively.  The query region $Q$ has width $w = \gamma - \alpha$. Let $v$ be the 4D point we create which corresponds to $s$.
 
-The first two conditions we need to check are the same for all cases. We first isolate segments based directly on their $y$-coordinate; thus, the first component of $v$ will be $b$, and the first component of our 4D query box will be $[\beta, \gamma]$.  We next want to include only segments where $l \leq \frac{w}{\rho}$. We can rewrite this as $\rho l \leq w$. Thus, the second component of $v$ will be $\rho l$, and the second component of our query box will be $(0, w)$.
+The first two conditions we need to check are the same for all cases. We first isolate segments based directly on their $y$-coordinate; thus, the first component of $v$ will be $b$, and the first component of our 4D query box will be $[\beta, \delta]$.  We next want to include only segments where $l \leq \frac{w}{\rho}$. We can rewrite this as $\rho l \leq w$. Thus, the second component of $v$ will be $\rho l$, and the second component of our query box will be $(0, w)$.
 
 Our segments are next classified on whether their left endpoint is left or right of $\alpha$. To do this, we set the third component of $v$ to $a$, and the third component of the query box to either $(-\infty, \alpha)$ or $[\alpha, \infty)$ as appropriate.
 
@@ -84,17 +84,17 @@ v_i = (b_i, \rho \cdot l_i, a_i, a_i + (1-\rho) \cdot l_i)
 
 \noindent and is queried by the 4D query box
 \[
-[\beta, \gamma] \times (0, w] \times (-\infty, \alpha) \times (\alpha, \infty)
+[\beta, \delta] \times (0, w] \times (-\infty, \alpha) \times (\alpha, \infty)
 \]
 
-The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\delta - a \geq \rho l$ can be rewritten as $\delta \geq a + \rho l$. Therefore, we set the fourth component of $v$ to $a + \rho l$, and the fourth component of the query box to $(-\infty, \delta)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the point
+The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\gamma - a \geq \rho l$ can be rewritten as $\gamma \geq a + \rho l$. Therefore, we set the fourth component of $v$ to $a + \rho l$, and the fourth component of the query box to $(-\infty, \gamma)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the point
 \[
 v_i' = (b_i, \rho \cdot l_i, a_i, a_i + \rho l_i)
 \]
 
 \noindent and is queried by the box
 \[
-[\beta, \gamma] \times (0, w] \times [\alpha, \infty) \times (-\infty, \delta]
+[\beta, \delta] \times (0, w] \times [\alpha, \infty) \times (-\infty, \gamma]
 \]
 
 By Corollary~\ref{cor:rangetree}, we can answer either of these queries by constructing a multi-level range tree.  As our points are in 4D, such a tree would require $\BigOh{n \log^3{n}}$ time and space for preprocessing and could answer queries in $\BigOh{\log^3{n}}$ time.  To find all horizontal segments satisfying their majority property, we need to perform both queries and combine the results.  
@@ -129,7 +129,7 @@ There are three principal cases to consider; those segments which have both endp
 
 The first case, where both endpoints are inside $Q$, is answered by mapping each segment to a point in 4D space and then using a multi-level range tree, just as we did in the previous section.  Specifically, we map each segment $s_i$ to the point $v_i = (a_i, b_i, c_i, d_i)$. The query $Q$ is mapped to the following 4D box
 \[
-[\alpha, \delta] \times [\beta, \gamma] \times [\alpha, \delta] \times [\beta, \gamma]
+[\alpha, \gamma] \times [\beta, \delta] \times [\alpha, \gamma] \times [\beta, \delta]
 \]
 
 In essence, we are just testing to ensure that both of the endpoints appear within the horizontal and vertical components of the query.
@@ -188,7 +188,7 @@ Let $s \in S$ be a segment belonging to class (i), case $(I, V)$.
 Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  
 Let $u = (a, f)$ be the point vertically aligned with $p$ and horizontally aligned with $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\overline{u o}$ with the boundary of $Q$.  
 The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. 
-Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (\delta, f)$ is the intersection point of $\overline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
+Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (\gamma, f)$ is the intersection point of $\overline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
 
 We will test the majority property by checking that ``not too much of $s$ is outside of $Q$''. Specifically, we need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
@@ -197,7 +197,7 @@ We will test the majority property by checking that ``not too much of $s$ is out
 
 \noindent and 
 \[ 
-\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2 d(v, v')}{2 d(v, o)} = \frac{2(c - \delta)}{c - a}
+\frac{d(q, q')}{d(q, o)} = \frac{d(q, q')}{L} = \frac{d(v, v')}{d(v, o)} = \frac{2 d(v, v')}{2 d(v, o)} = \frac{2(c - \gamma)}{c - a}
 \]
 
 \noindent Thus,
@@ -209,27 +209,27 @@ We will test the majority property by checking that ``not too much of $s$ is out
 %
 &= \frac{1}{2} \left ( \frac{d(p, p')}{L} + \frac{d(q, q')}{L} \right ) \\
 %
-&= \frac{1}{2} \left ( \frac{2(\alpha - a)}{c - a} + \frac{2(c - \delta)}{c - a} \right ) \\
+&= \frac{1}{2} \left ( \frac{2(\alpha - a)}{c - a} + \frac{2(c - \gamma)}{c - a} \right ) \\
 %
-&= \frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} \\
+&= \frac{\alpha - a}{c - a} + \frac{c - \gamma}{c - a} \\
 %
-&= \frac{\alpha - a + c - \delta}{c - a} \\
+&= \frac{\alpha - a + c - \gamma}{c - a} \\
 %
-&= 1 + \frac{\alpha - \delta}{c - a} \\
+&= 1 + \frac{\alpha - \gamma}{c - a} \\
 %
 \end{split}
 \]
 
-Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can instead be evaluated as $1 + \frac{\alpha - \delta}{c - a} \leq 1 - \rho$, which is based on two query variables $\alpha$ and $\delta$.  We can further simplify the expression to
+Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can instead be evaluated as $1 + \frac{\alpha - \gamma}{c - a} \leq 1 - \rho$, which is based on two query variables $\alpha$ and $\gamma$.  We can further simplify the expression to
 \[ 
-\rho(c - a) \leq \delta - \alpha
+\rho(c - a) \leq \gamma - \alpha
 \]
 
-\noindent where the value of $\delta - \alpha$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
+\noindent where the value of $\gamma - \alpha$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
 
 When $o \not \in Q$, we cannot construct similar triangles in the same way, since we require the points of intersection between the triangles and $Q$.  However, since we know that any segment which \emph{is} majority enclosed by $Q$ will have its centre point in $Q$, it is sufficient for our purposes if our test condition always reports a failure when $o$ is outside of $Q$.
 
-We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\frac{\alpha - a}{c - a} > 0$ and $\frac{c - \delta}{c - a} > 0$. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is right of $\delta$, then $\frac{c - \delta}{c - a} > 1/2$. Therefore, the sum $\frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} > 1/2$ and is strictly larger than any allowable value for $(1 - \rho)$, resulting in the segment being rejected as desired.
+We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\frac{\alpha - a}{c - a} > 0$ and $\frac{c - \gamma}{c - a} > 0$. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is right of $\gamma$, then $\frac{c - \gamma}{c - a} > 1/2$. Therefore, the sum $\frac{\alpha - a}{c - a} + \frac{c - \gamma}{c - a} > 1/2$ and is strictly larger than any allowable value for $(1 - \rho)$, resulting in the segment being rejected as desired.
 
 
 %------------------------------------------------------------------------------
@@ -317,13 +317,13 @@ Class (iii) is concerned with segments which have one endpoint in a corner regio
 \end{center}
 \end{figure}
 
-Assume for now that $o \in Q$. We need to consider two subcases: (a) $s$ crosses $\alpha$ and $\beta$ or (b) $s$ crosses $\alpha$ and $\delta$. See Figure~\ref{fig:rectangles:ao:case3} for examples. Subcase (a) is very nearly exactly the example presented for class (ii). In that case, the only use of the fact that the endpoints of $s$ were located in regions $I$ and $III$ was to imply that $s$ crossed $\alpha$ and $\beta$. As such, this subcase can use the same expression for testing $s$. Likewise, subcase (b) is similar to the example presented for class (i) and can use exactly that expression for testing $s$.
+Assume for now that $o \in Q$. We need to consider two subcases: (a) $s$ crosses $\alpha$ and $\beta$ or (b) $s$ crosses $\alpha$ and $\gamma$. See Figure~\ref{fig:rectangles:ao:case3} for examples. Subcase (a) is very nearly exactly the example presented for class (ii). In that case, the only use of the fact that the endpoints of $s$ were located in regions $I$ and $III$ was to imply that $s$ crossed $\alpha$ and $\beta$. As such, this subcase can use the same expression for testing $s$. Likewise, subcase (b) is similar to the example presented for class (i) and can use exactly that expression for testing $s$.
 
 Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check both subcases simultaneously.
 
 From class (i) and class (ii), we have the following expressions:
 \[ 
-\frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} \leq 1 - \rho
+\frac{\alpha - a}{c - a} + \frac{c - \gamma}{c - a} \leq 1 - \rho
 \]
 
 \noindent and
@@ -331,7 +331,7 @@ From class (i) and class (ii), we have the following expressions:
 \frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho
 \]
 
-If $s$ belongs to subcase (a), then $\frac{c - \delta}{c - a} \leq \frac{\beta - d}{b - d}$ since $\delta$ is farther right than the point where $s$ exits $Q$. Likewise, in subcase (b), $\frac{\beta - d}{b - d} \leq \frac{c - \delta}{c - a}$.  Therefore, in either subcase, the result of the correct expression is larger than the incorrect one, allowing us to correctly reject segments by blindly checking both conditions.  This also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
+If $s$ belongs to subcase (a), then $\frac{c - \gamma}{c - a} \leq \frac{\beta - d}{b - d}$ since $\gamma$ is farther right than the point where $s$ exits $Q$. Likewise, in subcase (b), $\frac{\beta - d}{b - d} \leq \frac{c - \gamma}{c - a}$.  Therefore, in either subcase, the result of the correct expression is larger than the incorrect one, allowing us to correctly reject segments by blindly checking both conditions.  This also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
 
 
 % -----------------------------------------------------------------------------
@@ -360,24 +360,24 @@ Class (iv) is concerned with segments whose endpoints appear in diagonally oppos
 Assume for now that $o \in Q$. As with class (iii), we need to consider several subcases depending on which sides of $Q$ are intersected by $s$:
 
 \begin{enumerate}[(a)]
-\item $s$ crosses $\alpha$ and $\gamma$,
 \item $s$ crosses $\alpha$ and $\delta$,
-\item $s$ crosses $\beta$ and $\gamma$,
+\item $s$ crosses $\alpha$ and $\gamma$,
 \item $s$ crosses $\beta$ and $\delta$,
+\item $s$ crosses $\beta$ and $\gamma$,
 \end{enumerate}
 
 See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check all subcases simultaneously. The expression for subcase (b) comes directly from class (i).  Using similar techniques as we did in class (i) and class (ii), we develop the following set of expressions:
 
 \begin{align*}
-& (a) \quad \frac{\alpha - a}{c - a} + \frac{d - \gamma}{d - b} \leq 1 - \rho
-& (b) \quad \frac{\alpha - a}{c - a} + \frac{c - \delta}{c - a} \leq 1 - \rho \\
-& (c) \quad \frac{\beta  - b}{d - b} + \frac{d - \gamma}{d - b} \leq 1 - \rho  
-& (d) \quad \frac{\beta  - b}{d - b} + \frac{c - \delta}{c - a} \leq 1 - \rho \\
+& (a) \quad \frac{\alpha - a}{c - a} + \frac{d - \delta}{d - b} \leq 1 - \rho
+& (b) \quad \frac{\alpha - a}{c - a} + \frac{c - \gamma}{c - a} \leq 1 - \rho \\
+& (c) \quad \frac{\beta  - b}{d - b} + \frac{d - \delta}{d - b} \leq 1 - \rho  
+& (d) \quad \frac{\beta  - b}{d - b} + \frac{c - \gamma}{c - a} \leq 1 - \rho \\
 \end{align*}
 
 Subcases (b) and (c) can be simplified to orthogonal range queries, while subcases (a) and (d) will need to be mapped to appropriate half-plane queries as we saw in class (ii).
 
-To illustrate that checking all four conditions simultaneously yields correct results, consider what happens if $s$ belongs to subcase (a), where $s$ crosses $\alpha$ and $\gamma$. In these circumstances, $u'$ is above $\beta$, and we have that $\frac{\alpha - a}{c - a} \geq \frac{\beta - b}{d - b}$.  Likewise, $v'$ is left of $\delta$, so $\frac{d - \gamma}{d - b} \geq \frac{c - \delta}{c - a}$.  Therefore, the expression for (a) dominates the other expressions (i.e., $\text{(a)} \geq \text{(b)}$, $\text{(a)} \geq \text{(c)}$, and $\text{(a)} \geq \text{(d)}$), allowing us to identify qualifying segments for subcase (a) by blindly checking all conditions. This property is true for segments belonging to subcases (b), (c), and (d) as well. Furthermore, this test also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
+To illustrate that checking all four conditions simultaneously yields correct results, consider what happens if $s$ belongs to subcase (a), where $s$ crosses $\alpha$ and $\delta$. In these circumstances, $u'$ is above $\beta$, and we have that $\frac{\alpha - a}{c - a} \geq \frac{\beta - b}{d - b}$.  Likewise, $v'$ is left of $\gamma$, so $\frac{d - \delta}{d - b} \geq \frac{c - \gamma}{c - a}$.  Therefore, the expression for (a) dominates the other expressions (i.e., $\text{(a)} \geq \text{(b)}$, $\text{(a)} \geq \text{(c)}$, and $\text{(a)} \geq \text{(d)}$), allowing us to identify qualifying segments for subcase (a) by blindly checking all conditions. This property is true for segments belonging to subcases (b), (c), and (d) as well. Furthermore, this test also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
 
 
 %------------------------------------------------------------------------------
@@ -396,14 +396,14 @@ Broadly, our solution to this problem uses the multi-level range tree introduced
 \end{center}
 \end{figure}
 
-The details of constructing and querying an appropriate data structure follow. Recall that the query is input as four values $\alpha, \beta, \delta$, and $\gamma$ and that $S$ is the set of input segments $s_1, s_2, \ldots, s_n$.
+The details of constructing and querying an appropriate data structure follow. Recall that the query is input as four values $\alpha, \beta, \gamma$, and $\delta$ and that $S$ is the set of input segments $s_1, s_2, \ldots, s_n$.
 
-\paragraph{Step 1, Classification:} We maintain a four-dimensional multi-level orthogonal range tree where each segment $s_i \in S$ is represented as a 4-tuple on the values $(a_i, b_i, c_i, d_i)$. To identify all of the segments within a particular case, we define a query box on $\alpha, \beta, \delta$, and $\gamma$. Each component of this box is open (i.e., unbounded) on the side appropriate for the case. For example, in case $(II, VI)$, shown in Figure~\ref{fig:rectangles:ao:case4}, the open query box is defined as
+\paragraph{Step 1, Classification:} We maintain a four-dimensional multi-level orthogonal range tree where each segment $s_i \in S$ is represented as a 4-tuple on the values $(a_i, b_i, c_i, d_i)$. To identify all of the segments within a particular case, we define a query box on $\alpha, \beta, \gamma$, and $\delta$. Each component of this box is open (i.e., unbounded) on the side appropriate for the case. For example, in case $(II, VI)$, shown in Figure~\ref{fig:rectangles:ao:case4}, the open query box is defined as
 \[
-(-\infty, \alpha) \times (-\infty, \beta) \times (\delta, \infty) \times (\gamma, \infty)
+(-\infty, \alpha) \times (-\infty, \beta) \times (\gamma, \infty) \times (\delta, \infty)
 \]
 
-\noindent which will include all points $(u, v, w, x)$ where $u < \alpha$, $v < \beta$, $w > \delta$, and $x > \gamma$.
+\noindent which will include all points $(u, v, w, x)$ where $u < \alpha$, $v < \beta$, $w > \gamma$, and $x > \delta$.
 
 The range query identifies a set of subtrees on the innermost level representing all segments belonging to each case of each class, from which the query continues.
 

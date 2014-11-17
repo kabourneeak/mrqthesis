@@ -276,7 +276,7 @@ h
 576 568 l
 </path>
 <text transformations="translations" pos="48 552" stroke="black" type="label" width="10.471" height="11.953" depth="3.35" valign="baseline" size="LARGE">$\beta$</text>
-<text transformations="translations" pos="48 664" stroke="black" type="label" width="9.68" height="7.41" depth="3.35" valign="baseline" size="LARGE">$\gamma$</text>
+<text transformations="translations" pos="48 664" stroke="black" type="label" width="9.68" height="7.41" depth="3.35" valign="baseline" size="LARGE">$\delta$</text>
 <path fill="purple" tiling="falling">
 64 640 m
 70.4 656 l

@@ -246,7 +246,7 @@ h
 240 528 l
 </path>
 <text matrix="1 0 0 1 3.4611 36.5824" transformations="translations" pos="176 560" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -26.2586 21.1121" transformations="translations" pos="352 688" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\delta, \gamma)$</text>
+<text matrix="1 0 0 1 -26.2586 21.1121" transformations="translations" pos="352 688" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <use name="mark/disk(sx)" pos="208 628" size="normal" stroke="black"/>
 <use name="mark/disk(sx)" pos="220.8 676" size="normal" stroke="black"/>
 <use name="mark/disk(sx)" pos="246.4 700" size="normal" stroke="black"/>

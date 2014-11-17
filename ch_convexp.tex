@@ -14,12 +14,12 @@ We are given a convex polygon $P$ consisting of $n$ edges and a fixed parameter 
 
 Throughout this chapter we use the following definitions. The polygon $P$ is defined by its edges $E = e_1, e_2, \ldots, e_{n-1}, e_n$, given in clockwise order, where $e_n$ and $e_1$ share a vertex to close the polygon.  A \emph{chord} of $P$ is a straight line segment incident to two edges which partitions $P$ into two regions.
 
-A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$ and $(\delta, \gamma)$, respectively. See Figure \ref{fig:convexp:example} for an example.
+A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. See Figure \ref{fig:convexp:example} for an example.
 
 \begin{figure}
 \begin{center}
   \includegraphics[width=0.50\textwidth]{figures/fig_cvp_example}
-  \caption[A convex polygon $P$ and query box $Q$]{The query region $Q$ formed by the inputs $\alpha$, $\beta$, $\delta$,  $\gamma$, and a convex polygon $P$.}
+  \caption[A convex polygon $P$ and query box $Q$]{The query region $Q$ formed by the inputs $\alpha$, $\beta$, $\gamma$,  $\delta$, and a convex polygon $P$.}
   \label{fig:convexp:example}
 \end{center}
 \end{figure}
@@ -114,7 +114,7 @@ The query rectangle $Q$ can intersect $P$ at most $8$ times. This follows from t
 
 Each intersection can be found in the following way. Let $b_\alpha$ be the vertical boundary of $Q$ with $x$-coordinate at $\alpha$. Let $\overline{\alpha}$ be the vertical line through $\alpha$. Using a binary search on the edges of $P$, we can identify the edges $e_\alpha$ and $e_\alpha'$ which intersect $\overline{\alpha}$, if they exist, such that $e_\alpha$ is clockwise from $e_\alpha'$ along $P$.  Specifically, we test only the top chain of $P$ to find $e_\alpha$ and only the bottom chain of $P$ to find $e_\alpha'$. We then determine if $e_\alpha$ and $e_\alpha'$ are intersected by the segment $b_\alpha$ itself simply by checking the $y$-coordinate of the intersection point. We will store a `nil' value with $e_\alpha$ and/or $e_\alpha'$ if the intersections do not exist or do not intersect $b_\alpha$.
 
-Similarly, let $b_\delta$ be the vertical boundary of $Q$ with $x$-coordinate at $\delta$, and let $b_\beta$ and $b_\gamma$ be the horizontal boundaries of $Q$ with $y$-coordinates at $\beta$ and $\gamma$, respectively.  Using the same binary search technique on appropriate half-chains of $P$, we can collect $e_\beta$, $e_\beta'$, $e_\delta$, $e_\delta'$, $e_\gamma$, and $e_\gamma'$.  
+Similarly, let $b_\gamma$ be the vertical boundary of $Q$ with $x$-coordinate at $\gamma$, and let $b_\beta$ and $b_\delta$ be the horizontal boundaries of $Q$ with $y$-coordinates at $\beta$ and $\delta$, respectively.  Using the same binary search technique on appropriate half-chains of $P$, we can collect $e_\beta$, $e_\beta'$, $e_\gamma$, $e_\gamma'$, $e_\delta$, and $e_\delta'$.  
 
 If all of these values are nil, then $P$ does not intersect $Q$ at all, and one of the following is true:
 
@@ -140,11 +140,11 @@ For the remainder of the query, we assume that $P$ and $Q$ \emph{do} intersect. 
 \end{center}
 \end{figure}
 
-Continuing to examine the problem in a clockwise direction, $P$ can enter $Q$ at $e_\alpha$, $e_\beta$, $e_\delta$, and/or $e_\gamma$.  Once $P$ enters $Q$, it must exit at one of $e_\alpha'$, $e_\beta'$, $e_\delta'$, or $e_\gamma'$ before any other entrance can occur.
+Continuing to examine the problem in a clockwise direction, $P$ can enter $Q$ at $e_\alpha$, $e_\beta$, $e_\gamma$, and/or $e_\delta$.  Once $P$ enters $Q$, it must exit at one of $e_\alpha'$, $e_\beta'$, $e_\gamma'$, or $e_\delta'$ before any other entrance can occur.
 
 We can find all entrance/exit pairs with the following steps.
 \begin{enumerate}
- \item Consider the following clockwise ordering of the entrance and exit points as a circular list: $e_\alpha$, $e_\gamma'$, $e_\gamma$, $e_\delta'$, $e_\delta$, $e_\beta'$, $e_\beta$, $e_\alpha'$.
+ \item Consider the following clockwise ordering of the entrance and exit points as a circular list: $e_\alpha$, $e_\delta'$, $e_\delta$, $e_\gamma'$, $e_\gamma$, $e_\beta'$, $e_\beta$, $e_\alpha'$.
  
  \item Starting anywhere in the list, scan for a non-nil entrance point (a non-prime edge).
  
@@ -155,7 +155,7 @@ We can find all entrance/exit pairs with the following steps.
  \item We are finished when we visit a non-nil entry for the second time.
 \end{enumerate}
 
-Figure \ref{fig:convexp:chord} shows an example. In the figure, $e_\beta$ is an edge that enters into $Q$, while $e_\gamma'$ is the corresponding exit edge. Both $e_\alpha'$ and $e_\alpha$ are nil. The corners of $Q$ at $(\alpha, \beta)$ and $(\alpha, \gamma)$ are outside of $P$.
+Figure \ref{fig:convexp:chord} shows an example. In the figure, $e_\beta$ is an edge that enters into $Q$, while $e_\delta'$ is the corresponding exit edge. Both $e_\alpha'$ and $e_\alpha$ are nil. The corners of $Q$ at $(\alpha, \beta)$ and $(\alpha, \delta)$ are outside of $P$.
 
 \begin{figure}
 \begin{center}

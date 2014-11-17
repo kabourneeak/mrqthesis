@@ -301,7 +301,7 @@ h
 h
 </path>
 <text matrix="1 0 0 1 -6 -4" transformations="translations" pos="187.049 548.815" stroke="black" type="label" width="41.046" height="12.896" depth="4.29" valign="baseline" size="LARGE">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -22.2 -1" transformations="translations" pos="456 712" stroke="black" type="label" width="36.6" height="12.896" depth="4.29" valign="baseline" size="LARGE">$(\delta, \gamma)$</text>
+<text matrix="1 0 0 1 -22.2 -1" transformations="translations" pos="456 712" stroke="black" type="label" width="36.6" height="12.896" depth="4.29" valign="baseline" size="LARGE">$(\gamma, \delta)$</text>
 <use name="mark/disk(sx)" pos="200 560" size="normal" stroke="black"/>
 <use name="mark/disk(sx)" pos="448 704" size="normal" stroke="black"/>
 </page>
