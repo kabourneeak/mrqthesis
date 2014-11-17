@@ -57,7 +57,7 @@ Restated with $d=2$.
 
 \begin{theorem}[Corollary 7.3, part $i$, in Chan\cite{chan2012}]
 \label{th:chan}
-We can form $O(n)$ canonical subsets of total size $O(n \log{n})$ in $O(n \log{n})$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq O(\sqrt{n}\log{n})$ in time $O(\sqrt{n}\log{n})$ w.h.p. $(n)$.
+We can form $\BigOh{n}$ canonical subsets of total size $\BigOh{n \log{n}}$ in $\BigOh{n \log{n}}$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq \BigOh{\sqrt{n}\log{n}}$ in time $\BigOh{\sqrt{n}\log{n}}$ w.h.p. $(n)$.
 \end{theorem}
 
 XXX TODO Can I just show some example analysis here?
@@ -68,7 +68,7 @@ Given an associate data structure which requires $f(n)$ preprocessing space, $g(
 
 \begin{corollary}
 \label{cor:chan}
-With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. If this associated structure requires $\BigOh{n\log^f{n}}$ preprocessing space, $\BigOh{n \log^g{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^h{n}}$ query time, where $f, g, h \in O(1), f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. If this associated structure requires $\BigOh{n\log^f{n}}$ preprocessing space, $\BigOh{n \log^g{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^h{n}}$ query time, where $f, g, h \in \BigOh{1}, f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
 \end{corollary}
 
 \begin{proof}
