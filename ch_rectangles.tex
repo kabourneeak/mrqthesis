@@ -293,7 +293,7 @@ We then map each segment $s$ to a point with coordinates
 \left (\frac{c-a}{b-d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )
 \]
 
-\noindent Segments matching the majority expression correspond to dual points satisfying the half-plane 
+\noindent Segments matching the majority expression correspond to dual-points satisfying the half-plane 
 \[
 y \geq \beta \cdot x + \alpha
 \]
@@ -386,7 +386,7 @@ To illustrate that checking all four conditions simultaneously yields correct re
 
 The method we have developed above takes a very case-by-case approach to solving the problem. There are two overall phases to the steps above. The first phase must identify segments falling into each of the 16 cases outlined above. For each case, the second phase must then identify those segments satisfying their respective majority property. 
 
-Broadly, our solution to this problem uses the multi-level range tree introduced in Section~\ref{:prelim:range-trees} for the classification phase. At the innermost level of the range tree we store several distinct associate structures, one for each case of each class, which can answer the majority property expressions required for that case; See Figure~\ref{fig:rectangles:ao:overview} for an illustration.
+Broadly, our solution to this problem uses the multi-level range tree introduced in Section~\ref{:prelim:range-trees} for the classification phase. At the innermost level of the range tree we store several distinct associate structures, one for each case of each class, which can answer the majority property expressions required for that case; See Figure~\ref{fig:rectangles:ao:overview} for an example.
 
 \begin{figure}[t]
 \begin{center}
@@ -409,7 +409,7 @@ The range query identifies a set of subtrees on the innermost level representing
 
 \paragraph{Step 2, Majority Property:} For each innermost subtree from step 1, we associate additional structures as required for testing appropriate majority expressions. For some cases, this structure will include additional orthogonal range queries, as in class $(i)$, and some subcases of classes $(iii)$ and $(iv)$.
 
-For the remaining cases (all in class $(ii)$, and the remaining subcases of classes $(iii)$ and $(iv)$), we will perform at least one half-plane range query, using the dual spaces we developed in Section~\ref{:rectangles:ao:bothout}. The half-plane queries will be carried out using canonical subset structures introduced in Section~\ref{:prelim:chan}, which lend themselves particularly well to multi-level query structures.
+For the remaining cases (all in class $(ii)$, and the remaining subcases of classes $(iii)$ and $(iv)$), we will perform at least one half-plane range query, using the dual-spaces we developed in Section~\ref{:rectangles:ao:bothout}. The half-plane queries will be carried out using canonical subset structures introduced in Section~\ref{:prelim:chan}, which lend themselves particularly well to multi-level query structures.
 
 
 \subsubsection{Analysis}

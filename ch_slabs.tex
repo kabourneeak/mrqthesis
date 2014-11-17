@@ -100,7 +100,7 @@ For these segments, we test their majority property as follows. Given a segment 
 \begin{proof}
 We look at each subcase to show that this single test is enough to identify all segments correctly. First, the test directly identifies segments belonging to subcases 2 or 3. This test will also reject segments, as we desire, from subcase 1 since $a' - a > l$ and cannot satisfy the majority property for any allowed value of $\rho$. 
 
-Finally, this test is also sufficient for the 4th subcase owing to the length restriction step we perform in Section\ref{:slabs:one:details:restrict}. That is, after the length restriction step, we know that $|s| < \frac{w}{\rho}$, where $w$ is the width of the query slab. Since any segment in subcase 4 has the property $|s \cap Q| = w$, this implies that $s \in_rho Q$.
+Finally, this test is also sufficient for the 4th subcase owing to the length restriction step we perform in Section\ref{:slabs:one:details:restrict}. That is, after the length restriction step, we know that $|s| < \frac{w}{\rho}$, where $w$ is the width of the query slab. Since any segment in subcase 4 has the property $|s \cap Q| = w$, this implies that $s \in_\rho Q$.
 \end{proof}
 
 We test for segments satisfying $a' - a < (1 - \rho)l$ using a half-plane query. Expanding this expression gives:
@@ -134,7 +134,7 @@ There are 4 subclasses of segments whose left-endpoints are right of $L_1$, as s
 
 
 \begin{enumerate}
- \item The entire segment is between $L_1$ and $L_2$. Since $s \in Q \rightarrow s \in_\rho Q$, this segment should be counted.
+ \item The entire segment is between $L_1$ and $L_2$. Since $s \in Q \imply s \in_\rho Q$, this segment should be counted.
 
  \item The entire segment is right of $L_2$. No part of $s$ is in $Q$, so it should not be counted.
 
@@ -146,7 +146,7 @@ There are 4 subclasses of segments whose left-endpoints are right of $L_1$, as s
 
 For these segments, we test their majority property by checking that ``enough of the segment is inside of $Q$''.  Just as we did with the segments of $S_L$, let $\iline{s}$ be the horizontal line through $s$.  Let $(a'', b)$ be the intersection point of $\iline{s}$ with $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.  We will show:
 \[
-a'' - a \geq \rho l \imply s \in_rho Q
+a'' - a \geq \rho l \imply s \in_\rho Q
 \]
 
 \begin{proof}
@@ -286,7 +286,7 @@ Given a set of $n$ horizontal line segments, we can locate all segments which sa
 \section{Querying with Two Slabs}
 \label{:slabs:two}
 
-We now consider a related instance of the slab query. In this section, the query is input as two slabs, and we are interested in those segments which are sufficiently enclosed by their intersection. When the two slabs are orthogonal to each other, this method will solve the problem of finding segments sufficiently enclosed by an arbitrarily oriented rectangle.  The overall approach is very similar to Section~\ref{:slabs:one}, and the data structure we will build to answer these queries is again based on the disjoint canonical sets structure outlined in Section~\ref{:prelim:chan}.
+We now consider a related instance of the slab query. In this section, the query is input as two slabs, and we are interested in those segments which are sufficiently enclosed by their intersection. When the two slabs are orthogonal to each other, this method will solve the problem of finding segments sufficiently enclosed by an arbitrarily-oriented rectangle.  The overall approach is very similar to Section~\ref{:slabs:one}, and the data structure we will build to answer these queries is again based on the disjoint canonical sets structure outlined in Section~\ref{:prelim:chan}.
 
 
 % -----------------------------------------------------------------------------
@@ -584,5 +584,5 @@ Open Problems
 
 * Get rid of the 1/2 limitation on the two slab case.
 
-* Arbitrarily oriented segments. Not conceptually hard, but quickly turn into higher dimensional problems
+* Arbitrarily-oriented segments. Not conceptually hard, but quickly turn into higher dimensional problems
 
