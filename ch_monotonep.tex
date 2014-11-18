@@ -390,7 +390,108 @@ Let $P$ be a monotone polygon consisting of $n$ vertices, and let $0 < \rho \leq
 \section{An Alternate Approach}
 \label{:monotonep:alt}
 
-XXX TODO
+In this section, we detail an alternate approach to solving this problem which sacrifices some query time in favour of lowering our space requirements to only $\BigOh{n}$.
+
+We begin by decomposing $P$ into $\BigOh{n}$ trapezoidal regions, creating area formulas for each which can report the area of a region below a horizontal line.  
+This steps are done just as in Section~\ref{:monotonep:approach}.  
+Next, we divide $P$ into $\BigOh{\sqrt{n}}$ multi-regions, from left to right, each comprised of $\BigOh{\sqrt{n}}$ trapezoidal regions.
+For each multi-region, we calculate multi-region area formulas for using Algorithm~\ref{alg:monotonep:mf}.  
+Altogether, this process requires $\BigOh{n\log{n}}$ time, and $\BigOh{n}$ storage.
+
+Our query $Q$ is a box which is open to the left and bottom.
+We can specify $Q$ by a single point with coordinates $(\gamma, \delta)$.  
+Figure~\ref{fig:mono2:query} shows an example query and a decomposition of $P$ into $\BigOh{\sqrt{n}}$ multi-regions.
+
+\begin{figure}
+\begin{center}
+  \includegraphics[width=0.80\textwidth]{figures/fig_mono2_query}
+  \caption[An alternate query method for a monotone polygon]{A monotone polygon $P$ with query $Q$. The query region is box which is open to the left and bottom.}
+  \label{fig:mono2:query}
+\end{center}
+\end{figure}
+
+Performing our query requires only a few steps which consider successively finer regions of our decomposition of $P$.
+With a binary search, we can identify $\BigOh{\sqrt{n}}$ multi-regions $S_1, S_2, \ldots, S_{k-1}$ which are \emph{entirely} to the left of $\gamma$, and at most one multi-region, $S_{k}$, which is intersected by $\gamma$.  
+For $S_i$, $1 \leq i \leq k-1$, we evaluate the multi-region area formula for $\delta$. 
+This requires $\BigOh{\log{\sqrt{n}}}$ time per multi-region for a total of $\BigOh{\sqrt{n}\log{\sqrt{n}}}$ time.
+
+We then consider $S_k$, which is intersected by $\gamma$.  
+$S_k$ is comprised of $\BigOh{\sqrt{n}}$ trapezoidal regions, some of which are entirely left of $\gamma$, and at most one of which is intersected by $\gamma$. 
+For all of those regions entirely left of $\gamma$, we evaluate the area formulas associated with them with respect to $\delta$. 
+The intersection of the final, partial trapezoidal region which is intersected by $\gamma$ has only $\BigOh{1}$ complexity, so we can evaluate its area directly.
+
+This completes the query. In total, we require the following time to calculate the area inside of $Q$:
+\[ 
+\BigOh{\log{n}} + \BigOh{\sqrt{n}\log{\sqrt{n}}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}\log{\sqrt{n}}}
+\]
+
+We can extend this method to query on a closed rectangle by combining the results of four separate open box queries.
+Let $Q'$ be a closed rectangle defined by its lower-left point $(\alpha, \beta)$ and its upper-right point $(\gamma, \delta)$.
+We can find $\area{Q'}$ in the following way:
+
+\begin{itemize}
+\item Let $Q_1$ be the open query box on $(\gamma, \delta)$.
+\item Let $Q_2$ be the open query box on $(\gamma, \beta)$, which captures excess area under $Q'$.
+\item Let $Q_3$ be the open query box on $(\alpha, \delta)$, which captures excess area left of $Q'$.
+\item Let $Q_4$ be the open query box on $(\alpha, \beta)$, which captures the area which is double counted by $Q_2$ and $Q_3$.
+\end{itemize}
+
+\noindent Then,
+\[
+\area{Q'} = \area{Q_1} - \area{Q_2} - \area{Q_3} + \area{Q_4}
+\]
+
+%------------------------------------------------------------------------------
+\subsection{A little bit faster}
+\label{:mono2:bitfaster}
+
+We can reduce the query time from the above method to only $\BigOh{\sqrt{n}}$ by grouping the regions into three different sized groups instead of just two.
+
+As before, we decompose $P$ into $\BigOh{n}$ trapezoidal regions and create their area formulas.
+Next, from left to right, we group the regions into $\BigOh{\frac{\sqrt{n}}{\log{n}}}$ multi-regions each containing $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions.
+We refer to these as the A-level regions, and calculate a multi-region formula for each using Algorithm~\ref{alg:monotonep:mf}.
+Total preprocessing time and space for the A-level regions is $\BigOh{n\log{n}}$ and $\BigOh{n}$, respectively.
+Within each A-level region, we create B-level multi-regions consisting of $\BigOh{\sqrt{n}}$ trapezoidal regions each, again from left to right, resulting in $\BigOh{\log{n}}$ B-level regions for each A-level region.
+Total preprocessing time and space for the B-level regions is also $\BigOh{n\log{n}}$ and $\BigOh{n}$, respectively.
+
+Our queries use the same definitions as from Section~\ref{:monotonep:alt}. 
+Given a query $Q$ defined by $(\gamma, \delta)$, we first consider what areas are left of $\gamma$, and then use $\delta$ as the input to our area formulas.
+
+We start by considering the $\BigOh{\frac{\sqrt{n}}{\log{n}}}$ A-level regions which are entirely left of $\gamma$. 
+Each such region contains $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions, so querying the multi-region area formula stored there will require the following time.
+\[
+\log{\BigOh{\sqrt{n}\log{n}}} = \BigOh{\log{n}} + \BigOh{\log{\log{n}}} = \BigOh{\log{n}}
+\]
+
+Therefore, querying all of the necessary A-level regions requires time proportional to:
+\[
+\BigOh{\frac{\sqrt{n}}{\log{n}}} \cdot \BigOh{\log{n}} = \BigOh{\sqrt{n}}
+\]
+
+At most one A-level region is intersected by $\gamma$, and if that is the case, we proceed to its respective B-level regions.
+Of these B-level regions, at most $\BigOh{\log{n}}$ are entirely to the left of $\gamma$.
+Each has size $\BigOh{\sqrt{n}}$, so querying the multi-region area formulas stored with them requires $\BigOh{\log{\sqrt{n}}}$ time each, for a total query time of:
+\[
+\BigOh{\log{n}} \cdot \BigOh{\log{\sqrt{n}}} = \BigOh{\log^2{n}}
+\]
+
+At the last level, at most one B-level region is intersected by $\gamma$. 
+This region contains $\BigOh{\sqrt{n}}$ trapezoidal regions which are entirely left of $\gamma$.
+We can evaluate the area formula stored with each region in $\BigOh{\sqrt{n}}$ total time.
+Finally, there may be one trapezoidal region which is intersected by $\gamma$.
+This intersection produces an area of $\BigOh{1}$ complexity which we can calculate directly.
+
+Total time required for this query is as follows.
+\[
+\BigOh{\log{n}} + \BigOh{\sqrt{n}} + \BigOh{\log^2{n}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}}
+\]
+
+Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  Total space required is $\BigOh{n}$ as each trapezoidal region is considered in only one A-level regions and one the B-level region. We summarize these results with the following theorem.
+
+\begin{theorem}
+\label{th:mono2}
+Let $P$ be a monotone polygon consisting of $n$ vertices. In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structure that allows us to determine $\area{Q \cap P}$ in $\BigOh{\sqrt{n}}$ time, for any axis-parallel rectangular query region $Q$.
+\end{theorem}
 
 
 %------------------------------------------------------------------------------
