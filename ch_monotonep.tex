@@ -411,9 +411,9 @@ Figure~\ref{fig:mono2:query} shows an example query and a decomposition of $P$ i
 \end{figure}
 
 Performing our query requires only a few steps which consider successively finer regions of our decomposition of $P$.
-With a binary search, we can identify $\BigOh{\sqrt{n}}$ multi-regions $S_1, S_2, \ldots, S_{k-1}$ which are \emph{entirely} to the left of $\gamma$, and at most one multi-region, $S_{k}$, which is intersected by $\gamma$.  
+With a binary search, we can identify the multi-regions $S_1, S_2, \ldots, S_{k-1}$, where $1 \leq k < \sqrt{n}$ which are \emph{entirely} to the left of $\gamma$, and at most one multi-region, $S_{k}$, which is intersected by $\gamma$.  
 For $S_i$, $1 \leq i \leq k-1$, we evaluate the multi-region area formula for $\delta$. 
-This requires $\BigOh{\log{\sqrt{n}}}$ time per multi-region for a total of $\BigOh{\sqrt{n}\log{\sqrt{n}}}$ time.
+This requires $\BigOh{\log{|S_i|}} = \BigOh{\log{n}}$ time per multi-region for a total of $\BigOh{\sqrt{n}\log{n}}$ time.
 
 We then consider $S_k$, which is intersected by $\gamma$.  
 $S_k$ is comprised of $\BigOh{\sqrt{n}}$ trapezoidal regions, some of which are entirely left of $\gamma$, and at most one of which is intersected by $\gamma$. 
@@ -422,7 +422,7 @@ The intersection of the final, partial trapezoidal region which is intersected b
 
 This completes the query. In total, we require the following time to calculate the area inside of $Q$:
 \[ 
-\BigOh{\log{n}} + \BigOh{\sqrt{n}\log{\sqrt{n}}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}\log{\sqrt{n}}}
+\BigOh{\log{n}} + \BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}\log{n}}
 \]
 
 We can extend this method to query on a closed rectangle by combining the results of four separate open box queries.
@@ -448,7 +448,7 @@ We can find $\area{Q'}$ in the following way:
 We can reduce the query time from the above method to only $\BigOh{\sqrt{n}}$ by grouping the regions into three different sized groups instead of just two.
 
 As before, we decompose $P$ into $\BigOh{n}$ trapezoidal regions and create their area formulas.
-Next, from left to right, we group the regions into $\BigOh{\frac{\sqrt{n}}{\log{n}}}$ multi-regions each containing $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions.
+Next, from left to right, we group the regions into $\frac{\sqrt{n}}{\log{n}}$ multi-regions each containing $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions.
 We refer to these as the A-level regions, and calculate a multi-region formula for each using Algorithm~\ref{alg:monotonep:mf}.
 Total preprocessing time and space for the A-level regions is $\BigOh{n\log{n}}$ and $\BigOh{n}$, respectively.
 Within each A-level region, we create B-level multi-regions consisting of $\BigOh{\sqrt{n}}$ trapezoidal regions each, again from left to right, resulting in $\BigOh{\log{n}}$ B-level regions for each A-level region.
@@ -457,23 +457,21 @@ Total preprocessing time and space for the B-level regions is also $\BigOh{n\log
 Our queries use the same definitions as from Section~\ref{:monotonep:alt}. 
 Given a query $Q$ defined by $(\gamma, \delta)$, we first consider what areas are left of $\gamma$, and then use $\delta$ as the input to our area formulas.
 
-We start by considering the $\BigOh{\frac{\sqrt{n}}{\log{n}}}$ A-level regions which are entirely left of $\gamma$. 
+We start by considering the A-level regions which are entirely left of $\gamma$. 
 Each such region contains $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions, so querying the multi-region area formula stored there will require the following time.
 \[
-\log{\BigOh{\sqrt{n}\log{n}}} = \BigOh{\log{n}} + \BigOh{\log{\log{n}}} = \BigOh{\log{n}}
+\log{\BigOh{\sqrt{n}\log{n}}} = \BigOh{\log{n}} + \BigOh{\log{\log{n}}} = \BigOh{\log{n}} \leq C \log{n}
 \]
 
-Therefore, querying all of the necessary A-level regions requires time proportional to:
+\noindent where $C$ is a constant.
+Therefore, the worst case time required to query all of the necessary A-level regions is:
 \[
-\BigOh{\frac{\sqrt{n}}{\log{n}}} \cdot \BigOh{\log{n}} = \BigOh{\sqrt{n}}
+\frac{\sqrt{n}}{\log{n}} \cdot C \log{n} = \BigOh{\sqrt{n}}
 \]
 
 At most one A-level region is intersected by $\gamma$, and if that is the case, we proceed to its respective B-level regions.
 Of these B-level regions, at most $\BigOh{\log{n}}$ are entirely to the left of $\gamma$.
-Each has size $\BigOh{\sqrt{n}}$, so querying the multi-region area formulas stored with them requires $\BigOh{\log{\sqrt{n}}}$ time each, for a total query time of:
-\[
-\BigOh{\log{n}} \cdot \BigOh{\log{\sqrt{n}}} = \BigOh{\log^2{n}}
-\]
+Each has size $\BigOh{\sqrt{n}}$, so querying the multi-region area formulas stored with them requires $\BigOh{\log{n}}$ time each. Thus, the total query time for B-level regions is $\BigOh{\log^2{n}}$.
 
 At the last level, at most one B-level region is intersected by $\gamma$. 
 This region contains $\BigOh{\sqrt{n}}$ trapezoidal regions which are entirely left of $\gamma$.
@@ -486,7 +484,7 @@ Total time required for this query is as follows.
 \BigOh{\log{n}} + \BigOh{\sqrt{n}} + \BigOh{\log^2{n}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}}
 \]
 
-Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  Total space required is $\BigOh{n}$ as each trapezoidal region is considered in only one A-level regions and one the B-level region. We summarize these results with the following theorem.
+Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  Total space required is $\BigOh{n}$ as each trapezoidal region is considered in only one A-level regions and in one B-level region. We summarize these results with the following theorem.
 
 \begin{theorem}
 \label{th:mono2}
