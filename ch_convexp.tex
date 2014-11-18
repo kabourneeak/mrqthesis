@@ -16,10 +16,10 @@ Throughout this chapter we use the following definitions. The polygon $P$ is def
 
 A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. See Figure \ref{fig:convexp:example} for an example.
 
-\begin{figure}
+\begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.50\textwidth]{figures/fig_cvp_example}
-  \caption[A convex polygon $P$ and query box $Q$]{The query region $Q$ formed by the inputs $\alpha$, $\beta$, $\gamma$,  $\delta$, and a convex polygon $P$.}
+  \caption[A convex polygon $P$ and query box $Q$.]{The query region $Q$ formed by the inputs $\alpha$, $\beta$, $\gamma$,  $\delta$, and a convex polygon $P$.}
   \label{fig:convexp:example}
 \end{center}
 \end{figure}
@@ -27,7 +27,7 @@ A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$
 We say that $P$ is \emph{mostly} enclosed by $Q$ if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$. Throughout this chapter we will assume that $Q$ is an axis-parallel rectangle for ease of discussion. In Section~\ref{:convexp:remarks} we will show how to use our method even when $Q$ has no fixed orientation.
 
 %------------------------------------------------------------------------------
-\section{Overview of the algorithm}
+\section{Overview of the Algorithm}
 \label{:convexp:approach}
 
 To achieve a fast query time, our algorithm requires some preprocessing on $P$ to speed up certain area calculations. Before describing the preprocessing, we outline the query algorithm here.
@@ -95,10 +95,10 @@ $a(T) \gets a + a(T_l) + a(T_r)$\;
 \KwRet{$T$}
 \end{algorithm}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.80\textwidth]{figures/fig_cvp_prep}
-  \caption[Pre-processing the area of chords of $P$]{Pre-processing the area of chords of $P$.  Each level forms a triangle with the chords of the previous level.}
+  \caption[Pre-processing the area of chords of $P$.]{Pre-processing the area of chords of $P$.  Each level forms a triangle with the chords of the previous level.}
   \label{fig:convexp:preprocessing}
 \end{center}
 \end{figure}
@@ -107,7 +107,7 @@ Essentially, $T_P$ is defined recursively by splitting $E$ into halves. The resu
 
 
 %------------------------------------------------------------------------------
-\section{Testing intersections}
+\section{Testing Intersections}
 \label{:convexp:intersections}
 
 The query rectangle $Q$ can intersect $P$ at most $8$ times. This follows from the fact that $P$ is convex, and a straight-line through $P$ will therefore have at most 2 intersections. Extending each of the 4 boundaries of $Q$ into lines then yields at most 8 intersections.
@@ -128,7 +128,7 @@ If all of these values are nil, then $P$ does not intersect $Q$ at all, and one 
 
 
 % -----------------------------------------------------------------------------
-\section{Chain decomposition}
+\section{Chain Decomposition}
 
 For the remainder of the query, we assume that $P$ and $Q$ \emph{do} intersect. Any such intersections must come in pairs; i.e., if $P$ enters $Q$, it must leave elsewhere.  Our goal then is to determine how $P$ and $Q$ interact, and calculate the area of $P \cap Q$.  Figure \ref{fig:convexp:examples} shows some examples of how the two may interact.
 
@@ -157,10 +157,10 @@ We can find all entrance/exit pairs with the following steps.
 
 Figure \ref{fig:convexp:chord} shows an example. In the figure, $e_\beta$ is an edge that enters into $Q$, while $e_\delta'$ is the corresponding exit edge. Both $e_\alpha'$ and $e_\alpha$ are nil. The corners of $Q$ at $(\alpha, \beta)$ and $(\alpha, \delta)$ are outside of $P$.
 
-\begin{figure}
+\begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.50\textwidth]{figures/fig_cvp_chord}
-  \caption[A query $Q$ intersecting $P$ at points $s$ and $t$]{A query $Q$ intersecting $P$ at points $s$ and $t$. The segment $st$ is a chord of $P$ through the interior of $Q$.}
+  \caption[A query $Q$ intersecting $P$ at points $s$ and $t$.]{A query $Q$ intersecting $P$ at points $s$ and $t$. The segment $st$ is a chord of $P$ through the interior of $Q$.}
   \label{fig:convexp:chord}
 \end{center}
 \end{figure}
@@ -210,7 +210,7 @@ Our method works for a query rectangle which has any orientation; that is, $Q$ n
 
 We can allow for $Q$ to be arbitrarily-oriented by modifying our intersection testing in the following way.  During preprocessing, we calculate $c$, the center point of $P$, which can be done in $\BigOh{n}$ time. Let $\iline{l}$ be a line through any boundary of $Q$ and let $\iline{c}$ be the line perpendicular to $\iline{l}$ through the center point of $P$.  The line $\iline{c}$ crosses the boundary of $P$ in two places, and, using a binary search on the edges of $P$, we can identify the edges $e_a$ and $e_b$ that $\iline{c}$ crosses. These two edges divide $P$ into two chains, $E_{ab}$ and $E_{ba}$. We can now perform a binary search on each of these chains looking for intersections with $\iline{l}$ (which may or may not cross $P$ at all). Figure~\ref{fig:convexp:ao} illustrates this process.
 
-\begin{figure}
+\begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.60\textwidth]{figures/fig_cvp_ao}
   \caption{Locating the intersections of $P$ with an arbitrarily-oriented $Q$.}

@@ -21,7 +21,7 @@ A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$
 \begin{figure}[t]
 \begin{center}
   \includegraphics[width=1.00\textwidth]{figures/fig_mono_query}
-  \caption[A monotone polygon $P$ with query $Q$]{A monotone polygon $P$ with query $Q$. The area of $P$ enclosed by $Q$, $P \cap Q$, is highlighted.}
+  \caption[A monotone polygon $P$ with query $Q$.]{A monotone polygon $P$ with query $Q$. The area of $P$ enclosed by $Q$, $P \cap Q$, is highlighted.}
   \label{fig:monotonep:query-example}
 \end{center}
 \end{figure}
@@ -73,7 +73,7 @@ Thus, each region is a (possibly degenerate) trapezoid.
 
 For each region $R_i \in \{R_1, R_2, \ldots R_{n-1}\}$, we create a function $F(R_i, h)$ which will return the area of $R_i$ below a horizontal line query line having a $y$-component of $h$. Figure \ref{fig:monotonep:trapezoid} shows an example region. Every region $R_i$ is a (possibly degenerate) trapezoid. From bottom to top, we can identify 4 ``critical heights'', where the nature of how the area of a region grows with respect to $h$ changes.  For a general region $R$, these 4 critical heights are:
 
-\begin{figure}
+\begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.20\textwidth]{figures/fig_mono_trap}
   \caption[A trapezoidal region of $P$.]{A trapezoidal region of $P$ for which we can derive an area function dependant on $h$.}
@@ -318,7 +318,7 @@ In the last step of the algorithm we create a list of formulas over all regions,
 \begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.80\textwidth]{figures/fig_mono_extra}
-  \caption[Querying details for a monotone polygon]{A monotone polygon $P$ with query $Q$. The tiled areas cannot be queried using preprocessed area formulas and will require special handling.}
+  \caption[Details of a query on a monotone polygon.]{A monotone polygon $P$ with query $Q$. The tiled areas cannot be queried using preprocessed area formulas and will require special handling.}
   \label{fig:monotonep:extra}
 \end{center}
 \end{figure}
@@ -395,17 +395,17 @@ In this section, we detail an alternate approach to solving this problem which s
 We begin by decomposing $P$ into $\BigOh{n}$ trapezoidal regions, creating area formulas for each which can report the area of a region below a horizontal line.  
 This steps are done just as in Section~\ref{:monotonep:approach}.  
 Next, we divide $P$ into $\BigOh{\sqrt{n}}$ multi-regions, from left to right, each comprised of $\BigOh{\sqrt{n}}$ trapezoidal regions.
-For each multi-region, we calculate multi-region area formulas for using Algorithm~\ref{alg:monotonep:mf}.  
+For each multi-region, we calculate its multi-region area formulas using Algorithm~\ref{alg:monotonep:mf}.  
 Altogether, this process requires $\BigOh{n\log{n}}$ time, and $\BigOh{n}$ storage.
 
 Our query $Q$ is a box which is open to the left and bottom.
 We can specify $Q$ by a single point with coordinates $(\gamma, \delta)$.  
 Figure~\ref{fig:mono2:query} shows an example query and a decomposition of $P$ into $\BigOh{\sqrt{n}}$ multi-regions.
 
-\begin{figure}
+\begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.80\textwidth]{figures/fig_mono2_query}
-  \caption[An alternate query method for a monotone polygon]{A monotone polygon $P$ with query $Q$. The query region is box which is open to the left and bottom.}
+  \caption[An alternate query method for a monotone polygon.]{A monotone polygon $P$ with query $Q$. The query region is box which is open to the left and bottom.}
   \label{fig:mono2:query}
 \end{center}
 \end{figure}
@@ -442,7 +442,7 @@ We can find $\area{Q'}$ in the following way:
 \]
 
 %------------------------------------------------------------------------------
-\subsection{A little bit faster}
+\subsection{A Little Bit Faster}
 \label{:mono2:bitfaster}
 
 We can reduce the query time from the above method to only $\BigOh{\sqrt{n}}$ by grouping the regions into three different sized groups instead of just two.

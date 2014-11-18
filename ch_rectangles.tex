@@ -1,4 +1,4 @@
-\chapter{Querying Segments with Axis-Parallel Rectangles}
+\chapter{Majority Range Queries with Axis-Parallel Rectangles}
 \label{:rectangles}
 
 In this chapter, we begin with a simple environment for performing majority range queries. Even with this simplified model, we will be able to identify where the main challenges of this problem domain lie and construct some techniques which we will use to solve many of the more complex problems.
@@ -29,10 +29,10 @@ For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly,
 \subsection{Decomposing the problem}
 \label{:rectangles:ap:approach}
 
-\begin{figure}
+\begin{figure}[t]
 \centering
 \includegraphics[width=1.00\columnwidth]{figures/fig_oo_cases}
-\caption[The different cases of axis-parallel segments]{An axis-parallel query on axis-parallel segments. Only horizontal segments are shown.}
+\caption[The different cases of axis-parallel segments.]{An axis-parallel query on axis-parallel segments. Only horizontal segments are shown.}
 \label{:fig:rectangles:ap:cases}
 \end{figure}
 
@@ -391,7 +391,7 @@ Broadly, our solution to this problem uses the multi-level range tree introduced
 \begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.80\textwidth]{figures/fig_ds}
-  \caption[An overview of the multi-level range tree required for arbitrarily-oriented segments]{An overview of the multi-level range tree and associated data structures for performing both the classification and majority property phases of the query.}
+  \caption[An overview of the multi-level range tree required for arbitrarily-oriented segments.]{An overview of the multi-level range tree and associated data structures for performing both the classification and majority property phases of the query.}
   \label{fig:rectangles:ao:overview}
 \end{center}
 \end{figure}
