@@ -60,19 +60,17 @@ Restated with $d=2$.
 We can form $\BigOh{n}$ canonical subsets of total size $\BigOh{n \log{n}}$ in $\BigOh{n \log{n}}$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq \BigOh{\sqrt{n}\log{n}}$ in time $\BigOh{\sqrt{n}\log{n}}$ w.h.p. $(n)$.
 \end{theorem}
 
-XXX TODO Can I just show some example analysis here?
-
 This structure is particularly well-suited to multi-level query structures, as we can associate additional data structures with each of the canonical subsets.
 
-Given an associate data structure which requires $f(n)$ preprocessing space, $g(n)$ preprocessing time, and $h(n)$ query time, we have the following corollary.
-
 \begin{corollary}
-\label{cor:chan}
-With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. If this associated structure requires $\BigOh{n\log^f{n}}$ preprocessing space, $\BigOh{n \log^g{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^h{n}}$ query time, where $f, g, h \in \BigOh{1}, f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+\label{cor:multichan}
+With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. 
+Let this associated structure require $\BigOh{m\log^f{m}}$ preprocessing space, $\BigOh{m \log^g{m}}$ preprocessing time, and $\BigOh{\sqrt{m}\log^h{m}}$ query time, where $f, g, h \in \BigOh{1}, f \leq g$, and $m$ the number of elements it is constructed on. 
+The resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
 \end{corollary}
 
 \begin{proof}
-The preprocessing space of the structure requires $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
+The preprocessing space of the multi-level structure requires $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
 \[
 \begin{split}
 \sum_{i=1}^k{|C_i| \log^f{|C_i|}}
@@ -86,7 +84,7 @@ The preprocessing space of the structure requires $\BigOh{n \log{n}}$ space for 
 
 \noindent for the associate structures, for a total space complexity of $\BigOh{n \log{n}} + \BigOh{n\log^{f+1}{n}} = \BigOh{n\log^{f+1}{n}}$.
 
-Preprocessing time is calculated using similar reasoning, and includes the $\BigOh{n \log{n}}$ time for creating the canonical subsets structure itself, plus
+Preprocessing time is calculated using similar reasoning, and includes the $\BigOh{n \log{n}}$ time for building the canonical subsets structure itself, plus
 \[
 \begin{split}
 \sum_{i=1}^k{|C_i| \log^g{|C_i|}}
@@ -112,9 +110,23 @@ Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canon
 \end{split}
 \]
 
-\noindent to query the appropriate associated data structures, for a total query time of 
+\noindent to query all of the appropriate associated data structures, for a total query time of 
 \[
 \BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^{h+1}{n}} = \BigOh{\sqrt{n}\log^{h+1}{n}}
 \]
 
 \end{proof}
+
+An example of how we can use a multi-level canonical subsets structure is as follows. 
+Suppose we have $n$ line segments in the plane.
+Each line segment $s_i$, $1 \leq i \leq n$ is given by its left endpoint $p_i = (a_i, b_i)$ and its right endpoint $q_i = (c_i, d_i)$.
+We would like to identify all segments intersected by a query line $L: y = \alpha x + \beta$.
+
+We will solve this query in two steps, by first identifying all segments whose left endpoint is left of $L$. 
+Of those, we will then identify which have their right endpoint right of $L$.
+Describing the construction of a multi-level data structure is often clearer when we begin with the innermost level.
+With that in mind, we consider the right endpoints first. 
+Considering only the points $q_i$, $1 \leq i \leq n$, and using $L$ to define a half-plane, we apply 
+Theorem~\ref{th:chan} to create a structure in $\BigOh{n\log{n}}$ time and space which will identify all points inside the half-plane in $\BigOh{\sqrt{n}\log{n}}$ time.  While each subset in this structure is ``keyed'' on right-endpoints, we can store the line segments as well.
+
+Considering the left endpoints now, applying Theorem~\ref{th:chan} again gives us another structure with identical preprocessing and query times.  On this structure, however, we will associate an instance of the structure from step 1 with every subset, constructed on only the elements from its respective subset. By Corollary~\ref{cor:multichan}, this multi-level data structure will require $\BigOh{n\log^2{n}}$ time and space, and will identify all segments whose left endpoint is left of $L$ \emph{and} whose right endpoint is right of $L$ in $\BigOh{\sqrt{n}\log^2{n}}$ time.
