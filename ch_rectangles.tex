@@ -26,7 +26,7 @@ Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i =
 For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
 
 
-\subsection{Decomposing the problem}
+\subsection{Decomposing the Problem}
 \label{:rectangles:ap:approach}
 
 \begin{figure}[t]
@@ -141,7 +141,7 @@ Then, as a direct consequence of their construction, if $s_{i,p} \in Q$, then $s
 We can query these higher dimensional points by applying the multi-dimensional range tree method of Corollary~\ref{cor:rangetree}.
 
 
-\subsection{Both endpoints outside $Q$}
+\subsection{Handling Endpoints Outside of $Q$}
 \label{:rectangles:ao:bothout}
 
 Just as we saw in Section~\ref{:rectangles:ap:approach}, the case where both endpoints are outside of $Q$ will be the most challenging case to handle.

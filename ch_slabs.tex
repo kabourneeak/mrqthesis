@@ -42,7 +42,7 @@ Identifying the segments which meet our enclosure property takes place in three 
 
 \end{enumerate}
 
-To answer these queries, we will use a multi-level \emph{canonical sets} data structure, as described in Section~\ref{:prelim:chan}. We describe the different steps of the query in more detail here while Section~\ref{:slabs:one:analysis} describes the construction and analysis of the query data structure.
+To answer these queries, we will use a multi-level canonical sets data structure, as described in Section~\ref{:prelim:chan}. We describe the different steps of the query in more detail here while Section~\ref{:slabs:one:analysis} describes the construction and analysis of the query data structure.
 
 
 %------------------------------------------------------------------------------
@@ -273,7 +273,10 @@ Given a set of $n$ horizontal line segments, we can locate all segments whose le
 % -----------------------------------------------------------------------------
 \subsubsection{Combining the steps}
 
-The previous three steps combine to create a data structure which can answer a majority range query for any one of the three simplicies that $Q$ is subdivided into as shown in Figure~\ref{fig:slabs:one:classification}.  To answer any query $Q$, we need to preprocess three such data structures, choosing our expressions appropriately for $Q_1$, $Q_{2a}$, and $Q_{2b}$.  Then, during query time, we need to query all three structures, and combine their results. The following theorem summarizes this process.
+The previous three steps combine to create a data structure which can answer a majority range query for segments whose left endpoints are found on one side of $L_1$ or the other.
+To answer any query $Q$, we need to preprocess two such data structures, choosing our expressions appropriately for the left and right cases.
+Then, during query time, we need to query both structures, combining their results.
+The following theorem summarizes this process.
 
 \begin{theorem}
 \label{thm:slabs:one}
@@ -341,7 +344,7 @@ A segment $s \in S$ with length $l$ is sufficiently enclosed in $Q$ if and only 
 Just as in the single slab problem, identifying which segments meet our enclosure property is accomplished ignoring some segments, classifying the remaining segments, and developing an appropriate majority property expression.
 
 \begin{enumerate}
- \item Decompose the parallelogram into three query subregions based on $y$-coordinates, and isolate those segments which may interact with each subregion.
+ \item Decompose the parallelogram into three query subregions based on the $y$-coordinates of its vertices, and isolate those segments which may interact with each subregion.
 
  \item For each query subregion:
  \begin{enumerate}

@@ -33,7 +33,7 @@ We say that $P$ is \emph{mostly} enclosed by $Q$ if and only if $\area{Q \cap P}
 To achieve a fast query time, our algorithm requires some preprocessing on $P$ to speed up certain area calculations. Before describing the preprocessing, we outline the query algorithm here.
 
 \begin{enumerate}
- \item Test which edges of $P$ intersect $Q$.
+ \item Identify which edges of $P$ intersect $Q$.
  
  \item Enumerate the intersecting edges in clockwise order to determine which areas of $Q$ are inside of $P$, and which are outside. There are at most 4 pairs of intersecting edges where $P$ crosses into $Q$, and subsequently back out.
  
@@ -107,7 +107,7 @@ Essentially, $T_P$ is defined recursively by splitting $E$ into halves. The resu
 
 
 %------------------------------------------------------------------------------
-\section{Testing Intersections}
+\section{Locating Intersections}
 \label{:convexp:intersections}
 
 The query rectangle $Q$ can intersect $P$ at most $8$ times. This follows from the fact that $P$ is convex, and a straight-line through $P$ will therefore have at most 2 intersections. Extending each of the 4 boundaries of $Q$ into lines then yields at most 8 intersections.
@@ -185,7 +185,7 @@ Construction of $T_P$, detailed in Section~\ref{:convexp:preprocessing} is done 
 Querying involves several steps given below. Each of these steps requires only $\BigOh{\log{n}}$ time.
 
 \begin{enumerate}
- \item Binary search on $P$ to locate intersections with lines through the  boundaries of $Q$ in $\BigOh{\log{n}}$ time.
+ \item Binary search on $P$ to locate intersections with lines through the boundaries of $Q$ in $\BigOh{\log{n}}$ time.
  
  \item Identifying the caps of $P$ inside $Q$; $\BigOh{1}$ time.
 
@@ -218,16 +218,20 @@ We can allow for $Q$ to be arbitrarily-oriented by modifying our intersection te
 \end{center}
 \end{figure}
 
-XXX TODO write about convex $k$-gon
+Our method can also be extended to allow for querying by an arbitrary convex $k$-gon.
+The number of intersections we have locate will increase to $\BigOh{k}$, as does the number of chords across $P$.
+We use exactly the same preprocessing as well as the same general query method as for rectangles. 
+We require $\BigOh{k \log{n}}$ time to find all intersection points between $P$ and $Q$ and to calculate the areas of each cap of $P$. A further $\BigOh{k}$ time is needed to calculate the area of $P_I$. 
+The total query time for a convex $k$-gon is thus $\BigOh{k \log{n}}$.
 
-Recent work by \cite{XXX} gives an alternate method for calculating the area of a convex polygon cut by a segment joining any two vertices.  This method requires only $\BigOh{n}$ preprocessing time and space, and can answer area queries in $\BigOh{1}$ time. We could use this method to reduce the time needed to find the area within each cap of $P$ to $\BigOh{1}$ with no increase in the cost of our preprocessing. However, calculating the area of a rectangle still requires us to expend $\BigOh{\log{n}}$ time locating the points of intersection between $P$ and $Q$, so our overall query time remains the same.
+Work by Czyzowicz \textit{et al.}\cite{DBLP:conf/cccg/CzyzowiczCU98} gives an alternate method for calculating the area of a convex polygon cut by a chord.  This method requires only $\BigOh{n}$ preprocessing time and space, and can answer area queries in $\BigOh{1}$ time. We could use this method to reduce the time needed to find the area within each cap of $P$ to $\BigOh{1}$ with no increase in the cost of our preprocessing. However, calculating the area of a rectangle still requires us to expend $\BigOh{\log{n}}$ time locating the points of intersection between $P$ and $Q$, so our overall query time remains unchanged.
 
 
 %------------------------------------------------------------------------------
 \section{Conclusion}
 \label{:convexp:concl}
 
-In this chapter we have developed a method for calculating the area of a convex polygon enclosed by an axis-parallel query rectangle. Our solution doesn't require complex data structures, using just a binary tree and some line intersection tests.
+In this chapter we have developed a method for calculating the area of a convex polygon enclosed by a query rectangle or convex $k$-gon. Our solution doesn't require complex data structures, using just a binary tree and some line intersection tests.
 
 Our contributions are summarized by the following theorem and corollary.
 
@@ -240,3 +244,8 @@ There exists an algorithm which preprocesses a convex polygon $P$ in $\BigOh{n}$
 \label{cor:convexp:mp}
 Given a convex polygon $P$, and query rectangle $Q$, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we can determine if $\area{Q \cap P} \geq \rho \cdot \area{P}$ in $\BigOh{\log{n}}$ time using a data structure requiring only $\BigOh{n}$ preprocessing time and space.
 \end{corollary}
+
+\begin{theorem}
+\label{th:convexp:karea}
+There exists an algorithm which preprocesses a convex polygon $P$ in $\BigOh{n}$ time and space which allows us to calculate the area of $P$ enclosed by a convex $k$-gon $\BigOh{k \log{n}}$ time.
+\end{theorem}

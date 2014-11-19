@@ -60,20 +60,55 @@ Restated with $d=2$.
 We can form $\BigOh{n}$ canonical subsets of total size $\BigOh{n \log{n}}$ in $\BigOh{n \log{n}}$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq \BigOh{\sqrt{n}\log{n}}$ in time $\BigOh{\sqrt{n}\log{n}}$ w.h.p. $(n)$.
 \end{theorem}
 
-This structure is particularly well-suited to multi-level query structures, as we can associate additional data structures with each of the canonical subsets.
+This structure is particularly well-suited to multi-part queries where we need to identify objects which satisfy a half plane query, and which also satisfy some other arbitrary query condition for which we have an existing query method.
+To support such a query, we construct a canonical subsets structure to perform the half plane component of the query. 
+Then, with the objects of each canonical subset, we construct the secondary query structure.
+A multi-level query is executed by first querying the canonical subsets structure for all points satisfying the half plane.
+With each subset identified by the first step, we evaluate the secondary structure.
+The result is the set of all objects which satisfy both the half-plane query \emph{and} whatever conditions the second-level query may test.
+If the secondary structure is itself a multi-level structure, then this procedure effectively adds one more layer.
+We can repeat this process to any arbitrary number of levels.
+The following corollary formalizes the use of canonical subset structures to build multi-level structures and details the preprocessing and query requirements.
+
 
 \begin{corollary}
 \label{cor:multichan}
+
 With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. 
 Let this associated structure require $\BigOh{m\log^f{m}}$ preprocessing space, $\BigOh{m \log^g{m}}$ preprocessing time, and $\BigOh{\sqrt{m}\log^h{m}}$ query time, where $f, g, h \in \BigOh{1}, f \leq g$, and $m$ the number of elements it is constructed on. 
 The resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+
+
+We are given a set $A$ of $n$ objects $a_1, a_2, \ldots, a_n$, and a query method $R$ which requires $S(n)$ preprocessing space, $T(n)$ preprocessing time, and $Q(n)$ query time. With each $a_i$, there is an associated point $p_i$.
+
+
+
+A query must locate all objects where $p_i$ satisfies a half-plane, and where each $a_i$ satisfies $R$.
+
+Such a query can be solved by constructing a canonical subsets structure to answer the half-plane query on the points. With each canonical subset, we can associate the data structure necessary for $R$ with the elements of that subset.
+
+We can identify all pairs satisfying a half-plane query on $p_i$ and a secondary query on $a_i$
+
+We can answer a query which identifies points satisfying a half-plane query and which 
+
+Given a set $A$ of $n$ objects of the form $(a_i, p_i), 1 \leq i \leq n$, where each $p_i$ is a 2D point, and each $a_i$ is an object which can be queried by a method $R$, we can construct a method $R$
+
+\begin{enumerate}
+\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\sqrt{n} \log^h{n}}$, where $f, g, h \in \BigOh{1}, f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+
+\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\log^h{n}}$, where $f, g, h \in \BigOh{1}, f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+
+\end{enumerate}
+
 \end{corollary}
 
 \begin{proof}
 The preprocessing space of the multi-level structure requires $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
 \[
 \begin{split}
-\sum_{i=1}^k{|C_i| \log^f{|C_i|}}
+\sum_{i=1}^k{S(|C_i|)}
+&\leq \sum_{i=1}^k{|C_i| \log^f{|C_i|}} \\
+%
 &\leq \sum_{i=1}^k{|C_i| \log^f{n}} \\
 %
 &\leq \BigOh{\log^f{n}} \cdot \sum_{i=1}^k{|C_i|} \\
@@ -82,12 +117,17 @@ The preprocessing space of the multi-level structure requires $\BigOh{n \log{n}}
 \end{split}
 \]
 
-\noindent for the associate structures, for a total space complexity of $\BigOh{n \log{n}} + \BigOh{n\log^{f+1}{n}} = \BigOh{n\log^{f+1}{n}}$.
+\noindent for the associate structures, for a total space complexity of
+\[
+\BigOh{n \log{n}} + \BigOh{n\log^{f+1}{n}} = \BigOh{n\log^{f+1}{n}}
+\]
 
 Preprocessing time is calculated using similar reasoning, and includes the $\BigOh{n \log{n}}$ time for building the canonical subsets structure itself, plus
 \[
 \begin{split}
-\sum_{i=1}^k{|C_i| \log^g{|C_i|}}
+\sum_{i=1}^k{T(|C_i|)}
+&\leq \sum_{i=1}^k{|C_i| \log^g{|C_i|}} \\
+%
 &\leq \sum_{i=1}^k{|C_i| \log^g{n}} \\
 %
 &\leq \BigOh{\log^g{n}} \cdot \sum_{i=1}^k{|C_i|} \\
@@ -96,12 +136,17 @@ Preprocessing time is calculated using similar reasoning, and includes the $\Big
 \end{split}
 \]
 
-\noindent for building the associate structures, for a total time complexity of $\BigOh{n \log{n}} + \BigOh{n\log^{g+1}{n}} = \BigOh{n\log^{g+1}{n}}$.
+\noindent for building the associate structures, for a total time complexity of 
+\[
+\BigOh{n \log{n}} + \BigOh{n\log^{g+1}{n}} = \BigOh{n\log^{g+1}{n}}
+\]
 
-Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the elements found by the top-level canonical subsets query, plus
+Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the elements found by the top-level canonical subsets query, plus the time required to query the associated data structures.  If $Q(n) \in \BigOh{\sqrt{n}\log^h{n}}$ then the total time to query the appropriate associated is
 \[
 \begin{split}
-\sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{|C_i|}}} 
+\sum_{i=1}^{k'}{Q(|C_i|)}
+&\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{|C_i|}}} \\
+%
 &\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{n}}} \\
 %
 &\leq \BigOh{\log^h{n}} \cdot \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}}} \\
@@ -110,7 +155,23 @@ Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canon
 \end{split}
 \]
 
-\noindent to query all of the appropriate associated data structures, for a total query time of 
+\noindent Otherwise, if $Q(n) \in \BigOh{\log^h{n}}$ then the total time to query the appropriate associated is
+\[
+\begin{split}
+\sum_{i=1}^{k'}{Q(|C_i|)}
+&\leq \sum_{i=1}^{k'}{\BigOh{\log^h{|C_i|}}} \\
+%
+&\leq \sum_{i=1}^{k'}{\BigOh{\log^h{n}}} \\
+%
+&\leq \BigOh{\log^h{n}} \cdot \sum_{i=1}^{k'}{1} \\
+%
+&\leq \BigOh{\log^h{n}} \cdot \BigOh{\sqrt{n}\log{n}}\\
+%
+&\leq \BigOh{\sqrt{n}\log^{h+1}{n}} \\
+\end{split}
+\]
+
+Thus, the query time for the associated structures is identical for either complexity class of $Q$ that we consider. Total query time is
 \[
 \BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^{h+1}{n}} = \BigOh{\sqrt{n}\log^{h+1}{n}}
 \]

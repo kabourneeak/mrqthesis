@@ -60,7 +60,7 @@ We define a sequence of regions $R_1, R_2, \dots, R_{n-1}$ as follows. For each 
 \begin{itemize}
  \item $R_i$ is the area of $P$ bounded by the vertical segments $\overline{x_i} \cap P$ and $\overline{x_{i+1}} \cap P$ to the left and right, and some portion of the edges $e_i$ and $e_i'$ to the top and bottom (while, in general, $e_i$ and  $e_i'$ extend beyond $\overline{x_i}$ and $\overline{x_{i+1}}$, this excess is irrelevant to the definition of $R_i$).
  
- \item Equivalently, $R_i$ is the polygon formed by the cycle of points $x_i, x_{i+1}, x_{i+1}', x_i', x_i$.
+ \item Equivalently, $R_i$ is the polygon formed by the cycle on $x_i, x_{i+1}, x_{i+1}', x_i'$.
 \end{itemize}
 
 \noindent
@@ -209,7 +209,7 @@ The output of this algorithm is the list $H$ of multi-region formulas. Since $\m
 
 
 % -----------------------------------------------------------------------------
-\subsection{Querying the Multi-Region Formulas}
+\subsection{Querying Multi-Region Formulas}
 \label{:monotonep:query-mf}
 
 We are now ready to query horizontal slabs against $P$. The area function $F(P,h)$ is essentially a very big piecewise function given by Algorithm \ref{alg:monotonep:mf} in the form of a sorted list $H$. Given two horizontal lines defining our query slab, located at $\beta$ and $\delta$, $\beta \leq \delta$, our query requires only a few steps.
@@ -242,24 +242,6 @@ Let $P$ be a monotone polygon consisting of $n$ vertices, and let $0 < \rho \leq
 \] 
 
 \noindent in $\BigOh{\log{n}}$ time for any horizontal slab query $S$.
-\end{corollary}
-
-
-% -----------------------------------------------------------------------------
-\subsection{Applications to Simple Polygons}
-\label{:monotonep:slab:simplep}
-
-We can apply our method for horizontal slab queries ``as is'' to simple polygons since nothing about the way that we decompose $P$, build the multi-region area formulas, or query them, depends on the monotone property.  Put another way, we do not require any special handling for regions which appear above or below other regions.
-
-To answer slab queries on simple polygons, we decompose $P$ by extending rays from each vertex into the interior of $P$ until they strike the next boundary.  The regions will have the same 4-sided shape as in the monotone polygon case, and we can create an area formula for each one over the, at most, four critical heights of $h$.
-
-Each region still maintains its own critical heights for $h$, and we use Algorithm \ref{alg:monotonep:mf} without modification, first sorting all critical points together, then maintaining a set of coefficients which we adjust by region as we sweep from bottom to top.
-
-Finally, querying the resulting list of multi-region formulas, $H$, is done using the same binary search method as in the monotone case. This result is summarized in the following corollary.
-
-\begin{corollary}
-\label{cor:monotonep:simplep-area}
-Let $P$ be a simple polygon consisting of $n$ vertices. In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structure that allows us to determine $\area{S \cap P}$ in $\BigOh{\log{n}}$ time for any horizontal slab query region $S$.
 \end{corollary}
 
 
@@ -442,7 +424,7 @@ We can find $\area{Q'}$ in the following way:
 \]
 
 %------------------------------------------------------------------------------
-\subsection{A Little Bit Faster}
+\subsection{Improving Query Time}
 \label{:mono2:bitfaster}
 
 We can reduce the query time from the above method to only $\BigOh{\sqrt{n}}$ by grouping the regions into three different sized groups instead of just two.
@@ -492,6 +474,29 @@ Let $P$ be a monotone polygon consisting of $n$ vertices. In $\BigOh{n \log{n}}$
 \end{theorem}
 
 
+% -----------------------------------------------------------------------------
+% -----------------------------------------------------------------------------
+\subsection{Remarks on Simple Polygons}
+\label{:monotonep:simplep}
+
+We can apply our method for horizontal slab queries ``as is'' to simple polygons since nothing about the way that we decompose $P$, build the multi-region area formulas, or query them, depends on the monotone property.  Put another way, we do not require any special handling for regions which appear above or below other regions.
+
+To answer slab queries on simple polygons, we decompose $P$ by extending rays from each vertex into the interior of $P$ until they strike the next boundary.  The regions will have the same 4-sided shape as in the monotone polygon case, and we can create an area formula for each one over the, at most, four critical heights of $h$.
+
+Each region still maintains its own critical heights for $h$, and we use Algorithm \ref{alg:monotonep:mf} without modification, first sorting all critical points together, then maintaining a set of coefficients which we adjust by region as we sweep from bottom to top.
+
+Finally, querying the resulting list of multi-region formulas, $H$, is done using the same binary search method as in the monotone case. This result is summarized in the following corollary.
+
+\begin{corollary}
+\label{cor:monotonep:simplep-area}
+Let $P$ be a simple polygon consisting of $n$ vertices. In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structure that allows us to determine $\area{S \cap P}$ in $\BigOh{\log{n}}$ time for any horizontal slab query region $S$.
+\end{corollary}
+
+Unfortunately, we cannot extend our method for rectangular queries to work with simple polygons so easily.
+While the multi-region formulas themselves do not use the monotone property, our tree of multi-region formulas does. 
+The tree functions by partitioning the trapezoidal regions with respect to vertical lines, however, in a simple polygon, a vertical line passing through the boundary of one region may pass through the interior of another. 
+This lack of clean partitioning prevents the multi-region formula from working correctly for all possible horizontal query lines which may be given as input to the formula.
+
 %------------------------------------------------------------------------------
 %------------------------------------------------------------------------------
 \section{Conclusion}
@@ -502,9 +507,11 @@ In this chapter we have developed methods for calculating the area of a monotone
 \begin{enumerate}
 \item A method for calculating the area of a monotone polygon enclosed in a horizontal slab, Theorem~\ref{th:montonep:slab-area}.
 
-\item A method for calculating the area of a simple polygon enclosed in a horizontal slab, Theorem~\ref{cor:monotonep:simplep-area}.
-
 \item A method for calculating the area of a monotone polygon enclosed in an axis-parallel rectangle, Theorem~\ref{th:monotonep:rect:area}.
+
+\item An alternate method for calculating the area of a monotone polygon enclosed in an axis-parallel rectangle which is more space efficient, but requires more query time; Theorem~\ref{th:mono2}.
+
+\item A method for calculating the area of a simple polygon enclosed in a horizontal slab, Theorem~\ref{cor:monotonep:simplep-area}.
 
 \end{enumerate}
 
