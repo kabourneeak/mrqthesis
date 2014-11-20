@@ -34,7 +34,7 @@ A segment $s \in S$ with length $|s|$ is sufficiently enclosed in $Q$ if and onl
 Identifying the segments which meet our enclosure property takes place in three broad steps:
 
 \begin{enumerate}
- \item Restrict ourselves to segments which are ``not too long'' to fit mostly inside $Q$.
+ \item Restrict segments to those which are ``not too long'' to fit mostly inside $Q$.
 
  \item Classify all segments depending on the location of their left endpoints. We are interested in those segments whose endpoints are left of $L_1$ and those which are between $L_1$ and $L_2$.
 
@@ -49,7 +49,7 @@ To answer these queries, we will use a multi-level canonical sets data structure
 \subsubsection{Restrict Length}
 \label{:slabs:one:details:restrict}
 
-The first step of the query is to perform a length test, as it simplifies some later queries.  We want to identify all segments which are not so long that they could never be sufficiently enclosed by $Q$, regardless of their position. With the query parameter $w$ given, we know that only segments with length $l \leq \frac{w}{\rho}$ can ever be selected. Reworking the equation to $w \geq \rho l$ provides us a 1-dimensional orthogonal range to query. Let $S_1 = \{ s \in S \st l \rho \leq w \}$.
+The first step of the query is to perform a length test, as it simplifies some later queries.  We want to identify all segments which are not so long that they could never be sufficiently enclosed by $Q$, regardless of their position. With the query parameter $w$ given, we know that only segments with length $l \leq \frac{w}{\rho}$ can ever be selected. Reworking the equation to $w \geq \rho l$ provides us a 1-dimensional orthogonal range to query. Let $S_1 = \{ s \in S \st \rho l \leq w \}$.
 
 
 %------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ For each set $S_L$ and $S_R$, the final query step is to identify those segments
 \end{center}
 \end{figure}
 
-\paragraph{Set $S_L$, left endpoint left of $L_1$.} There are 4 subcases of segments whose left endpoints are left of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l1}.
+\paragraph{Set $S_L$, left endpoint left of $L_1$.} There are 4 cases of segments whose left endpoints are left of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l1}.
 
 \begin{enumerate}
  \item The entire segment is left of $L_1$ (and should not be counted),
@@ -95,12 +95,17 @@ For each set $S_L$ and $S_R$, the final query step is to identify those segments
 
 \end{enumerate}
 
-For these segments, we test their majority property as follows. Given a segment $s$ with left endpoint $p = (a,b)$, let $\iline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0). Let $(a', b)$ be the intersection point of $\iline{s}$ and $L_1$. Solving their respective equations gives $a' = \frac{b - \beta}{\alpha}$. It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $a' - a < (1 - \rho)l$. 
+We test their majority property as follows. 
+Given a segment $s \in S_L$ with left endpoint $p = (a,b)$, let $\iline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0). 
+Let $(a', b)$ be the intersection point of $\iline{s}$ and $L_1$. 
+Solving the equations of the two lines gives $a' = \frac{b - \beta}{\alpha}$. 
+It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $a' - a < (1 - \rho)l$. 
 
 \begin{proof}
-We look at each subcase to show that this single test is enough to identify all segments correctly. First, the test directly identifies segments belonging to subcases 2 or 3. This test will also reject segments, as we desire, from subcase 1 since $a' - a > l$ and cannot satisfy the majority property for any allowed value of $\rho$. 
+We look at each case to show that this single test is enough to identify all segments correctly. 
+First, the test directly identifies segments belonging to cases 2 or 3 since $a' - a$ is precisely the amount of $s$ outside of $Q$. This test will also reject segments, as we desire, from case 1 since $a' - a > l$ and cannot satisfy the majority property for any allowed value of $\rho$. 
 
-Finally, this test is also sufficient for the 4th subcase owing to the length restriction step we perform in Section\ref{:slabs:one:details:restrict}. That is, after the length restriction step, we know that $|s| < \frac{w}{\rho}$, where $w$ is the width of the query slab. Since any segment in subcase 4 has the property $|s \cap Q| = w$, this implies that $s \in_\rho Q$.
+Finally, this test is also sufficient for case 4 owing to the length restriction step we perform in Section\ref{:slabs:one:details:restrict}. That is, after the length restriction step, we know that $|s| < \frac{w}{\rho}$, where $w$ is the width of the query slab. Since any segment in case 4 has the property $|s \cap Q| = w$, this implies that $s \in_\rho Q$.
 \end{proof}
 
 We test for segments satisfying $a' - a < (1 - \rho)l$ using a half-plane query. Expanding this expression gives:
@@ -122,7 +127,7 @@ y > \frac{1}{\alpha} - \frac{\beta}{\alpha}
 %------------------------------------------------------------------------------
 
 \paragraph{Set $S_R$, left endpoint right of $L_1$.}
-There are 4 subclasses of segments whose left-endpoints are right of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l2}.
+There are 4 cases of segments whose left-endpoints are right of $L_1$, as shown in Figure \ref{fig:slabs:one:aoq_left_l2}.
 
 \begin{figure}[t]
 \begin{center}
@@ -144,13 +149,16 @@ There are 4 subclasses of segments whose left-endpoints are right of $L_1$, as s
 
 \end{enumerate}
 
-For these segments, we test their majority property by checking that ``enough of the segment is inside of $Q$''.  Just as we did with the segments of $S_L$, let $\iline{s}$ be the horizontal line through $s$.  Let $(a'', b)$ be the intersection point of $\iline{s}$ with $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.  We will show:
+For each $s \in S_R$, we test the majority property by checking that ``enough of the segment is inside of $Q$''.  Just as we did with the segments of $S_L$, let $\iline{s}$ be the horizontal line through $s$.  Let $(a'', b)$ be the intersection point of $\iline{s}$ with $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.  We will show:
 \[
 a'' - a \geq \rho l \imply s \in_\rho Q
 \]
 
 \begin{proof}
-We look at each subcase. If $s \in S_R$ belongs to subcase 1, we have that $a'' - a > l$, which is certainly greater than $\rho l$. If $s$ belongs to subcase 2, then $a'' - a < 0$ since $a$ is right of $a''$, and $s$ will not be counted.  Finally, the correctness of this test is straight-forward when $s$ is in either subcase 3 or 4, since the expression directly measures $|s \cap Q|$.
+We look at each case. 
+If $s \in S_R$ belongs to case 1, we have that $a'' - a > l$, which is certainly greater than $\rho l$. 
+If $s$ belongs to case 2, then $a'' - a < 0$ since $a$ is right of $a''$, and $s$ will not be counted.
+Finally, the correctness of this test is straight-forward when $s$ is in either case 3 or 4, since the expression directly measures $|s \cap Q|$.
 \end{proof}
 
 We test for segments satisfying $a'' - a \geq \rho l$ using a half-plane query.  Expanding this expression gives:
@@ -174,109 +182,65 @@ y \leq \frac{1}{\alpha} x - \frac{\beta}{\alpha} + w
 \subsection{Construction and Analysis}
 \label{:slabs:one:analysis}
 
-As mentioned in Section \ref{:slabs:one:approach}, we will use the multi-level canonical sets data structure described in Section~\ref{:prelim:chan} to perform parts of this query.  This structure is well-suited to simplicial queries, which is why we decomposed our query region as we did in the previous section. To describe and analyze the structure, it is convenient to look at the innermost structures first, and then use those results to build up the outer structures.
+We will use the multi-level canonical sets data structure described in Section~\ref{:prelim:chan} to perform parts of this query.
+Each of the three steps given in Section~\ref{:slabs:one:approach} will correspond to one nested level of the data structure.
+It is easiest to describe the structure inside-out, so we begin with the innermost structure.
 
 
 %------------------------------------------------------------------------------
-\subsubsection{Length restriction}
+\subsubsection{Length Restriction}
 
-The innermost structure answers the length restriction query on a set $S$ of $n$ horizontal segments. This is easily answered using constructing a 1-dimensional range tree, as described in Section~\ref{:prelim:range-trees}, keyed on the segment lengths. The following lemma summarizes the time and space requirements of this structure.
+The innermost structure answers the length restriction step of the overall query. This is easily answered using a 1-dimensional range tree, as described in Section~\ref{:prelim:range-trees}, keyed on the segment lengths. The following lemma summarizes the time and space requirements of this structure.
 
 \begin{lemma}
 \label{lem:slabs:one:step1}
-Given a set of $n$ horizontal line segments, we can count all segments with length at most that of a given query parameter in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built in $\BigOh{n \log{n}}$ preprocessing time. With the same structure, we can report matching segments in $\BigOh{\log{n} + r}$ time, where $r$ is the number of reported elements.
+Given a set of $n$ horizontal line segments, we can count all segments with length at most that of a given query parameter in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built in $\BigOh{n \log{n}}$ preprocessing time.
 \end{lemma}
 
 
 % -----------------------------------------------------------------------------
 \subsubsection{Majority Property}
 
-To query segments having the majority property, we use the half-plane expressions we developed in Section \ref{:slabs:one:details:majority}.  There are two expressions, depending on whether the segment belongs in $Q_1$ or $Q_{2a}/Q_{2b}$. For each expression, we construct a separate data structure. We will examine $Q_1$ specifically, but the case for $Q_{2a}/Q_{2b}$ is similar.
+To query segments having the majority property, we use the half-plane expressions we developed in Section \ref{:slabs:one:details:majority}.
+There are two expressions we need to test, depending on whether the left endpoint of a segment is left or right of $L_1$.
+We will examine the left case specifically, but the other case is similar.
 
-During the preprocessing step, each segment $s_i \in S$, $1 \leq i \leq n$ is mapped to a point $p_i$ located at $(x, bx - a - (1 - \rho)l)$. Let $P_1$ be the set of all such points. We perform a half-plane query with the line $y = \alpha\cdot x + \beta$, where $\alpha$ and $\beta$ are query inputs.
-
-By Theorem~\ref{th:chan}, we can answer this query using a canonical subsets data structure for locating points within a query simplex. This structure consists of $k = \BigOh{n}$ canonical subsets, $C_1$ through $C_k$. With each $C_i$, we will associate the structure given by Lemma \ref{lem:slabs:one:step1}, constructed on the elements of that subset.
-
-The space requirements include $\BigOh{n \log{n}}$ for the canonical subsets structure, plus
-\[
-\sum_{i}^{k}{|C_i|} \leq \BigOh{n\log{n}}
-\]
-
-\noindent for the associate data structures, for a combined space requirement of $\BigOh{n\log{n}}$.
-
-Preprocessing time includes $\BigOh{n\log{n}}$ for the canonical subsets structure, plus
-\[
-\sum_{i}^{k}{|C_i| \log{|C_i|}} 
-\leq \sum_{i}^{k}{|C_i| \log{n}} 
-\leq \BigOh{n\log{n}} \log{n} 
-\leq \BigOh{n \log^2{n}}
-\]
-
-\noindent for the associate data structures. The preprocessing time for the associate structures dominates that of the canonical subsets for a combined preprocessing time of $\BigOh{n\log^2{n}}$.
-
-Performing the majority property query against this structure requires $\BigOh{\sqrt{n}\log{n}}$ time and returns $k' = \BigOh{\sqrt{n}\log{n}}$ disjoint canonical sets. For each returned subset, the associated structure for length restriction must be queried, which requires the following query time:
-\[
-\sum_{i}^{k'}{\log{|C_i|}} 
-\leq \sum_{i}^{k'}{\log{n}} 
-\leq \log{n} \cdot \sum_{i}^{k'}{1}
-\leq \log{n} \BigOh{\sqrt{n}\log{n}}
-\leq \BigOh{\sqrt{n}\log^2{n}}
-\]
-
-\noindent
-for a total query time of $\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^2{n}} = \BigOh{\sqrt{n}\log^2{n}}$. The following lemma summarizes our results so far.
+By Theorem~\ref{:prelim:chan}, we can answer this type of half-plane query directly using a canonical subsets data structure, yielding the following lemma.
 
 \begin{lemma}
-\label{lem:slabs:one:step2}
-Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line \emph{and} which are not too long in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
+\label{lem:slabs:one:step2a}
+Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ time.
+\end{lemma}
+
+With each subset created for this structure, we will associate the structure required for Lemma~\ref{lem:slabs:one:step1}.
+Applying Corollary~\ref{cor:multichan} gives us the following result.
+
+\begin{lemma}
+\label{lem:slabs:one:step2b}
+Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line \emph{and} do not exceed a maximum length in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
 \end{lemma}
 
 
 % -----------------------------------------------------------------------------
 \subsubsection{Left-endpoint classification}
 
-To classify the left-endpoints of the segments into regions $Q_1$, $Q_{2a}$, and $Q_{2b}$, we use 3 simplex range searches. By Theorem~\ref{th:chan}, we can locate all left endpoints in $Q_1$ in $\BigOh{\sqrt{n}\log{n}}$ time using a data structure of canonical subsets which requires $\BigOh{n \log{n}}$ size and space to construct. A similar structure can be created for $Q_{2a}/Q_{2b}$.
-
-The canonical subsets structure consists of $k = \BigOh{n}$ subsets, and to complete our overall query, we will construct an associated structure as described in Lemma \ref{lem:slabs:one:step2} with each, based on the elements within. Total space needed is $\BigOh{n \log{n}}$ for the canonical subsets, plus:
-\[
-\sum_{i}^{k}{|C_i| \log{|C_i|}} \leq \BigOh{n\log^2{n}}
-\]
-
-\noindent for the associated structures, for a total space requirement of $\BigOh{n\log^2{n}}$.
-
-Preprocessing time required is $\BigOh{n \log{n}}$ for the canonical subsets, plus
-\[
-\sum_{i}^{k}{|C_i| \log^2{|C_i|}} 
-\leq \sum_{i}^{k}{|C_i| \log^2{n}} 
-\leq \BigOh{n\log{n}} \log^2{n}
-\leq \BigOh{n \log^3{n}}
-\]
-
-\noindent
-for the associated structures, for a total preprocessing time of $\BigOh{n \log^3{n}}$.
-
-Query time is $\BigOh{\sqrt{n}\log{n}}$ to find the $k'$ disjoint canonical subsets of total size $\BigOh{\sqrt{n}\log{n}}$ representing the left endpoints of interest, plus
-\[
-\sum_{i}^{k'}{\BigOh{\sqrt{|C_i|}\log^2{|C_i|}}} 
-\leq \sum_{i}^{k'}{\BigOh{\sqrt{|C_i|}}\BigOh{\log^2{n}}} 
-\leq \BigOh{\sqrt{n}\log^3{n}}
-\]
-
-\noindent
-for querying the associated structures, for a total query time of $\BigOh{\sqrt{n} \log^3{n}}$. 
+We need to classify the left-endpoints of the segments as left or right of $L_1$. 
+By Theorem~\ref{th:chan}, each of these queries can be answered by a canonical subsets data structure.
+With each subset created by this structure, we will associate the structure from Lemma~\ref{lem:slabs:one:step2b}. 
+Applying Corollary~\ref{cor:multichan} gives us the following result.
 
 \begin{lemma}
 \label{lem:slabs:one:step3}
-Given a set of $n$ horizontal line segments, we can locate all segments whose left endpoints are found in within a simplex query region, which are not ``too much'' to one side of a query line, \emph{and} which are not too long in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log{n}^2}$, which can be built in $\BigOh{n\log^3{n}}$ time.
+Given a set of $n$ horizontal line segments, we can locate all segments whose left endpoints are to one side of a line, which are not ``too much'' to one side of a query line, \emph{and} do not exceed a maximum length in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log{n}^2}$, which can be built in $\BigOh{n\log^3{n}}$ time.
 \end{lemma}
 
 % -----------------------------------------------------------------------------
-\subsubsection{Combining the steps}
+\subsubsection{Combining the Steps}
 
 The previous three steps combine to create a data structure which can answer a majority range query for segments whose left endpoints are found on one side of $L_1$ or the other.
 To answer any query $Q$, we need to preprocess two such data structures, choosing our expressions appropriately for the left and right cases.
-Then, during query time, we need to query both structures, combining their results.
-The following theorem summarizes this process.
+During query time, we will query both structures and combine their results.
+The following theorem summarizes the overall solution.
 
 \begin{theorem}
 \label{thm:slabs:one}
@@ -473,7 +437,9 @@ y \leq \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) \cdot x + \left ( \f
 \subsection{Construction and Analysis}
 \label{:slabs:two:analysis}
 
-We will use a multi-level query structure for this problem, just as we did for the single slab query.  Each of the 4 steps given in Section~\ref{:slabs:two:approach} correspond to one nested level of the data structure.  It is easiest to describe the structure inside-out, so we begin with the innermost structure.
+We will use a multi-level query structure for this problem, just as we did for the single slab query.
+Each of the four steps given in Section~\ref{:slabs:two:approach} will correspond to one nested level of the data structure.
+It is easiest to describe the structure inside-out, so we begin with the innermost structure.
 
 \subsubsection{Decomposition by $y$-value}
 
@@ -548,7 +514,7 @@ Given a set of $n$ horizontal line segments, we can locate all segments which ha
 \end{lemma}
 
 
-\subsubsection{Combining the steps}
+\subsubsection{Combining the Steps}
 
 The previous steps combine to create a data structure which can answer a majority range query for the parallelogram formed by the intersection of two slabs. 
 To answer a query $Q$, we need to preprocess several versions of this data structure, one for each of $Q_a$ and $Q_c$, and one for each of the two possible orientations of $Q_b$.

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20140820112333" modified="D:20141113114707"/>
+<info created="D:20140820112333" modified="D:20141120173331"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -236,19 +236,19 @@ h
 128 576 m
 256 768 l
 </path>
-<path stroke="black" pen="fat">
+<path matrix="1 0 0 1 -47 0" stroke="black" pen="fat">
 320 576 m
 448 768 l
 </path>
 <text transformations="translations" pos="112 560" stroke="black" type="label" width="68.518" height="6.926" depth="1.93" valign="baseline">$L_1: y = \alpha x + \beta$</text>
-<text transformations="translations" pos="304 560" stroke="black" type="label" width="94.505" height="6.926" depth="1.93" valign="baseline">$L_2: y = \alpha x + \beta - \alpha w$</text>
+<text matrix="1 0 0 1 -48 0" transformations="translations" pos="304 560" stroke="black" type="label" width="94.505" height="6.926" depth="1.93" valign="baseline">$L_2: y = \alpha x + \beta - \alpha w$</text>
 <path stroke="blue" pen="heavier">
 96 752 m
 192 752 l
 </path>
 <path stroke="blue" pen="heavier">
 192 720 m
-368 720 l
+320 720 l
 </path>
 <path stroke="blue" pen="heavier">
 96 688 m
@@ -262,5 +262,9 @@ h
 <use name="mark/disk(sx)" pos="192 720" size="normal" stroke="blue"/>
 <use name="mark/disk(sx)" pos="96 688" size="normal" stroke="blue"/>
 <use name="mark/disk(sx)" pos="160 656" size="normal" stroke="blue"/>
+<text matrix="1 0 0 1 0 -2" transformations="translations" pos="80 752" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(1)</text>
+<text matrix="1 0 0 1 0 -2" transformations="translations" pos="176 720" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(2)</text>
+<text matrix="1 0 0 1 0 -2" transformations="translations" pos="80 688" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(3)</text>
+<text matrix="1 0 0 1 0 -2" transformations="translations" pos="144 656" stroke="black" type="label" width="12.73" height="7.473" depth="2.49" valign="baseline">(4)</text>
 </page>
 </ipe>
