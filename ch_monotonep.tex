@@ -517,5 +517,5 @@ In this chapter we have developed methods for calculating the area of a monotone
 
 In every case, once the enclosed area is known, determining the majority property is just a matter of testing a simple inequality.
 
-One possible direction for future research would be to see if similar methods to the ones presented here could extend Theorem~\ref{th:monotonep:rect:area} to simple polygons. We've already seen that the horizontal slab query problem can be easily extended to simple polygons as our processing of the region area formulas did not utilize the monotone property in anyway. While that remains true of the area formulas used for the rectangular case, the tree $T$ \emph{does} need the monotone property, specifically because of how we group regions for each node of $T$. Our multi-region area formulas need to work for any query value of $h$, however, in simple polygons we will generally have regions which are offset from each other in a vertical sense. It is this that prevents us from developing clean left and right boundaries for the multi-region formulas, and which prevents a direct application of our method to simple polygons.
-
+One possible direction for future research is to consider our options for extending Theorem~\ref{th:monotonep:rect:area} to simple polygons. 
+We've already seen that it does not work directly, but there may be alternate methods for partitioning the multi-region formulas or accounting for partially enclosed regions.

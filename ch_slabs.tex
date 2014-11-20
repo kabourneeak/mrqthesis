@@ -289,7 +289,10 @@ Given a set of $n$ horizontal line segments, we can locate all segments which sa
 \section{Querying with Two Slabs}
 \label{:slabs:two}
 
-We now consider a related instance of the slab query. In this section, the query is input as two slabs, and we are interested in those segments which are sufficiently enclosed by their intersection. When the two slabs are orthogonal to each other, this method will solve the problem of finding segments sufficiently enclosed by an arbitrarily-oriented rectangle.  The overall approach is very similar to Section~\ref{:slabs:one}, and the data structure we will build to answer these queries is again based on the disjoint canonical sets structure outlined in Section~\ref{:prelim:chan}.
+We now consider a related instance of the slab query. 
+In this section, the query is input as two slabs, and we are interested in those segments which are sufficiently enclosed by their intersection. 
+When the two slabs are orthogonal to each other, this method will solve the problem of finding segments sufficiently enclosed by an arbitrarily-oriented rectangle.  
+The overall approach is very similar to Section~\ref{:slabs:one}, and the data structure we will build to answer these queries is again based on the canonical sets structure outlined in Section~\ref{:prelim:chan}.
 
 
 % -----------------------------------------------------------------------------
@@ -326,9 +329,9 @@ Specifically, a query is given as six inputs $\alpha, \beta, w_p, \delta, \gamma
 
  \item $L_4 : y = \gamma (x + w_n) + \delta$, the right edge of $S_n$,
 
- \item $S_p = \{ p \in \mathbb{R}^2 | (p \text{ is on or right of } L_1) \wedge (p \text{ is on or left of } L_2) \}$, a slab with positive slope,
+ \item $S_p = \{ u \in \mathbb{R}^2 | (u \text{ is on or right of } L_1) \wedge (u \text{ is on or left of } L_2) \}$, a slab with positive slope,
 
- \item $S_n = \{ p \in \mathbb{R}^2 | (p \text{ is on or right of } L_3) \wedge (p \text{ is on or left of } L_4) \}$, a slab with negative slope,
+ \item $S_n = \{ u \in \mathbb{R}^2 | (u \text{ is on or right of } L_3) \wedge (u \text{ is on or left of } L_4) \}$, a slab with negative slope,
 
  \item $Q = S_p \cap S_n$, the query parallelogram.
 
@@ -341,10 +344,11 @@ A segment $s \in S$ with length $l$ is sufficiently enclosed in $Q$ if and only 
 \subsection{Identifying the Segments}
 \label{:slabs:two:approach}
 
-Just as in the single slab problem, identifying which segments meet our enclosure property is accomplished ignoring some segments, classifying the remaining segments, and developing an appropriate majority property expression.
+Just as in the single slab problem, identifying which segments meet our enclosure property is accomplished by ignoring some segments, classifying the remaining segments, and developing an appropriate majority property expression.
+The overall steps are as follows.
 
 \begin{enumerate}
- \item Decompose the parallelogram into three query subregions based on the $y$-coordinates of its vertices, and isolate those segments which may interact with each subregion.
+ \item Decompose Q into three query subregions based on the $y$-coordinates of its vertices, and isolate those segments which may interact with each subregion.
 
  \item For each query subregion:
  \begin{enumerate}
@@ -354,7 +358,7 @@ Just as in the single slab problem, identifying which segments meet our enclosur
  \end{enumerate}
 \end{enumerate}
 
-To answer these queries, we will use a multi-level \emph{canonical sets} as described in Section~\ref{:prelim:chan}. We first describe the different steps of the query in more detail, and then describe the construction and analysis of the query data structure.
+To answer these queries, we will use a multi-level canonical subsets structure as described in Section~\ref{:prelim:chan}. We first describe the different steps of the query in more detail, and then describe the construction and analysis of the query data structure.
 
 
 % -----------------------------------------------------------------------------
@@ -370,7 +374,7 @@ To answer these queries, we will use a multi-level \emph{canonical sets} as desc
 
 This first step is not found in the single-slab version of the problem. The query region, $Q$, is decomposed into three subregions, $Q_a$, $Q_b$, and $Q_c$, by extending horizontal lines through each vertex of $Q$. These lines determine three horizontal strips $Y_a$, $Y_b$, and $Y_c$, each containing their respective subregion of $Q$. See Figure~\ref{fig:slabs:two:wpwn}.
 
-The widths of the two slabs created by the query inputs determine the overall orientation of $Q$. When $w_p < w_n$, the center parallelogram, $Q_b$, is defined by $L_1$ and $L_2$, and when $w_p > w_n$, $Q_b$ is defined by $L_3$ and $L_4$. When $w_p = w_n$, $Q_b$ disappears, and we don't need to continue further query steps on it.
+The widths of the two slabs determine the overall orientation of $Q$. When $w_p < w_n$, the center parallelogram, $Q_b$, is defined by $L_1$ and $L_2$, and when $w_p > w_n$, $Q_b$ is defined by $L_3$ and $L_4$. When $w_p = w_n$, $Q_b$ disappears, and we don't need to continue further query steps on it.
 
 After partitioning the segments according to whether they fall into $Y_a$, $Y_b$, or $Y_c$, we continue the query for each partition against the appropriate query subregion.
 
@@ -379,8 +383,7 @@ After partitioning the segments according to whether they fall into $Y_a$, $Y_b$
 
 Each subregion is determined by two lines based on our query inputs. For $Q_a$, it is always $L_1$ on the left and $L_4$ on the right. Likewise, for $Q_c$, it is always $L_3$ on the left and $L_2$ on the right. For $Q_b$, it is either $L_1$ and $L_2$ or $L_3$ and $L_4$ depending on the relationship of $w_p$ and $w_n$.
 
-We will examine $Q_a$ specifically, but the solutions for the other two zones are quite similar, differing only by the equations of the lines which define the subregion.
-
+We will examine $Q_a$ specifically, but the solutions for the other two zones are quite similar, differing only by the equations of the lines which define the subregion. 
 The solution for $Q_b$ can either be solved as detailed below, or as an instance of the single slab problem presented in Section~\ref{:slabs:one}.
 
 
@@ -470,7 +473,18 @@ y \leq \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) \cdot x + \left ( \f
 \subsection{Construction and Analysis}
 \label{:slabs:two:analysis}
 
-We will use the multi-level canonical sets data structure described in Section~\ref{:prelim:chan} for parts of this query, just as we did for the single slab query.  Each of the 4 steps given in Section~\ref{:slabs:two:approach} correspond to one nested level of the data structure.  It is easiest to describe the structure inside-out, so we begin with the innermost structure.
+We will use a multi-level query structure for this problem, just as we did for the single slab query.  Each of the 4 steps given in Section~\ref{:slabs:two:approach} correspond to one nested level of the data structure.  It is easiest to describe the structure inside-out, so we begin with the innermost structure.
+
+\subsubsection{Decomposition by $y$-value}
+
+The innermost level of the structure classifies segments according to their $y$-coordinate. This is a straight-forward application of an orthogonal range query tree as outlined in Section~\ref{:prelim:range-trees}. 
+A range tree constructed in this way can be queried for segments falling into either $Y_a, Y_b, Y_c$. 
+The following lemma summarizes the time and space requirements of this step.
+
+\begin{lemma}
+\label{lem:slabs:two:step1}
+Given a set of $n$ horizontal line segments, we can count all segments whose $y$-coordinate falls between two values in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built in $\BigOh{n\log{n}}$ time.
+\end{lemma}
 
 
 \subsubsection{Check Majority Property}
@@ -478,14 +492,22 @@ We will use the multi-level canonical sets data structure described in Section~\
 To check for segments having the majority property, we use the half-plane dual-spaces we developed in Section~\ref{:slabs:two:approach}. By Theorem~\ref{:prelim:chan}, we can answer such a half-plane query directly using a canonical subsets data structure, yielding the following lemma.
 
 \begin{lemma}
-\label{lem:slabs:two:step1}
+\label{lem:slabs:two:step2a}
 Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ time.
+\end{lemma}
+
+With each subset created for this structure, we will associate the structure required for Lemma~\ref{lem:slabs:two:step1}.
+Applying Corollary~\ref{cor:multichan} gives us the following result.
+
+\begin{lemma}
+\label{lem:slabs:two:step2b}
+Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line and which lie within a specified range of $y$-values in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
 \end{lemma}
 
 
 \subsubsection{Classify Right Endpoint}
 
-We need to be able to classify the right endpoints of our segments into one of several simplicies. These cases are:
+We need to be able to classify the right endpoints of our segments into one of several half-planes or simplices. These cases are:
 \begin{itemize}
  \item Within the triangle $Q_a$.
  \item Within the parallelogram $Q_b$, which can be decomposed into two triangles at query time.
@@ -494,38 +516,13 @@ We need to be able to classify the right endpoints of our segments into one of s
  \item To the right of $L_2$.
 \end{itemize}
 
-Each of these simplex queries can be answered with a disjoint canonical subsets data structure. Such a structure will consist of $k = \BigOh{n}$ canonical subsets, $C_1$ through $C_k$. With each $C_i$, we will associate the structure from Lemma~\ref{lem:slabs:two:step1}, constructed on the elements of that subset.
-
-The space required includes $\BigOh{n \log{n}}$ for the canonical subsets structure, plus
-\[
-\sum_{i}^{k}{|C_i| \log{|C_i|}} 
-\leq \sum_{i}^{k}{|C_i| \log{n}} 
-\leq \BigOh{n\log{n}} \log{n} 
-\leq \BigOh{n \log^2{n}}
-\]
-
-\noindent for the associate data structures, for a combined space requirement of $\BigOh{n\log^2{n}}$. Preprocessing time is calculated using identical reasoning and is also $\BigOh{n \log^2{n}}$ time.
-
-Performing a right endpoint classification query requires $\BigOh{\sqrt{n}\log{n}}$ time and returns $k' = \BigOh{\sqrt{n}\log{n}}$ disjoint canonical sets. For each returned subset, the associated structure from Lemma~\ref{lem:slabs:two:step1} must be queried, which requires the following additional query time:
-\[
-\begin{split}
-\sum_{i}^{k'}{\BigOh{\sqrt{|C_i|}\log{|C_i|}}} 
-&\leq \sum_{i}^{k'}{\BigOh{\sqrt{|C_i|} \log{n}}} \\
-%
-&\leq \log{n} \cdot \sum_{i}^{k'}{\BigOh{\sqrt{|C_i|}}} \\
-%
-&\leq \log{n} \cdot \BigOh{\sqrt{n}\log{n}} \\
-%
-&\leq \BigOh{\sqrt{n}\log^2{n}} \\
-%
-\end{split}
-\]
-
-\noindent for a total query time of $\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^2{n}} = \BigOh{\sqrt{n}\log^2{n}}$. The following lemma summarizes our results so far.
+Each of these queries can be answered with a canonical subsets data structure. 
+With each subset created by this structure, we will associate the structure from Lemma~\ref{lem:slabs:two:step2b}. 
+Applying Corollary~\ref{cor:multichan} gives us the following result.
 
 \begin{lemma}
-\label{lem:slabs:two:step2}
-Given a set of $n$ horizontal line segments, we can locate all segments which have their right endpoint in a query simplex and which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
+\label{lem:slabs:two:step3}
+Given a set of $n$ horizontal line segments, we can locate all segments which have their right endpoint in a query simplex, which are not ``too much'' to one side of a query line, and which lie within a specified range of $y$-values in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^3{n}}$ time.
 \end{lemma}
 
 
@@ -541,33 +538,22 @@ We need to be able to classify the left endpoints of our segments as well. We ar
  \item Within the triangle $Q_c$.
 \end{itemize}
 
-This level of the nested disjoint canonical subsets structure will be built just as in the last two steps.  We first construct the structure with respect to the left endpoints.  Such a structure will consist of $k = \BigOh{n}$ canonical subsets, $C_1$ through $C_k$. With each $C_i$, we will associate the structure from Lemma~\ref{lem:slabs:two:step2}, constructed on the elements of that subset.
-
-Through similar reasoning as in the the previous step, the preprocessing time and space requirements, as well as the query time, will each gain an additional factor $\BigOh{\log{n}}$. The following lemma summarizes the data structure that we produce at this step.
-
-\begin{lemma}
-\label{lem:slabs:two:step3}
-Given a set of $n$ horizontal line segments, we can locate all segments which have their left and right endpoints in given query simplicies and which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^3{n}}$ time.
-\end{lemma}
-
-
-\subsubsection{Decomposition}
-
-The outermost level of the structure classifies segments according to their $y$-coordinate. This is a straight-forward application of an orthogonal range query tree as outlined in Section~\ref{:prelim:range-trees}.  Any range tree on the $y$-coordinates of segments can be queried for segments falling into either $Y_a, Y_b, Y_c$. The following lemma summarizes the time and space requirements of this step.
-
-XXX TODO what is the analysis here?  Update the lemma and the following theorem
+These simplex queries can also be answered with a canonical subsets query. 
+With each subset of this structure, we continue to build up our multi-level structure by associating the structure from Lemma~\ref{lem:slabs:two:step3}. 
+By applying Corollary~\ref{cor:multichan} again, we have the following lemma.
 
 \begin{lemma}
 \label{lem:slabs:two:step4}
-Given a set of $n$ horizontal line segments, we can count all segments whose $y$-coordinate falls between two values, whose left and right endpoints in given query simplicies, and which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log^4{n}}$ time, using a data structure of size $\BigOh{n\log^4{n}}$, which can be built in $\BigOh{n\log^4{n}}$ time.
+Given a set of $n$ horizontal line segments, we can locate all segments which have their left and right endpoints in given query simplicies, which are not ``too much'' to one side of a query line, and which lie within a specified range of $y$-values in $\BigOh{\sqrt{n}\log^4{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^4{n}}$ time.
 \end{lemma}
 
 
 \subsubsection{Combining the steps}
 
-The previous steps combine to create a data structure which can answer a majority range query for parallelogram formed by the intersection of two slabs. To answer a query $Q$, we need to preprocess several versions of this datastructure, one for each case.
+The previous steps combine to create a data structure which can answer a majority range query for the parallelogram formed by the intersection of two slabs. 
+To answer a query $Q$, we need to preprocess several versions of this data structure, one for each of $Q_a$ and $Q_c$, and one for each of the two possible orientations of $Q_b$.
 
- three such data structures, choosing our expressions appropriately for $Q_1$, $Q_{2a}$, and $Q_{2b}$.  Then, during query time, we need to query all three structures, and combine their results. The following theorem summarizes this process.
+During query time, we need to query three of those structures as appropriate for the orientation of $Q$, and combine their results. The following theorem summarizes this process.
 
 \begin{theorem}
 \label{thm:slabs:two}
@@ -575,17 +561,48 @@ Given a set of $n$ horizontal line segments, we can locate all segments which sa
 \end{theorem}
 
 
+%------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
+\section{Notes about Arbitrarily-Oriented Segments}
+\label{:slabs:remarks}
+
+Our general approach can be extended identifying arbitrarily-oriented line segments which satisfy the majority property for one or two slabs, however, the resulting structure is very ``case heavy'' and involves a large number of query variables.
+
+With respect to the high number of cases required, arbitrarily-oriented segments can cross through the borders of $Q$ in several different ways, preventing us from partitioning the environment in a simple way, such as by $y$ value.
+Without an easy way to decompose the problem, the two endpoints of a segment need to be classified as left or right of four different query lines, and we would require a separate data structure for each combination.
+
+The majority expressions for each combination are also higher degree polynomials.
+For example, a segment $s$ which crosses $L_1$ and $L_2$ has intersection points $p' = (a', b')$ with $L_1$ and $q' = (a'', b'')$ with $L_2$.  
+To consider how much of the segment is inside the slab, we need to calculate the length of the segment from $p'$ to $q'$, as follows.
+\[
+\begin{split}
+\|p'q'\|^2 
+&= \left( \sqrt{(a'' - a')^2 + (b'' - b')^2} \right)^2 \\
+%
+&= (a'' - a')^2 + (b'' - b')^2 \\
+%
+&= (a'')^2 - 2a'a'' + (a')^2 + (b'')^2 - 2b'b'' + (b')^2
+\end{split}
+\]
+
+Each term in the above expression represents several query variables when we consider the actual values for $a'$, $b'$, $a''$, and $b''$.  
+Let $\iline{s}$ be the line through $s$, and assume that it is defined as $y = mx + t$, then
+\begin{align*}
+a'  &= \frac{\beta - t}{m - \alpha}
+&b'  &= m \frac{\beta - t}{m - \alpha} + t \\
+a'' &= \frac{\beta - t - \alpha w}{m - \alpha} 
+&b'' &= m \frac{\beta - t - \alpha w}{m - \alpha} + t \\
+\end{align*}
+
+Multiplying and squaring these expressions to calculate $\|p'q'\|$ results in a high dimensional polynomial with respect to the number of independent combinations of query inputs.
+The situation worsens when we consider intersections between $L_1$ or $L_2$ with $L_3$ or $L_4$, as we have to consider $\gamma$ and $\delta$ as well.
+Such an expression \emph{can} be queried with a canonical subset structure, but the space and query times suffer.
 
 %------------------------------------------------------------------------------
 %------------------------------------------------------------------------------
 \section{Conclusion}
 \label{:slabs:concl}
 
-XXX TODO
+In this chapter, we have developed methods for identifying horizontal segments which have the majority property with respect to an arbitrary slab or to the intersection of two arbitrary slabs.  The latter case is a generalization of arbitrarily-oriented rectangles, when the two slabs are chosen to be orthogonal to each other.
 
-Open Problems
-
-* Get rid of the 1/2 limitation on the two slab case.
-
-* Arbitrarily-oriented segments. Not conceptually hard, but quickly turn into higher dimensional problems
-
+For future work, we would like to find a more straight-forward method for relaxing the horizontal restriction on the input segments.  A less case heavy method for querying arbitrarily oriented segments against slabs would automatically improve our results from Section~\ref{:rectangles:ao}, as well.

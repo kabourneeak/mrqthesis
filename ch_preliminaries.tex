@@ -60,10 +60,10 @@ Restated with $d=2$.
 We can form $\BigOh{n}$ canonical subsets of total size $\BigOh{n \log{n}}$ in $\BigOh{n \log{n}}$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq \BigOh{\sqrt{n}\log{n}}$ in time $\BigOh{\sqrt{n}\log{n}}$ w.h.p. $(n)$.
 \end{theorem}
 
-This structure is particularly well-suited to multi-part queries where we need to identify objects which satisfy a half plane query, and which also satisfy some other arbitrary query condition for which we have an existing query method.
-To support such a query, we construct a canonical subsets structure to perform the half plane component of the query. 
+This structure is particularly well-suited to multi-part queries where we need to identify objects which satisfy a half-plane query, and which also satisfy some other arbitrary query condition for which we have an existing query method.
+To support such a query, we construct a canonical subsets structure to perform the half-plane component of the query. 
 Then, with the objects of each canonical subset, we construct the secondary query structure.
-A multi-level query is executed by first querying the canonical subsets structure for all points satisfying the half plane.
+A multi-level query is executed by first querying the canonical subsets structure for all points satisfying the half-plane.
 With each subset identified by the first step, we evaluate the secondary structure.
 The result is the set of all objects which satisfy both the half-plane query \emph{and} whatever conditions the second-level query may test.
 If the secondary structure is itself a multi-level structure, then this procedure effectively adds one more layer.
@@ -94,9 +94,9 @@ We can answer a query which identifies points satisfying a half-plane query and 
 Given a set $A$ of $n$ objects of the form $(a_i, p_i), 1 \leq i \leq n$, where each $p_i$ is a 2D point, and each $a_i$ is an object which can be queried by a method $R$, we can construct a method $R$
 
 \begin{enumerate}
-\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\sqrt{n} \log^h{n}}$, where $f, g, h \in \BigOh{1}, f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\sqrt{n} \log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
 
-\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\log^h{n}}$, where $f, g, h \in \BigOh{1}, f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
 
 \end{enumerate}
 
