@@ -9,7 +9,10 @@ We will present two variations of the majority range search problem in this chap
 \section{Axis-Parallel Segments}
 \label{:rectangles:ap}
 
-In this section we consider axis-parallel line segments in the plane which will be queries with axis-parallel rectangles.  This is the simplest 2D environment on which we can perform a majority range query as the objects and query region are both simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. We will discuss only horizontal segments here.  The solution for vertical segments is identical, and we discuss how to combine the two approaches at the end of the section.
+In this section we consider axis-parallel line segments in the plane and queries in the form of axis-parallel rectangles.
+This is the simplest 2D environment on which we can perform a majority range query as the objects and query region are both simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. 
+We will discuss only horizontal segments here.
+The solution for vertical segments is identical, and we discuss how to combine the two approaches at the end of the section.
 
 We define our first problem as follows.
 
@@ -21,7 +24,11 @@ Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed par
 \subsection{Definitions}
 \label{:rectangles:ap:defs}
 
-Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. Our query $Q$ is given by its lower-left endpoint $(\alpha, \beta)$ and its upper-right endpoint $(\gamma, \delta)$. $s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
+Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. 
+Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). 
+We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. 
+Our query $Q$ is given by its lower-left corner $(\alpha, \beta)$ and its upper-right corner $(\gamma, \delta)$. 
+$s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
 
 For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
 
@@ -32,17 +39,21 @@ For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly,
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.00\columnwidth]{figures/fig_oo_cases}
-\caption[The different cases of axis-parallel segments.]{An axis-parallel query on axis-parallel segments. Only horizontal segments are shown.}
+\caption[The different cases of axis-parallel segments.]{An axis-parallel query on axis-parallel segments. Different cases of horizontal segments interacting with the query region are shown.}
 \label{:fig:rectangles:ap:cases}
 \end{figure}
 
 As Figure~\ref{:fig:rectangles:ap:cases} illustrates, there are several cases to consider regarding how a horizontal segment $s \in S$ may interact with $Q$. Cases $(1)$, $(2)$, and $(3)$, where $s$ is entirely left, entirely within, or entirely right of $Q$, respectively, are exactly an instance of  standard range searching problems where we look to find elements which are completely inside or completely outside of a query region.  
 
-Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \gamma$.  We further subdivide case $(4)$ in to cases where, for some appropriate value of $\rho$, $s \in_\rho Q$ in case $(4a)$ and $s \not \in_\rho Q$ in case $(4b)$.  Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\gamma$. Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \gamma$ and $q > \gamma$. 
+Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. 
+Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \gamma$.  
+We further subdivide case $(4)$ into cases where, for some appropriate value of $\rho$, $s \in_\rho Q$ in case $(4a)$ and $s \not \in_\rho Q$ in case $(4b)$.
+Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\gamma$. 
+Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \gamma$ and $q > \gamma$. 
 
 In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, crucially, neither $p$ nor $q$ are inside $Q$. As like in cases $(4)$ and $(5)$, $s$ is in case $(6a)$ if $s \in_\rho Q$ and $(6b)$ if $s \not \in_\rho Q$.
 
-Our goal is to count all of the segments belonging to cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and none of the segments belonging to any other case.
+Our goal is to identify and count all of the segments belonging to cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and none of the segments belonging to any other case.
 
 Our approach to solving this problem involves restricting and classifying segments step-by-step until, for some subset of segments, we are able to identify an expression representing its majority property.  Our solution proceeds as follows.
 
@@ -50,7 +61,8 @@ Our approach to solving this problem involves restricting and classifying segmen
 
 \paragraph{Step 2.} Identify those segments which are not ``too long''.  Let $w = \gamma - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its majority property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
 
-\paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint.  Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
+\paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint with respect to $\alpha$.
+Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
 
 \paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \gamma - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
 
@@ -61,7 +73,12 @@ Consider the segments in $S_L$, which we check against the majority property exp
 
 The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  After Step 2, we know that $|s| < \frac{w}{\rho}$, which implies that any segment in $s \in S_L$ that crosses both $\alpha$ and $\gamma$ must satisfy $s \in_\rho Q$, since $|s \cap Q|$ is exactly $w$, and $w$ is sufficient. This property allows us to avoid explicitly deciding if $s$ crosses $\gamma$, since if not too much of $s$ is outside $Q$, $s$ either crosses only $\alpha$ and case $(4)$ holds, or it crosses $\alpha$ and $\gamma$, and $w$ is sufficient.
 
-Considering the segments in $S_R$ now, against the majority property expression $\gamma - a \geq  \rho l$ for $s \in S_R$. This expression checks the affirmative case, that is, that enough of $s$ is inside $Q$. For case $(2)$, $\gamma - a \geq l$. Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.  On the other hand, for case $(3)$, $\gamma - a < 0$ and all such segments are rejected. The final cases, $(5a)$ and $(5b)$ are straight-forwardly classified based on how much of the segment appears in $Q$.
+Next, we consider the segments in $S_R$, which we check against the majority property expression $\gamma - a \geq  \rho l$ for $s \in S_R$. 
+This expression checks the affirmative case, that is, that enough of $s$ is inside $Q$.
+For case $(2)$, $\gamma - a \geq l$. 
+Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.
+On the other hand, for case $(3)$, $\gamma - a < 0$ and all such segments are rejected. 
+In the final cases, $(5a)$ and $(5b)$, the value of $|s \cap Q|$ is measured directly, and the segments are classified appropriately.
 
 \end{proof}
 
@@ -69,17 +86,23 @@ Considering the segments in $S_R$ now, against the majority property expression 
 \subsection{Answering the Query}
 \label{:rectangles:ap:analysis}
 
-Each of the steps in Section~\ref{:rectangles:ao:approach} includes or excludes segments by examining several inequalities. Each inequality is made up of some of the input parameters of each segment and a single query variable. To perform the query, we will map each segment to a point in 4D where each component of the point is based on the segment input parameters corresponding to one of our inequalities, and map the query variables given by $Q$ to a 4D box.  The query can then be answered using a multi-level range tree.
+Each step of Section~\ref{:rectangles:ap:approach} includes or excludes segments by examining inequalities. Each inequality is made up of some of the input parameters of each segment and a single query variable. To perform the query, we will map each segment to a point in 4D where each component of the point is based on the segment input parameters corresponding to one of our inequalities, and map the query variables given by $Q$ to a 4D box. The query can then be answered using a multi-level range tree.
 
 Recall that for every $s \in S$, we have $s = (a, b, l)$ as the $x$-coordinate of the left endpoint, $y$-coordinate of the left endpoint, and length of the segment, respectively.  The query region $Q$ has width $w = \gamma - \alpha$. Let $v$ be the 4D point we create which corresponds to $s$.
 
-The first two conditions we need to check are the same for all cases. We first isolate segments based directly on their $y$-coordinate; thus, the first component of $v$ will be $b$, and the first component of our 4D query box will be $[\beta, \delta]$.  We next want to include only segments where $l \leq \frac{w}{\rho}$. We can rewrite this as $\rho l \leq w$. Thus, the second component of $v$ will be $\rho l$, and the second component of our query box will be $(0, w)$.
+The first two conditions we need to check are the same for all cases. 
+We first isolate segments based directly on their $y$-coordinate; thus, the first component of $v$ will be $b$, and the first component of our 4D query box will be $[\beta, \delta]$.
+We next want to include only segments where $l \leq \frac{w}{\rho}$. We can rewrite this as $\rho l \leq w$. 
+Thus, the second component of $v$ will be $\rho l$, and the second component of our query box will be $(0, w]$.
 
-Our segments are next classified on whether their left endpoint is left or right of $\alpha$. To do this, we set the third component of $v$ to $a$, and the third component of the query box to either $(-\infty, \alpha)$ or $[\alpha, \infty)$ as appropriate.
+Our segments are next classified according to which side of $\alpha$ their left endpoints are found.
+We set the third component of $v$ to $a$.
+Our overall query will need to look at both cases and combine the results later. 
+The third component of the query box will be either $(-\infty, \alpha)$ or $[\alpha, \infty)$ depending on which phase of the query is executing.
 
-Finally, we need to check the majority expressions. We have two cases to check, and we will combine their results later. The first expression is for segments whose left endpoint is left of $\alpha$. The majority expression $\alpha - a < (1 - \rho) \cdot l$ can be rewritten as $\alpha < a + (1-\rho) \cdot l$. Therefore, we set the fourth component of $v$ to $a + (1 - \rho) \cdot l$, and the fourth component of the query box to $(\alpha, \infty)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the 4D point 
+Finally, we need to check the majority expressions. We have two cases to check. The first expression is for segments whose left endpoint is left of $\alpha$. The majority expression $\alpha - a < (1 - \rho) \cdot l$ can be rewritten as $\alpha < a + (1-\rho) \cdot l$. Therefore, we set the fourth component of $v$ to $a + (1 - \rho) \cdot l$, and the fourth component of the query box to $(\alpha, \infty)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the 4D point 
 \[ 
-v_i = (b_i, \rho \cdot l_i, a_i, a_i + (1-\rho) \cdot l_i)
+v_i = (b_i, \rho l_i, a_i, a_i + (1-\rho) \cdot l_i)
 \]
 
 \noindent and is queried by the 4D query box
@@ -87,9 +110,11 @@ v_i = (b_i, \rho \cdot l_i, a_i, a_i + (1-\rho) \cdot l_i)
 [\beta, \delta] \times (0, w] \times (-\infty, \alpha) \times (\alpha, \infty)
 \]
 
-The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\gamma - a \geq \rho l$ can be rewritten as $\gamma \geq a + \rho l$. Therefore, we set the fourth component of $v$ to $a + \rho l$, and the fourth component of the query box to $(-\infty, \gamma)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the point
+The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\gamma - a \geq \rho l$ can be rewritten as $\gamma \geq a + \rho l$. 
+Therefore, we set the fourth component of $v$ to $a + \rho l$, and the fourth component of the query box to $(-\infty, \gamma]$.  
+All together, to answer this case, every segment $s_i \in S$ is mapped to the point
 \[
-v_i' = (b_i, \rho \cdot l_i, a_i, a_i + \rho l_i)
+v_i' = (b_i, \rho l_i, a_i, a_i + \rho l_i)
 \]
 
 \noindent and is queried by the box
@@ -97,30 +122,34 @@ v_i' = (b_i, \rho \cdot l_i, a_i, a_i + \rho l_i)
 [\beta, \delta] \times (0, w] \times [\alpha, \infty) \times (-\infty, \gamma]
 \]
 
-By Corollary~\ref{cor:rangetree}, we can answer either of these queries by constructing a multi-level range tree.  As our points are in 4D, such a tree would require $\BigOh{n \log^3{n}}$ time and space for preprocessing and could answer queries in $\BigOh{\log^3{n}}$ time.  To find all horizontal segments satisfying their majority property, we need to perform both queries and combine the results.  
+By Corollary~\ref{cor:rangetree}, we can answer either of these queries by constructing a multi-level range tree.
+As our points are in 4D, such a tree would require $\BigOh{n \log^3{n}}$ time and space for preprocessing and could answer queries in $\BigOh{\log^3{n}}$ time.
+To find all horizontal segments satisfying their majority property, we need to perform both queries and combine the results.  
 
-A second data structure and query does not change the asymptotic requirements of the algorithm, however, we do note that since the mapped points for both data structures have the same three first components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. At the third level of the multi-level tree, we create \emph{two} associate structures, one for each of the majority expressions, and query each one as needed. In a similar way, we can save a constant factor of time during our queries, since both queries consider the same values for their first two components.
+A second data structure and query does not change the asymptotic requirements of the algorithm, however, we do note that since the mapped points for both data structures have the same three first components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. 
+At the third level of the multi-level tree, we create \emph{two} associate structures, one for each of the majority expressions, and query each one as needed. 
+In a similar way, we can save a constant factor of time during our queries, since both queries consider the same values for their first two components.
 
 
-\paragraph{Vertical segments}
-
-The method for querying vertical segments is very similar to that for horizontal segments, except that we care about the height of $Q$ rather than its width, and need to consider symmetric coordinates of each segment when going through each of the 4 steps.
-
-Preprocessing and querying this extra orientation of segments costs us a constant factor of time, since the number of orientations remains fixed.  Returning the sum of the two counts, or reporting both sets of segments is straight-forward.
-
+\paragraph{Vertical Segments.} The method for querying vertical segments is very similar to that for horizontal segments, except that we care about the height of $Q$ rather than its width, and need to consider symmetric coordinates of each segment when going through each of the 4 steps.
+Preprocessing and querying this extra orientation of segments costs us a constant factor of time, since the number of orientations remains fixed.
+Returning the sum of the two counts, or reporting both sets of segments is straight-forward.
 
 
 %------------------------------------------------------------------------------
 \section{Arbitrarily-Oriented Segments}
 \label{:rectangles:ao}
 
-In this section, we relax the restriction that all segments should be axis-parallel; that is, we allow that each segment may have any arbitrary orientation with respect to one another.  It does not matter if segments intersect. The problem statement is as follows.
+In this section, we relax the restriction that all segments should be axis-parallel, allowing each segment to have any arbitrary orientation with respect to one another. 
+It does not matter if segments intersect. 
+The problem statement is as follows.
 
 \begin{problem}
 Given a set $S$ of $n$ arbitrarily-oriented line segments in the plane, and a fixed parameter $\rho$ such that $1/2 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by axis-parallel query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
-This section, the query region $Q$, and the segments in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}.
+Throughout this section, the query region $Q$ and the segments in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}. Observe that the definition for $\rho$ is different than in Section~\ref{:rectangles:ap}; we discuss this difference in the conclusion of this chapter.
+
 
 \subsection{Decomposing the Problem}
 \label{:rectangles:ao:approach}
@@ -138,7 +167,7 @@ The second case, where only one endpoint is inside $Q$ is solved using the exact
 
 Then, as a direct consequence of their construction, if $s_{i,p} \in Q$, then $s_i \in_\rho Q$, and if $s_{i,q} \in Q$, then $s_i \in_\rho Q$.  Counting both of these cases will double-count any segment which has both endpoints in $Q$, so we subtract any such segments to compensate.
 
-We can query these higher dimensional points by applying the multi-dimensional range tree method of Corollary~\ref{cor:rangetree}.
+We can query these higher dimensional points by applying the multi-level range tree method given by Corollary~\ref{cor:rangetree}.
 
 
 \subsection{Handling Endpoints Outside of $Q$}
@@ -159,9 +188,9 @@ We begin by partitioning the space around $Q$ into 8 regions by extending lines 
 A segment which passes through $Q$ may involve any of the following pairs of regions, falling into 4 classes:
 
 \begin{enumerate}[i.]
-\item Parallel sides: $(I, V), (III, VII)$,
-\item Perpendicular sides: $(I, III), (III, V), (V,VII), (VII, I)$,
-\item Diagonal to Orthogonal: $(II, V)$, $(II, VII)$, $(IV, I)$, $(IV,VII)$, $(VI, I)$, $(VI, III)$, $(VIII, III)$, $(VIII, V)$,
+\item Parallel sides: $(I, V), (III, VII)$.
+\item Perpendicular sides: $(I, III), (III, V), (V,VII), (VII, I)$.
+\item Diagonal to Orthogonal: $(II, V)$, $(II, VII)$, $(IV, I)$, $(IV,VII)$, $(VI, I)$, $(VI, III)$, $(VIII, III)$, $(VIII, V)$.
 \item Diagonal to Diagonal: $(II, VI), (IV, VIII)$.
 \end{enumerate}
 
@@ -171,7 +200,7 @@ In all cases, we require the following additional definitions. Let $o_i = (e_i, 
 
 
 %------------------------------------------------------------------------------
-\subsubsection*{Class (i); e.g., $(p_1, p_2) \in (I, V)$}
+\subsubsection{Class (i); e.g., $(p, q) \in (I, V)$}
 \label{:rectangles:ao:class1}
 
 Class (i) is concerned with segments which cross parallel sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in V$; the solution for the $(III, VII)$ case is similar.
@@ -233,7 +262,7 @@ We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\
 
 
 %------------------------------------------------------------------------------
-\subsubsection*{Class (ii); e.g., $(p_1, p_2) \in (I, III)$}
+\subsubsection{Class (ii); e.g., $(p, q) \in (I, III)$}
 \label{:rectanges:ao:class2}
 
 Class (ii) is concerned with segments which cross perpendicular sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in III$; the solutions for other cases of class (ii) are similar. These expressions are not so different from the ones given in class (i), however we will see that we get two independent variables instead of one, and this has ramifications for how we will construct our query data structure later.
@@ -274,7 +303,7 @@ We need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1
 \end{split}
 \]
 
-Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can be tested by checking the equivalent inequality $\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho$, defined on the two query variables $\alpha$ and $\beta$. We will perform this test using a half-plane range query. To construct an appropriate dual-space, we reorder the expression as follows:
+Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can be tested by checking the equivalent inequality $\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho$, defined on the two query variables $\alpha$ and $\beta$. We will perform this test using a half-plane range query. To construct an appropriate dual-space for the half-plane query, we reorder the expression as follows:
 \[
 \begin{split}
 \frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} &\leq 1 - \rho \\
@@ -288,12 +317,12 @@ Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ ca
 \end{split}
 \]
 
-We then map each segment $s$ to a point with coordinates
+\noindent We then map each segment $s$ to a point with coordinates
 \[
 \left (\frac{c-a}{b-d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )
 \]
 
-\noindent Segments matching the majority expression correspond to dual-points satisfying the half-plane 
+\noindent In this space, segments matching the majority expression correspond to dual-points satisfying the following half-plane.
 \[
 y \geq \beta \cdot x + \alpha
 \]
@@ -302,7 +331,7 @@ Just as in class (i), when $o \not \in Q$, we cannot construct appropriate simil
 
 
 %------------------------------------------------------------------------------
-\subsubsection*{Class (iii); e.g., $(p_1, p_2) \in (I, IV)$}
+\subsubsection{Class (iii); e.g., $(p, q) \in (I, IV)$}
 \label{:rectanges:ao:class3}
 
 Class (iii) is concerned with segments which have one endpoint in a corner region of $Q$, and the other endpoint in an orthogonal region of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in IV$; the solutions for other variations of Class (iii) are similar.
@@ -335,7 +364,7 @@ If $s$ belongs to subcase (a), then $\frac{c - \gamma}{c - a} \leq \frac{\beta -
 
 
 % -----------------------------------------------------------------------------
-\subsubsection*{Class (iv); e.g., $(p_1, p_2) \in (II, VI)$}
+\subsubsection{Class (iv); e.g., $(p, q) \in (II, VI)$}
 \label{:rectanges:ao:class4}
 
 Class (iv) is concerned with segments whose endpoints appear in diagonally opposite corner regions of $Q$. We present the details of the majority property for the case where $p \in II$ and $q \in VI$; the solution for the $(VI, VIII)$ case is similar.
@@ -386,97 +415,52 @@ To illustrate that checking all four conditions simultaneously yields correct re
 
 The method we have developed above takes a very case-by-case approach to solving the problem. There are two overall phases to the steps above. The first phase must identify segments falling into each of the 16 cases outlined above. For each case, the second phase must then identify those segments satisfying their respective majority property. 
 
-Broadly, our solution to this problem uses the multi-level range tree introduced in Section~\ref{:prelim:range-trees} for the classification phase. At the innermost level of the range tree we store several distinct associate structures, one for each case of each class, which can answer the majority property expressions required for that case; See Figure~\ref{fig:rectangles:ao:overview} for an example.
+Broadly, our solution to this problem uses a multi-level range tree (Section~\ref{:prelim:range-trees}) for the classification phase, and a combination of range trees and canonical subsets structures (Section~\ref{:prelim:chan}) to check the majority expressions. 
 
-\begin{figure}[t]
-\begin{center}
-  \includegraphics[width=0.80\textwidth]{figures/fig_ds}
-  \caption[An overview of the multi-level range tree required for arbitrarily-oriented segments.]{An overview of the multi-level range tree and associated data structures for performing both the classification and majority property phases of the query.}
-  \label{fig:rectangles:ao:overview}
-\end{center}
-\end{figure}
+Identifying the segments which satisfy each case of each class is a matter of testing a set of several conditions, all of which must be true. The order that we test the conditions in makes no difference to the correctness of the algorithm, but can have an impact on its space requirements.
 
-The details of constructing and querying an appropriate data structure follow. Recall that the query is input as four values $\alpha, \beta, \gamma$, and $\delta$ and that $S$ is the set of input segments $s_1, s_2, \ldots, s_n$.
-
-\paragraph{Step 1, Classification:} We maintain a four-dimensional multi-level orthogonal range tree where each segment $s_i \in S$ is represented as a 4-tuple on the values $(a_i, b_i, c_i, d_i)$. To identify all of the segments within a particular case, we define a query box on $\alpha, \beta, \gamma$, and $\delta$. Each component of this box is open (i.e., unbounded) on the side appropriate for the case. For example, in case $(II, VI)$, shown in Figure~\ref{fig:rectangles:ao:case4}, the open query box is defined as
+Consider the Class (i), $(p, q) \in (I, V)$ case. 
+To identify these segments, we need to find those segments whose endpoints are in the appropriate regions, and which satisfy the single, orthogonal majority expression for the case. 
+Using an approach similar to Section~\ref{:rectangle:ap:analysis}, for each $s_i \in S$, we construct a corresponding 5D point $v_i$ as follows.
 \[
-(-\infty, \alpha) \times (-\infty, \beta) \times (\gamma, \infty) \times (\delta, \infty)
+v_i = (a_i, b_i, c_i, d_i, \rho(c_i - a_i))
 \]
 
-\noindent which will include all points $(u, v, w, x)$ where $u < \alpha$, $v < \beta$, $w > \gamma$, and $x > \delta$.
+\noindent We then query these points with the 5D box:
+\[
+(-\infty, \alpha) \times [\beta, \delta] \times (\gamma, \infty) \times [\beta, \delta] \times (-\infty, \gamma - \alpha]
+\]
 
-The range query identifies a set of subtrees on the innermost level representing all segments belonging to each case of each class, from which the query continues.
-
-\paragraph{Step 2, Majority Property:} For each innermost subtree from step 1, we associate additional structures as required for testing appropriate majority expressions. For some cases, this structure will include additional orthogonal range queries, as in class $(i)$, and some subcases of classes $(iii)$ and $(iv)$.
-
-For the remaining cases (all in class $(ii)$, and the remaining subcases of classes $(iii)$ and $(iv)$), we will perform at least one half-plane range query, using the dual-spaces we developed in Section~\ref{:rectangles:ao:bothout}. The half-plane queries will be carried out using canonical subset structures introduced in Section~\ref{:prelim:chan}, which lend themselves particularly well to multi-level query structures.
-
-
-\subsubsection{Analysis}
-
-By Theorem~\ref{th:rangetree}, we can perform the classification step using a multi-level range tree which requires $\BigOh{n\log^3{n}}$ storage and preprocessing time.  At the innermost level of this multi-level range tree, we attach several distinct associate structures: one for each case of each class, which can test the majority expression for that case. Each case of class (iv) requires us to test four majority expressions, and as a result, requires the deepest multi-level structure for querying.  
-
-Two of these expressions are orthogonal, which we test using a multi-level range tree. Theorem~\ref{th:rangetree} gives us the following lemma.
+\noindent The following lemma summarizes how we can query this class of segments.
 
 \begin{lemma}
-\label{lem:rect:ao:step1}
-Given a set of $n$ line segments belonging to class (iv), we can test the two orthogonal majority expressions using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ preprocessing time. We can query this structure in $\BigOh{\log{n}}$ time.
+Given a set $S$ of $n$ line segments, we can identify which segments belong to class (i) and which satisfy their majority property in $\BigOh{\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
 \end{lemma}
 
-The remaining two expressions are half-plane. By Theorem~\ref{th:chan}, we can answer one of those half-plane expressions using a canonical subset structures. This structure consists of $k = \BigOh{n}$ canonical subsets $C_1$ through $C_k$. With each canonical subset, we associate the structure from Lemma~\ref{lem:rect:ao:step1}.
+Now, consider the Class (ii), $(p, q) \in (I, III)$ case. 
+As with all cases, part of the problem involves first identifying those segments with endpoints in the appropriate regions.
+In this case, however, the majority expression is evaluated using a half-plane query.
 
-Space required for such a structure includes $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
-\[
-\sum_{i=1}^k{|C_i| \log{|C_i|}}
-\leq \sum_{i=1}^k{|C_i| \log{n}} 
-\leq \BigOh{n\log^2{n}}
-\]
+The classification portion is performed just as we have seen above. We map each segment to the 4D point $v_i = ( a_i, b_i, c_i, d_i )$. The majority expression will be queried by the dual-space we developed in Section~\ref{:rectanges:ao:class2}. For each $s_i \in S$, we define $h_i = \left ( \frac{c - a}{b - d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )$.  We will combine these two points into query object pairs $q_i = (v_i, h_i)$.
 
-\noindent for the associate structures, for a total space complexity of $\BigOh{n\log^2{n}}$. Preprocessing time is calculated using identical reasoning and is also $\BigOh{n\log^2{n}}$.
-
-Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the segments which pass the first half-plane majority expression, plus
-\[
-\sum_{i=1}^{k'}{\BigOh{\log{|C_i|}}} 
-\leq \sum_{i=1}^{k'}{\BigOh{\log{n}}}
-\leq \BigOh{\log{n}} \cdot \sum_{i=1}^{k'}{1}
-\leq \BigOh{\sqrt{n}\log^2{n}}
-\]
-
-\noindent for a total query time of $\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^2{n}} = \BigOh{\sqrt{n}\log^2{n}}$. The following lemma summarizes our results so far.
-
+By Theorem~\ref{th:rangetree}, we can query the classification component using a range tree according to the following lemma.
 \begin{lemma}
-\label{lem:rect:ao:step2}
-Given a set of $n$ line segments belonging to class (iv), we can test the two orthogonal majority expressions, and one of the half-plane majority expressions, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^2{n}}$ preprocessing time. We can query this structure in $\BigOh{\sqrt{n}\log^2{n}}$ time.
+\label{lem:ao:class2:v}
+Given a set $S$ of $n$ line segments, we can identify segments belonging to class (ii) in $\BigOh{\log^3{n}}$ time using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
 \end{lemma}
 
-Querying the final half-plane majority expression requires another canonical subsets structure. With each canonical subset, we associate the structure from Lemma~\ref{lem:rect:ao:step2}.
+By Theorem~\ref{th:chan}, we can query the half-plane component of our query objects using a canonical subsets data structure, giving the following lemma.
+\begin{lemma}
+\label{lem:ao:class2:h}
+Given a set $S$ of $n$ horizontal line segments, we can identify segments satisfying a half-plane representation of a majority expression in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ time.
+\end{lemma}
 
-Space required for such a structure includes $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
-\[
-\sum_{i=1}^k{|C_i| \log^2{|C_i|}}
-\leq \sum_{i=1}^k{|C_i| \log^2{n}} 
-\leq \BigOh{n\log^3{n}}
-\]
-
-\noindent for the associate structures, for a total space complexity of $\BigOh{n\log^3{n}}$. Preprocessing time is calculated using identical reasoning and is also $\BigOh{n\log^3{n}}$.
-
-Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the segments which pass the final half-plane majority expression, plus
-\[
-\begin{split}
-\sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^2{|C_i|}}} 
-&\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^2{n}}} \\
-%
-&\leq \BigOh{\log^2{n}} \cdot \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}}} \\
-%
-&\leq \BigOh{\sqrt{n}\log^3{n}} \\
-\end{split}
-\]
-
-\noindent for a total query time of $\BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}\log^3{n}} = \BigOh{\sqrt{n}\log^3{n}}$. The following lemma summarizes our results so far.
+Since the order that we check our conditions in does not affect correctness, we will check the half-plane condition first, then the endpoint classification.  
+By Corollary~\ref{cor:multichan}, we can accomplish this by associating a classification structure with each subset of the half-plane structure. The resulting structure is summarized by the following lemma.
 
 \begin{lemma}
-\label{lem:rect:ao:step3}
-Given a set of $n$ line segments belonging to class (iv), we can test the two orthogonal majority expressions, and the two half-plane majority expressions, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^3{n}}$ preprocessing time. We can query this structure in $\BigOh{\sqrt{n}\log^3{n}}$ time.
+Given a set $S$ of $n$ line segments, we can identify segments which belong to class (ii) \emph{and} which in $\BigOh{\log^3{n}}$ time using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+
 \end{lemma}
 
 
@@ -487,6 +471,8 @@ How we nest the different majority properties; orthogonal first, then half-plane
 How half-plane structures are queried, using Chan's method?
 
 
+Because they all use the same classification structure, we may save a constant factor by performing classification first, then majority expressions.
+
 
 
 %------------------------------------------------------------------------------
@@ -496,6 +482,8 @@ How half-plane structures are queried, using Chan's method?
 XXX TODO
 
 The contributions, theorems of this chapter
+
+We've seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region, but the segment nevertheless satisfies the majority property.  We have also seen how we can transform majority expressions into dual spaces which can be easily queried with a half-plane.
 
 Open problems
 
