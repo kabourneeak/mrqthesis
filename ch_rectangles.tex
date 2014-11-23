@@ -83,7 +83,7 @@ In the final cases, $(5a)$ and $(5b)$, the value of $|s \cap Q|$ is measured dir
 \end{proof}
 
 
-\subsection{Answering the Query}
+\subsection{Construction and Analysis}
 \label{:rectangles:ap:analysis}
 
 Each step of Section~\ref{:rectangles:ap:approach} includes or excludes segments by examining inequalities. Each inequality is made up of some of the input parameters of each segment and a single query variable. To perform the query, we will map each segment to a point in 4D where each component of the point is based on the segment input parameters corresponding to one of our inequalities, and map the query variables given by $Q$ to a 4D box. The query can then be answered using a multi-level range tree.
@@ -133,8 +133,14 @@ In a similar way, we can save a constant factor of time during our queries, sinc
 
 \paragraph{Vertical Segments.} The method for querying vertical segments is very similar to that for horizontal segments, except that we care about the height of $Q$ rather than its width, and need to consider symmetric coordinates of each segment when going through each of the 4 steps.
 Preprocessing and querying this extra orientation of segments costs us a constant factor of time, since the number of orientations remains fixed.
-Returning the sum of the two counts, or reporting both sets of segments is straight-forward.
 
+
+\paragraph{Combining the Steps.} Combining the structures necessary for both the horizontal and vertical portions of the query completes our solution to our problem statement given at the beginning of this section, which is summarized by the following theorem.
+
+\begin{theorem}
+\label{th:ap}
+Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the majority property for a given query rectangle in $\BigOh{\log^3{n}}$ time, using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+\end{theorem}
 
 %------------------------------------------------------------------------------
 \section{Arbitrarily-Oriented Segments}
@@ -410,7 +416,7 @@ To illustrate that checking all four conditions simultaneously yields correct re
 
 
 %------------------------------------------------------------------------------
-\subsection{Construction and Querying}
+\subsection{Construction and Analysis}
 \label{:rectangles:ao:analysis}
 
 The method we have developed above takes a very case-by-case approach to solving the problem. There are two overall phases to the steps above. The first phase must identify segments falling into each of the 16 cases outlined above. For each case, the second phase must then identify those segments satisfying their respective majority property. 
@@ -419,7 +425,7 @@ Broadly, our solution to this problem uses a multi-level range tree (Section~\re
 
 Identifying the segments which satisfy each case of each class is a matter of testing a set of several conditions, all of which must be true. The order that we test the conditions in makes no difference to the correctness of the algorithm, but can have an impact on its space requirements.
 
-Consider the Class (i), $(p, q) \in (I, V)$ case. 
+\paragraph{Class (i), $(p, q) \in (I, V)$ case.} 
 To identify these segments, we need to find those segments whose endpoints are in the appropriate regions, and which satisfy the single, orthogonal majority expression for the case. 
 Using an approach similar to Section~\ref{:rectangle:ap:analysis}, for each $s_i \in S$, we construct a corresponding 5D point $v_i$ as follows.
 \[
@@ -434,10 +440,11 @@ v_i = (a_i, b_i, c_i, d_i, \rho(c_i - a_i))
 \noindent The following lemma summarizes how we can query this class of segments.
 
 \begin{lemma}
-Given a set $S$ of $n$ line segments, we can identify which segments belong to class (i) and which satisfy their majority property in $\BigOh{\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
+\label{lem:ao:class1:v}
+Given a set of $n$ line segments, we can identify segments belonging to class (i) \emph{and} which satisfy their majority property in $\BigOh{\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
 \end{lemma}
 
-Now, consider the Class (ii), $(p, q) \in (I, III)$ case. 
+\paragraph{Class (ii), $(p, q) \in (I, III)$ case.} 
 As with all cases, part of the problem involves first identifying those segments with endpoints in the appropriate regions.
 In this case, however, the majority expression is evaluated using a half-plane query.
 
@@ -446,47 +453,76 @@ The classification portion is performed just as we have seen above. We map each 
 By Theorem~\ref{th:rangetree}, we can query the classification component using a range tree according to the following lemma.
 \begin{lemma}
 \label{lem:ao:class2:v}
-Given a set $S$ of $n$ line segments, we can identify segments belonging to class (ii) in $\BigOh{\log^3{n}}$ time using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify segments belonging to class (ii) in $\BigOh{\log^3{n}}$ time using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
 \end{lemma}
 
 By Theorem~\ref{th:chan}, we can query the half-plane component of our query objects using a canonical subsets data structure, giving the following lemma.
+
 \begin{lemma}
 \label{lem:ao:class2:h}
-Given a set $S$ of $n$ horizontal line segments, we can identify segments satisfying a half-plane representation of a majority expression in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ time.
+Given a set of $n$ line segments, we can identify segments satisfying a half-plane representation of a majority expression in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure requiring $\BigOh{n\log{n}}$ preprocessing time and space.
 \end{lemma}
 
 Since the order that we check our conditions in does not affect correctness, we will check the half-plane condition first, then the endpoint classification.  
 By Corollary~\ref{cor:multichan}, we can accomplish this by associating a classification structure with each subset of the half-plane structure. The resulting structure is summarized by the following lemma.
 
 \begin{lemma}
-Given a set $S$ of $n$ line segments, we can identify segments which belong to class (ii) \emph{and} which in $\BigOh{\log^3{n}}$ time using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
-
+\label{lem:ao:class2:c}
+Given a set of $n$ line segments, we can identify segments belonging to class (ii) \emph{and} which satisfy their majority property in $\BigOh{\sqrt{n}\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
 \end{lemma}
 
 
+\paragraph{Class (iii); $(p, q) \in (I, IV)$ case.} 
+This case can use the same orthogonal structure that we developed in Lemma~\ref{lem:ao:class1:v} and the same half-plane expression as in Lemma~\ref{lem:ao:class2:h}. 
+One component of the query box needs to be updated to account for region IV as follows.
+\[
+(-\infty, \alpha) \times [\beta, \delta] \times (\gamma, \infty) \times (-\infty, \beta) \times (-\infty, \gamma - \alpha]
+\]
+
+By Corollary~\ref{cor:multichan}, we can combine these two data structures to create a new structure which can answer this case as summarized by the following lemma.
+
+\begin{lemma}
+\label{lem:ao:class3:c}
+Given a set of $n$ line segments, we can identify segments belonging to class (iii) \emph{and} which satisfy their majority property in $\BigOh{\sqrt{n}\log^5{n}}$ time using a data structure requiring $\BigOh{n\log^5{n}}$ preprocessing time and space.
+\end{lemma}
 
 
-XXX TODO
-How we nest the different majority properties; orthogonal first, then half-plane
-How half-plane structures are queried, using Chan's method?
+\paragraph{Class (iv); $(p, q) \in (II, VI)$ case.} 
+This case has the largest number of majority expressions which need checking, in addition to the usual endpoint classification step. As a result, it will take the largest data structure to query.
+
+The basic steps are just as in the last three cases. To cover endpoint classification and the two orthogonal majority expressions, we will use a data structure and query box similar to Lemma~\ref{lem:ao:class1:v}, but extended to 6D to cover the extra majority expression.  We then apply Lemma~\ref{lem:ao:class2:h} and Corollary~\ref{cor:multichan} twice to handle the two half-plane majority expressions. The entire structure for this case is summarized by the following lemma.
+
+\begin{lemma}
+\label{lem:ao:class4:c}
+Given a set of $n$ line segments, we can identify segments belonging to class (iv) \emph{and} which satisfy their majority property in $\BigOh{\sqrt{n}\log^7{n}}$ time using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
+\end{lemma}
 
 
-Because they all use the same classification structure, we may save a constant factor by performing classification first, then majority expressions.
+\paragraph{Combining the Steps.} 
 
+Querying the entire environment requires us to create data structures for handling when one or both endpoints of a line segment lie entirely inside a query $Q$, as well as the structures for each of the cases when both endpoints lie outside of $Q$. Overall, this process is dominated by the structure required for the class (iv) segments. The following theorem summarizes the overall solution.
+
+\begin{theorem}
+\label{th:ao}
+Given a set of $n$ arbitrarily-oriented line segments, we can identify all segments which satisfy the majority property for a given query rectangle in $\BigOh{\sqrt{n}\log^7{n}}$ time, using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
+\end{theorem}
 
 
 %------------------------------------------------------------------------------
 \section{Conclusion}
 \label{:rectangles:concl}
 
-XXX TODO
+In this chapter, we have developed methods for answering the majority range query problem on both axis-parallel and arbitrarily oriented line segments with axis-parallel query regions. 
+We have seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region, but the segment nevertheless satisfies the majority property.  
+We have also seen how we can transform majority expressions into dual spaces which can be easily queried with a half-plane.
 
-The contributions, theorems of this chapter
+There are several possibilities for future work.
+Most notably is the condition that $\rho > 1/2$ for the arbitrary-orientation problem, which we will see is the only problem with such a limitation over all of the problems covered in this thesis.
+The limitation stems from our use of similar triangles anchored on the centrepoint of the segment.
+When $\rho > 1/2$, the centrepoint of any segment satisfying the majority property will be found inside the query region, guaranteeing intersections between $Q$ and our similar triangles.
 
-We've seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region, but the segment nevertheless satisfies the majority property.  We have also seen how we can transform majority expressions into dual spaces which can be easily queried with a half-plane.
+We would also like to reduce how many simultaneous majority expressions need to be checked. Having to check multiple expressions is a direct result of the uncertainty of which boundary of $Q$ a segment intersects. If we could directly identify the intersected boundaries with a better classification strategy, the number of nested levels required by our data structures could be reduced.
 
-Open problems
-
-A note about $\rho > 1/2$ for the arbitrary-orientation case, that it is the only problem with this limitation in the thesis, and to please see the open problems section for more details
-
-Can we do more work in the classification phase, and need to check fewer majority expressions?
+Finally, with the axis-parallel case, we are able to save a constant factor of space by sharing the classification steps between queries. 
+In the arbitrary-orientation case, we perform our half-plane queries first as this saves us a $\log{n}$ factor in our asymptotic preprocessing needs, but which prevents us from sharing the endpoint classification structures which are common to all cases.  
+Some experimentation is needed to identify for which inputs this trade-off makes practical sense.

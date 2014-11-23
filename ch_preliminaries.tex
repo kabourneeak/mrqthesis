@@ -53,7 +53,7 @@ Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A mult
 
 XXX TODO
 
-Restated with $d=2$.
+The range trees introduced in the previous section can be used to query any expression comprised of a single query variable.  In some cases, however, our expressions will take the form of half-planes comprised of two query variables, and for those, we use the following structure described in Chan\cite{chan2012}, restated here with $d=2$.
 
 \begin{theorem}[Corollary 7.3, part $i$, in Chan\cite{chan2012}]
 \label{th:chan}
@@ -73,6 +73,8 @@ The following corollary formalizes the use of canonical subset structures to bui
 
 \begin{corollary}
 \label{cor:multichan}
+
+Given a set of $n$ objects expressing both a point and some other secondary property, we can create a composite structure whereby the point can be queried by a half-plane and the secondary property can be queried by a given secondary algorithm with S, T, Q in (i), (ii).
 
 With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. 
 Let this associated structure require $\BigOh{m\log^f{m}}$ preprocessing space, $\BigOh{m \log^g{m}}$ preprocessing time, and $\BigOh{\sqrt{m}\log^h{m}}$ query time, where $f, g, h \in \BigOh{1}, f \leq g$, and $m$ the number of elements it is constructed on. 
