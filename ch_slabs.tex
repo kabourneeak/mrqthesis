@@ -243,7 +243,7 @@ During query time, we will query both structures and combine their results.
 The following theorem summarizes the overall solution.
 
 \begin{theorem}
-\label{thm:slabs:one}
+\label{th:slabs:one}
 Given a set of $n$ horizontal line segments, we can locate all segments which satisfy the majority property for a given query slab in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
 \end{theorem}
 
@@ -522,7 +522,7 @@ To answer a query $Q$, we need to preprocess several versions of this data struc
 During query time, we need to query three of those structures as appropriate for the orientation of $Q$, and combine their results. The following theorem summarizes this process.
 
 \begin{theorem}
-\label{thm:slabs:two}
+\label{th:slabs:two}
 Given a set of $n$ horizontal line segments, we can locate all segments which satisfy the majority property with respect to the intersection of two query slabs in $\BigOh{\sqrt{n}\log^4{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, requiring $\BigOh{n\log^4{n}}$ preprocessing time.
 \end{theorem}
 
