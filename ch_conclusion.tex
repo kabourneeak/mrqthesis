@@ -9,31 +9,32 @@ In this final chapter, we summarize the contributions from the previous chapters
 This thesis presents several contributions in the area of majority range searching.
 
 In Chapter~\ref{:rectangles}, we developed methods for querying line segments with axis-parallel rectangles. 
-At the first, the segments were also axis-parallel and we gave a method for expressing the majority property as an orthogonal range query. 
-Next we considered arbitrarily-oriented line segments, and we saw that the uncertainty of where a segment may intersect the query significantly increases the complexity of testing majority expressions.
+We first considered axis-parallel segments and gave a method for expressing the majority property as an orthogonal range query. 
+Next we considered arbitrarily-oriented line segments and we saw that the uncertainty of where a segment may intersect the query significantly increases the complexity of testing majority expressions.
 
-In Chapter~\ref{:slabs}, we consider axis-parallel line segments against a query region which is either an arbitrarily-oriented slab, or the intersection of two such slabs, which is a generalization of an arbitrarily-oriented rectangle. We gave a method for expressing the majority property as a half-plane query in a dual-space.
+In Chapter~\ref{:slabs}, we consider axis-parallel line segments against a query region which is either an arbitrarily-oriented slab, or the intersection of two such slabs; the latter is a generalization of querying with an arbitrarily-oriented rectangle. 
+We gave a method for expressing the majority property as a half-plane query in a dual-space.
 
 In Chapter~\ref{:convexp}, we moved away from line segments to consider convex polygons and majority range queries involving area. 
 We developed a method for preprocessing a convex polygon such that the area to one side of any chord can be found in logarithmic time with respect to the number of edges in the polygon. 
 We gave an algorithm for decomposing the intersection of a rectangle with a convex polygon in such a way that the area of their intersection could be found in logarithmic time. 
-Deciding on majority enclosure is then straight-forward.
 
 In Chapter~\ref{:monotonep}, we considered monotone polygons. 
-We gave an algorithm which produces a list of area formulas that we can use to calculate the area of the polygon underneath a query line.
-We combined this approach with our preprocessing idea from the convex polygon problem and developed a method to calculate the area of a monotone polygon within a query rectangle in logarithmic time with respect to the number vertices in the polygon. 
-With the intersection area calculated, deciding on the majority enclosure property is straight-forward in both this and the convex polygon case.
+We gave an algorithm which produces a list of area formulas that can be queried for the area of the polygon underneath a horizontal query line.
+We combined this approach with a recursive decomposition of the polygon to create a method for calculating the area of a monotone polygon within a query rectangle in logarithmic time with respect to the number of vertices in the polygon. 
 
 
 \section{Future Work}
 \label{:conclusion:open-problems}
 
-In this section, we summarize the future work we have discussed in previous chapters.
+In this section, we summarize the future work that has appeared in previous chapters.
 
 \begin{enumerate}
-\item From Chapter~\ref{:rectangles}, can we remove the limitation that $1/2 < \rho$ when querying on arbitrarily-oriented line segments?  This limitation stems from our current solution relying on the centrepoint of the located segments residing inside the query region.
+\item From Chapter~\ref{:rectangles}, can we remove the limitation that $1/2 < \rho$ when querying on arbitrarily-oriented line segments?  
+This limitation stems from our current solution relying on the centrepoint of the located segments residing inside the query region.
 
-\item From Chapter~\ref{:rectangles}, can we classify the endpoints of the segments in a way that reduces the number of majority expressions that we need to test.  The correct majority expression depends on which boundaries of the query rectangle are crossed by a segment, but our current classification technique is limited in how well it can identify these.
+\item From Chapter~\ref{:rectangles}, can we classify the endpoints of the segments in a way that reduces the number of majority expressions that we need to test. 
+The correct majority expression depends on which boundaries of the query rectangle are crossed by a segment, but our current classification technique is limited in how well it can identify these.
 
 \item From Chapter~\ref{:rectangles}, in a practical setting, when we are better off saving a constant factor of space by sharing the endpoint classification structures versus saving a $\log{n}$ factor by performing the half-plane queries first.
 
