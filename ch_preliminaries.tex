@@ -51,8 +51,6 @@ Let $P$ be a set of $n$ points in $d$-dimensional space, with $d \geq 2$. A mult
 \section{Canonical Subsets Data Structure}
 \label{:prelim:chan}
 
-XXX TODO
-
 The range trees introduced in the previous section can be used to query any expression comprised of a single query variable.  In some cases, however, our expressions will take the form of half-planes comprised of two query variables, and for those, we use the following structure described in Chan\cite{chan2012}, restated here with $d=2$.
 
 \begin{theorem}[Corollary 7.3, part $i$, in Chan\cite{chan2012}]
@@ -64,7 +62,7 @@ This structure is particularly well-suited to multi-part queries where we need t
 To support such a query, we construct a canonical subsets structure to perform the half-plane component of the query. 
 Then, with the objects of each canonical subset, we construct the secondary query structure.
 A multi-level query is executed by first querying the canonical subsets structure for all points satisfying the half-plane.
-With each subset identified by the first step, we evaluate the secondary structure.
+With each subset identified by the first step, we then evaluate the secondary structure.
 The result is the set of all objects which satisfy both the half-plane query \emph{and} whatever conditions the second-level query may test.
 If the secondary structure is itself a multi-level structure, then this procedure effectively adds one more layer.
 We can repeat this process to any arbitrary number of levels.
@@ -74,26 +72,7 @@ The following corollary formalizes the use of canonical subset structures to bui
 \begin{corollary}
 \label{cor:multichan}
 
-Given a set of $n$ objects expressing both a point and some other secondary property, we can create a composite structure whereby the point can be queried by a half-plane and the secondary property can be queried by a given secondary algorithm with S, T, Q in (i), (ii).
-
-With each of the $k = \BigOh{n}$ canonical subsets $C_1, C_2, \ldots, C_k$ created for a canonical subsets structure, we can associate a data structure with the elements of each subset. 
-Let this associated structure require $\BigOh{m\log^f{m}}$ preprocessing space, $\BigOh{m \log^g{m}}$ preprocessing time, and $\BigOh{\sqrt{m}\log^h{m}}$ query time, where $f, g, h \in \BigOh{1}, f \leq g$, and $m$ the number of elements it is constructed on. 
-The resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
-
-
-We are given a set $A$ of $n$ objects $a_1, a_2, \ldots, a_n$, and a query method $R$ which requires $S(n)$ preprocessing space, $T(n)$ preprocessing time, and $Q(n)$ query time. With each $a_i$, there is an associated point $p_i$.
-
-
-
-A query must locate all objects where $p_i$ satisfies a half-plane, and where each $a_i$ satisfies $R$.
-
-Such a query can be solved by constructing a canonical subsets structure to answer the half-plane query on the points. With each canonical subset, we can associate the data structure necessary for $R$ with the elements of that subset.
-
-We can identify all pairs satisfying a half-plane query on $p_i$ and a secondary query on $a_i$
-
-We can answer a query which identifies points satisfying a half-plane query and which 
-
-Given a set $A$ of $n$ objects of the form $(a_i, p_i), 1 \leq i \leq n$, where each $p_i$ is a 2D point, and each $a_i$ is an object which can be queried by a method $R$, we can construct a method $R$
+Given a set of $n$ objects $a_1, a_2, \ldots, a_n$ which can be queried with a data structure $A$ requiring preprocessing space $S(n)$, preprocessing time $T(n)$, and query time $Q(n)$, and where each $a_i$ also has an associated point $p_i$, we can construct a multi-level data structure which can identify all objects whose associated point $p_j$ satisfies a half-plane  \emph{and} where $a_j$ satisfies a query on $A$.
 
 \begin{enumerate}
 \item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\sqrt{n} \log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
@@ -101,7 +80,6 @@ Given a set $A$ of $n$ objects of the form $(a_i, p_i), 1 \leq i \leq n$, where 
 \item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
 
 \end{enumerate}
-
 \end{corollary}
 
 \begin{proof}
@@ -190,6 +168,9 @@ Of those, we will then identify which have their right endpoint right of $L$.
 Describing the construction of a multi-level data structure is often clearer when we begin with the innermost level.
 With that in mind, we consider the right endpoints first. 
 Considering only the points $q_i$, $1 \leq i \leq n$, and using $L$ to define a half-plane, we apply 
-Theorem~\ref{th:chan} to create a structure in $\BigOh{n\log{n}}$ time and space which will identify all points inside the half-plane in $\BigOh{\sqrt{n}\log{n}}$ time.  While each subset in this structure is ``keyed'' on right-endpoints, we can store the line segments as well.
+Theorem~\ref{th:chan} to create a structure in $\BigOh{n\log{n}}$ time and space which will identify all points inside the half-plane in $\BigOh{\sqrt{n}\log{n}}$ time.  
+While each subset in this structure is queried by the values of the right endpoints, we can store the entire line segment.
 
-Considering the left endpoints now, applying Theorem~\ref{th:chan} again gives us another structure with identical preprocessing and query times.  On this structure, however, we will associate an instance of the structure from step 1 with every subset, constructed on only the elements from its respective subset. By Corollary~\ref{cor:multichan}, this multi-level data structure will require $\BigOh{n\log^2{n}}$ time and space, and will identify all segments whose left endpoint is left of $L$ \emph{and} whose right endpoint is right of $L$ in $\BigOh{\sqrt{n}\log^2{n}}$ time.
+Considering the left endpoints now, applying Theorem~\ref{th:chan} again gives us another structure with identical preprocessing and query times. 
+On this structure, however, we will associate an instance of the structure from step 1 with every subset, constructed on only the elements from its respective subset. 
+By Corollary~\ref{cor:multichan}, this multi-level data structure will require $\BigOh{n\log^2{n}}$ time and space, and will identify all segments whose left endpoint is left of $L$ \emph{and} whose right endpoint is right of $L$ in $\BigOh{\sqrt{n}\log^2{n}}$ time.
