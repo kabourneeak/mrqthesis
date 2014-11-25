@@ -5,6 +5,7 @@
 *.loa
 *.lof
 *.log
+*.out
 *.pdf
 *.toc
 *.gz
