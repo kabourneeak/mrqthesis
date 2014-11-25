@@ -76,6 +76,10 @@ echo "precalculated"
 for f in $F; do grep -Hn "pre-calculated" $f; done
 
 echo
+echo "preprocessing"
+for f in $F; do grep -Hn "pre-processing" $f; done
+
+echo
 echo "ratio"
 for f in $F; do grep -Hn " ration" $f; done
 
