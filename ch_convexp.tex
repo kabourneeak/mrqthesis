@@ -116,7 +116,13 @@ Essentially, $T_P$ is defined recursively by splitting $E$ into halves. The resu
 
 The query rectangle $Q$ can intersect $P$ at most $8$ times. This follows from the fact that $P$ is convex, and a straight-line through $P$ will therefore have at most 2 intersections. Extending each of the 4 boundaries of $Q$ into lines then yields at most 8 intersections.
 
-Each intersection can be found in the following way. Let $b_\alpha$ be the vertical boundary of $Q$ with $x$-coordinate at $\alpha$. Let $\overline{\alpha}$ be the vertical line through $\alpha$. Using a binary search on the edges of $P$, we can identify the edges $e_\alpha$ and $e_\alpha'$ which intersect $\overline{\alpha}$, if they exist, such that $e_\alpha$ is clockwise from $e_\alpha'$ along $P$.  Specifically, we test only the top chain of $P$ to find $e_\alpha$ and only the bottom chain of $P$ to find $e_\alpha'$. We then determine if $e_\alpha$ and $e_\alpha'$ are intersected by the segment $b_\alpha$ itself simply by checking the $y$-coordinate of the intersection point. We will store a `nil' value with $e_\alpha$ and/or $e_\alpha'$ if the intersections do not exist or do not intersect $b_\alpha$.
+Each intersection can be found in the following way. 
+Let $b_\alpha$ be the vertical boundary of $Q$ with $x$-coordinate at $\alpha$. 
+Let $\iline{\alpha}$ be the vertical line through $\alpha$. 
+Using a binary search on the edges of $P$, we can identify the edges $e_\alpha$ and $e_\alpha'$ which intersect $\iline{\alpha}$, if they exist, such that $e_\alpha$ is clockwise from $e_\alpha'$ along $P$.
+Specifically, we test only the top chain of $P$ to find $e_\alpha$ and only the bottom chain of $P$ to find $e_\alpha'$.
+We then determine if $e_\alpha$ and $e_\alpha'$ are intersected by the segment $b_\alpha$ itself by checking the $y$-coordinate of the intersection point. 
+We will store a `nil' value with $e_\alpha$ and/or $e_\alpha'$ if the intersections do not exist or do not intersect $b_\alpha$.
 
 Similarly, let $b_\gamma$ be the vertical boundary of $Q$ with $x$-coordinate at $\gamma$, and let $b_\beta$ and $b_\delta$ be the horizontal boundaries of $Q$ with $y$-coordinates at $\beta$ and $\delta$, respectively.  Using the same binary search technique on appropriate half-chains of $P$, we can collect $e_\beta$, $e_\beta'$, $e_\gamma$, $e_\gamma'$, $e_\delta$, and $e_\delta'$.  
 

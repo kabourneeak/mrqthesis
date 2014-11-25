@@ -240,9 +240,9 @@ We present the details of the partial enclosure property for the case where $p \
 
 Let $s \in S$ be a segment belonging to class (i), case $(I, V)$.
 Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  
-Let $u = (a, f)$ be the point vertically aligned with $p$ and horizontally aligned with $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\overline{u o}$ with the boundary of $Q$.  
+Let $u = (a, f)$ be the point vertically aligned with $p$ and horizontally aligned with $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\iline{u o}$ with the boundary of $Q$.  
 The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. 
-Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (\gamma, f)$ is the intersection point of $\overline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
+Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (\gamma, f)$ is the intersection point of $\iline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
 
 We will test the partial enclosure property by checking that ``not too much of $s$ is outside of $Q$''. Specifically, we need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
@@ -303,7 +303,7 @@ These expressions are not so different from the ones given in class (i), however
 \end{center}
 \end{figure}
 
-Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  Let $u = (a, f)$ be the point under $p$ directly left of $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\overline{u o}$ with the boundary of $Q$.  The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. Likewise, let $v = (e, d)$ be the point left of $q$ directly under $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (e, \beta)$ is the intersection point of $\overline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case2}.
+Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  Let $u = (a, f)$ be the point under $p$ directly left of $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\iline{u o}$ with the boundary of $Q$.  The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. Likewise, let $v = (e, d)$ be the point left of $q$ directly under $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (e, \beta)$ is the intersection point of $\iline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case2}.
 
 We need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
@@ -543,9 +543,9 @@ Given a set of $n$ arbitrarily-oriented line segments, we can identify all segme
 \section{Conclusion}
 \label{:rectangles:concl}
 
-In this chapter, we have developed methods for answering the partial enclosure range query problem on both axis-parallel and arbitrarily oriented line segments with axis-parallel query regions. 
+In this chapter, we have developed methods for answering the partial enclosure range query problem on both axis-parallel and arbitrarily-oriented line segments with axis-parallel query regions. 
 We have seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region, but the segment nevertheless satisfies the partial enclosure property.  
-We have also seen how we can transform partial enclosure expressions into dual spaces which can be easily queried with a half-plane.
+We have also seen how we can transform partial enclosure expressions into dual-spaces which can be easily queried with a half-plane.
 
 There are several possibilities for future work.
 Most notably is the condition that $\rho > 1/2$ for the arbitrary-orientation problem, which we will see is the only problem with such a limitation over all of the problems covered in this thesis.

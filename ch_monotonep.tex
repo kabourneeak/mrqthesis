@@ -52,15 +52,18 @@ In order to create an area formula for the entire polygon, we decompose $P$ into
 
 We begin by sorting all of the vertices by their $x$-coordinates. If two vertices share the same $x$-coordinate (no more than two can do so, since $P$ is monotone), we can skip the duplicate without any other change to the algorithm. However, for ease of discussion, we will assume that every vertex has a distinct $x$-coordinate.
 
-Let $\overline{x}$ be the vertical line through $(x,0)$, and let $P_U$ and $P_L$ be the upper and lower chains of $P$, respectively. The sequence of lines $\overline{x_1}, \overline{x_2}, \ldots, \overline{x_n}$ passes through the leftmost vertex of $P$, the next leftmost, and so on from left to right to the rightmost vertex.  For every line $\overline{x_i}$, let $x_i = \overline{x_i} \cap P_U$ and $x_i' = \overline{x_i} \cap P_L$ be the intersections of $\overline{x_i}$ with the upper and lower chains of $P$, respectively.
+Let $\iline{x}$ be the vertical line through $(x,0)$, and let $P_U$ and $P_L$ be the upper and lower chains of $P$, respectively. 
+The sequence of lines $\iline{x_1}, \iline{x_2}, \ldots, \iline{x_n}$ passes through the leftmost vertex of $P$, the next leftmost, and so on from left to right to the rightmost vertex.
+For every line $\iline{x_i}$, let $x_i = \iline{x_i} \cap P_U$ and $x_i' = \iline{x_i} \cap P_L$ be the intersections of $\iline{x_i}$ with the upper and lower chains of $P$, respectively.
 
-As we walk from left to right over both $P_U$ and $P_L$ simultaneously, we keep track of $e_i$ and $e_i'$, the edges of $P_U$ and $P_L$, respectively, which are intersected by $\overline{x_i}$, and upon which reside the points $x_i$ and $x_i'$. Where $\overline{x_i}$ intersects a vertex of $P_U$ or $P_L$, 
-we store the edge to the right of that vertex as the corresponding value of $e_i$ or $e_i'$.
+As we walk from left to right over both $P_U$ and $P_L$ simultaneously, we keep track of $e_i$ and $e_i'$, the edges of $P_U$ and $P_L$, respectively, which are intersected by $\iline{x_i}$, and upon which reside the points $x_i$ and $x_i'$. 
+Where $\iline{x_i}$ intersects a vertex of $P_U$ or $P_L$, we store the edge to the right of that vertex as the corresponding value of $e_i$ or $e_i'$.
 
-We define a sequence of regions $R_1, R_2, \dots, R_{n-1}$ as follows. For each $i \in \{1, 2, \ldots, n-1\}$, let $X_i$ be the vertical slab between $\overline{x_i}$ and $\overline{x_{i+1}}$, and let $R_i = X_i \cap P$, then,
+We define a sequence of regions $R_1, R_2, \dots, R_{n-1}$ as follows. 
+For each $i \in \{1, 2, \ldots, n-1\}$, let $X_i$ be the vertical slab between $\iline{x_i}$ and $\iline{x_{i+1}}$, and let $R_i = X_i \cap P$, then,
 
 \begin{itemize}
- \item $R_i$ is the area of $P$ bounded by the vertical segments $\overline{x_i} \cap P$ and $\overline{x_{i+1}} \cap P$ to the left and right, and some portion of the edges $e_i$ and $e_i'$ to the top and bottom (while, in general, $e_i$ and  $e_i'$ extend beyond $\overline{x_i}$ and $\overline{x_{i+1}}$, this excess is irrelevant to the definition of $R_i$).
+ \item $R_i$ is the area of $P$ bounded by the vertical segments $\iline{x_i} \cap P$ and $\iline{x_{i+1}} \cap P$ to the left and right, and some portion of the edges $e_i$ and $e_i'$ to the top and bottom (while, in general, $e_i$ and  $e_i'$ extend beyond $\iline{x_i}$ and $\iline{x_{i+1}}$, this excess is irrelevant to the definition of $R_i$).
  
  \item Equivalently, $R_i$ is the polygon formed by the cycle on $x_i, x_{i+1}, x_{i+1}', x_i'$.
 \end{itemize}
@@ -309,11 +312,14 @@ In the last step of the algorithm we create a list of formulas over all regions,
 
 Our query rectangle $Q$ is given by the lower-left and upper-right coordinates $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. We define $h_\beta$ and $h_\delta$ as the horizontal lines through $\beta$ and $\delta$, respectively, which we can use as inputs to our region area formulas.
 
-Let $\overline{\alpha}$ and $\overline{\gamma}$ be vertical lines through $\alpha$ and $\gamma$, respectively. Using a binary search on the $x$-values of $P$, we can identify the regions which $\overline{\alpha}$ and $\overline{\gamma}$ pass through. Recall from the construction of the list of regions, $\mathcal{R}$, that if $\overline{\alpha}$ passes between $x_i$ and $x_{i+1}$, then it passes through region $R_i$, which stores the edges $e_i$ and $e_i'$ that define its top and bottom.
+Let $\iline{\alpha}$ and $\iline{\gamma}$ be vertical lines through $\alpha$ and $\gamma$, respectively.
+Using a binary search on the $x$-values of $P$, we can identify the regions which $\iline{\alpha}$ and $\iline{\gamma}$ pass through.
+Recall from the construction of the list of regions, $\mathcal{R}$, that if $\iline{\alpha}$ passes between $x_i$ and $x_{i+1}$, then it passes through region $R_i$, which stores the edges $e_i$ and $e_i'$ that define its top and bottom.
 
-Given $e_i$ and $e_i'$, we define the intersection points between $\overline{\alpha}$ and the edges as $s = e_i \cap \overline{\alpha}$ and $s' = e_i' \cap \overline{\alpha}$.
+Given $e_i$ and $e_i'$, we define the intersection points between $\iline{\alpha}$ and the edges as $s = e_i \cap \iline{\alpha}$ and $s' = e_i' \cap \iline{\alpha}$.
 
-Let $V(Q)$ be the vertical slab defined by $Q$; that is, the vertical area between $\overline{\alpha}$ and $\overline{\gamma}$. We can calculate the area of $Q \cap P$ by considering how $Q$ interacts with the following areas:
+Let $V(Q)$ be the vertical slab defined by $Q$; that is, the vertical area between $\iline{\alpha}$ and $\iline{\gamma}$.
+We can calculate the area of $Q \cap P$ by considering how $Q$ interacts with the following areas:
 
 \begin{enumerate}
  \item The leftmost region, where $R_i \not \subset V(Q)$. Let $A_i = R_i \cap Q$.
@@ -337,9 +343,9 @@ If $\alpha = x_i$, then $A_i = F(R_i, h_\delta) - F(R_i, h_\beta)$. In general, 
 
  \item Its bottom-left: the higher of $(\alpha, s')$ and $(\alpha, \beta)$,
 
- \item Its top-right: the lower of the point $x_{i+1}$ and  $h_\delta \cap \overline{x_{i+1}}$, and
+ \item Its top-right: the lower of the point $x_{i+1}$ and  $h_\delta \cap \iline{x_{i+1}}$, and
 
- \item Its bottom-right: the higher of the point $x_{i+1}'$ and $h_\beta \cap \overline{x_{i+1}}$.
+ \item Its bottom-right: the higher of the point $x_{i+1}'$ and $h_\beta \cap \iline{x_{i+1}}$.
 
 \end{itemize}
 

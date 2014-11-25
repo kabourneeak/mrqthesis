@@ -68,7 +68,7 @@ Broadly speaking, there are three different regions where we may find the left e
 \end{enumerate}
 
 However, only those segments belonging to cases 1 and 2 are interesting to us, since any segment whose left endpoint appears right of $L_2$ cannot be sufficiently enclosed by $Q$. 
-We will see that simply partitioning segments as left or right of $L_1$ is sufficient, as we can discriminate between cases 2 and 3 when testing the partial enclosure property.
+We will see that partitioning segments as left or right of $L_1$ is sufficient, as we can discriminate between cases 2 and 3 when testing the partial enclosure property.
 
 Identifying segments whose left endpoints appear to one side of $L_1$ can be accomplished using a half-plane query directly on the positions of the left endpoints and with $L_1$ itself.  Let $S_L = \{ s \in S_1 \st p \text{ is left of } L_1 \}$, and let $S_R = \{ s \in S_1 \st p \text{ is right of } L_1 \}$.
 
@@ -357,7 +357,9 @@ The solution for $Q_b$ can either be solved as detailed below, or as an instance
 
 \subsubsection{Endpoint Classification}
 
-Let $s \in S$ be a horizontal line segment defined by $(a, b, l)$.  Let $\overline{s}$ be the line through $s$, defined by the equation $y = b$.  Let $(a', b) = \overline{s} \cap L_1$ and $(a'', b) = \overline{s} \cap L_4$, be the intersection points of $\overline{s}$ with $L_1$ and $L_4$, respectively, then $a' = \frac{b - \beta}{\alpha}$ and $a'' = \frac{b - \delta}{\gamma} + w_n$.
+Let $s \in S$ be a horizontal line segment defined by $(a, b, l)$.
+Let $\iline{s}$ be the line through $s$, defined by the equation $y = b$.
+Let $(a', b) = \iline{s} \cap L_1$ and $(a'', b) = \iline{s} \cap L_4$, be the intersection points of $\iline{s}$ with $L_1$ and $L_4$, respectively, then $a' = \frac{b - \beta}{\alpha}$ and $a'' = \frac{b - \delta}{\gamma} + w_n$.
 
 We classify the endpoints of $s$, namely $p = (a, b)$ and $q = (a + l, b)$ with respect to their position left or right of $L_1$ and $L_4$. We can accomplish this with simplex range searching. Since $b$ is common to all points, we are interested in the following relationships:
 

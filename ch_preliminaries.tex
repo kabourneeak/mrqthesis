@@ -26,7 +26,8 @@ When we query $T$ for $\alpha$ and $\beta$, we identify two paths through $T$ in
 \end{center}
 \end{figure}
 
-What makes range trees such versatile structures is not simply that they identify the query elements, but rather due to the way that they group the identified elements into at most $\BigOh{\log{n}}$ disjoint subsets. These subsets are precisely the elements found in the ``inner'' subtrees along the path from $a_\alpha$ to $a_\beta$, as illustrated in Figure~\ref{fig:pre:range1d}.
+What makes range trees such versatile structures is not that they identify appropriate elements, but rather due to the way that they group the identified elements into at most $\BigOh{\log{n}}$ disjoint subsets.
+These subsets are precisely the elements found in the ``inner'' subtrees along the path from $a_\alpha$ to $a_\beta$, as illustrated in Figure~\ref{fig:pre:range1d}.
 
 With each non-leaf node of $T$, we can store additional information about the subset represented by its subtree.  The, during query time, we only need to consider the information stored at $\BigOh{\log{n}}$ nodes rather than the $\BigOh{n}$ elements they represent. Continuing our example on 2D points, with only $\BigOh{1}$ extra space per node, we could store which point has the highest $y$-coordinate in each subtree.  Then, we can use our range tree to find the highest point between two $x$-coordinates in $\BigOh{\log{n}}$ time.
 
