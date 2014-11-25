@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{:intro}
 
-Range searching is one of the common types of problems which arise in everyday computer use. 
+Range searching is one of the most common types of problems which arise in everyday computer use. 
 In a range search, we are given a set of objects and asked to identify those which satisfy some bounded criteria. 
 Range searches can take many different forms: searching for email received between two dates, looking for restaurants near your present location, or identifying what a video game player should see on their screen in any one frame; these are all examples of range searches.
 
@@ -11,11 +11,11 @@ A query is itself another well-defined geometric object, and our goal is to iden
 When addressing a range searching problem, we want to develop a method for preprocessing the input environment so that we can answer any query as efficiently as possible.
 Given how common and flexible range searching is to such a wide range of practical computer science, it is not surprising to  find that a great deal of research has been expended in this area.  
 
-In this thesis, we address the notion of \emph{Partial Enclosure Range Searching}, which, to the best of our knowledge, has not been explored previously. 
-In this setting, our goal is to identify, for a given query region, all objects which satisfy the \emph{Partial Enclosure Property}. 
-This property specifies that an object must intersect a query region by at least some fixed proportion of the object's own size (e.g., length, area, volume) in order to be matched.
+In this thesis, we address the notion of \emph{Partial Enclosure Range Searching (\PERS{})}, which, to the best of our knowledge, has not been explored previously. 
+In this setting, our goal is to identify, for a given query region, all objects which satisfy the \emph{Partial Enclosure Property}, which specifies that an object must intersect a query region by at least some fixed proportion of the object's own size (e.g., length, area, volume) in order to be selected.
 
-In this chapter, Section~\ref{:intro:motivation} begins by describing our motivation for this problem. 
+This chapter is organized as follows.
+Section~\ref{:intro:motivation} begins by describing our motivation for this problem. 
 In Section~\ref{:intro:problems} we describe the specific variations of the majority range problem that we will address in this thesis. 
 In Section~\ref{:intro:related}, we discuss related problem domains, and contrast them to our own.
 Section~\ref{:intro:contributions} outlines the contributions made by this thesis.
@@ -40,17 +40,17 @@ Figure~\ref{fig:intro:onenote} shows some handwritten notes, and a diagram which
 \end{center}
 \end{figure}
 
-Looking carefully at the figure, we can see that the even though the horizontal line segments have not been entirely enclosed by the selection tool, they nevertheless appear as part of the set of selected items.
-This behaviour of selecting partially enclosed objects is described in a patent filed by Microsoft Corporation\cite{lassoselect} and is intended to ameliorate inherit problems with trying to select irregular shapes with an irregularly shaped selection region. 
+Looking carefully at the figure, we can see that the even though the horizontal line segments of the diagram have not been entirely enclosed by the selection tool, they nevertheless appear as part of the set of selected items.
+This behaviour of selecting partially enclosed objects is described in a patent filed by Microsoft Corporation\cite{lassoselect} and is intended to ameliorate inherent problems with trying to select irregular shapes with an irregularly shaped selection region. 
 From the patent:
 
 \begin{quote}
 [T]here is a need for a selection tool that will allow a user to conveniently select one or more graphical objects in their entirety, without requiring an inconvenient amount of precision from the user.
 \end{quote}
 
-\noindent Particularly with the rising popularity of touch and pen-enabled devices, this need is likely to increase.  
+\noindent With the rising popularity of touch and pen-enabled devices, this need is likely to increase.  
 As we can see from the figure, OneNote already includes an implementation of a partial selection tool like the one described in the patent. 
-Although the details of the implementation are proprietary, it becomes apparent while using the software that the implementation suffers from poor performance as more items are selected from denser pages.
+Although the details of the implementation are proprietary, it becomes apparent while using the software that the implementation suffers from poor performance as more items are selected.
 It is from this observation that the work in this thesis was inspired.  
 Although the problems that we will examine take place in a simpler setting than the patent describes, we will nevertheless develop an understanding of where the major challenges of this problem domain are found, as well as some techniques for addressing them.
 
@@ -62,14 +62,14 @@ Although the problems that we will examine take place in a simpler setting than 
 
 This thesis proposes algorithms for several different partial enclosure range search settings.  Each problem addresses a different type of geometric object to be queried, or a different type of query region.
 
-\paragraph{Line Segments and Rectangles.} Line segments and rectangles are one of the simplest settings in which we can perform partial enclosure range queries. 
+\paragraph{Line Segments and Rectangles.} Line segments and rectangles are one of the simplest settings in which we can perform partial enclosure range searches. 
 Given an axis-parallel rectangle, we address query methods which consider only axis-parallel segments, or which consider arbitrarily-oriented ones.
 
 \paragraph{Line Segments and Slabs.} Relaxing the axis-parallel query regions of the preceding problem, we consider an arbitrarily-oriented slab.
 As the slab can have any orientation, intersections with a horizontal segment will involve both the height of the segment and the slope of the slab.  
 We also consider a query defined as the intersection of two slabs.
 
-\paragraph{Convex Polygons and Rectangles.} Moving away from line segments, we consider problems of partial area enclosure. 
+\paragraph{Convex Polygons and Rectangles.} Moving away from line segments, we consider problems of partial enclosure with respect to area. 
 Starting with convex polygons, we address methods for calculating the area enclosed by a rectangle. 
  
 \paragraph{Monotone Polygons and Rectangles.} This more complex shape does not generally decompose into big convex regions, so a different method of preprocessing will be needed.
@@ -99,7 +99,7 @@ Should explain why this is easier than our problem
 \section{Summary of Contributions}
 \label{:intro:contributions}
 
-Throughout this thesis, we develop contributions towards several variations of the partial enclosure range searching problem, along with some noteworthy ancillary methods. 
+In this thesis, we develop contributions to several variations of the partial enclosure range searching problem, along with some noteworthy ancillary methods. 
 Table~\ref{tab:contributions} gives a broad overview of the data structures we develop. 
 The table uses `AP' for ``Axis-Parallel'', `AO' for ``Arbitrary Orientation'', and `P' for ``Polygon'', and omits ``Big Oh'' for clarity.
 
@@ -125,10 +125,10 @@ Simple P & Horiz Slab & Cor~\ref{cor:monotonep:simplep-area} & ${n}$ & ${n}$ & $
 \end{table}
 
 In the line segment cases, we develop methods for restating the partial enclosure property as something which can be evaluated as a one or two variable inequality. 
-These expressions can then be queried by a known structures for orthogonal or half-plane queries. 
-We discuss the transformation to an appropriate dual space and the design of a data structure which can answer the necessary multi-part query.
+These expressions can then be queried by known structures for orthogonal or half-plane queries. 
+We discuss the transformations to a appropriate dual spaces and the design of data structures which can answer the necessary multi-part query.
 
-In the polygon cases, we primarily develop methods for calculating area within a simple region, such as below a query line.
+In the polygon cases, we primarily develop methods for calculating area within a simple region, e.g., below a query line.
 These methods are then repeated and combined to find the area enclosed by the actual query region.
 Once the enclosed area is known, determining the partial enclosure property is straight-forward.
 
@@ -139,5 +139,5 @@ Once the enclosed area is known, determining the partial enclosure property is s
 
 The remainder of this thesis is organized in the following way. 
 Chapter~\ref{:prelim} reviews existing data structures and range searching techniques which we utilize in our own contributions.
-The next four chapters cover majority range searching queries on successively more sophisticated geometric objects, with Chapter~\ref{:rectangles} focusing on axis-parallel rectangles, Chapter~\ref{:slabs} on arbitrarily-oriented slabs, Chapter~\ref{:convexp} on convex polygons, and Chapter~\ref{:monotonep} on monotone polygons.
+The next four chapters cover partial enclosure range searching queries on successively more sophisticated geometric objects, with Chapter~\ref{:rectangles} focusing on axis-parallel rectangles, Chapter~\ref{:slabs} on arbitrarily-oriented slabs, Chapter~\ref{:convexp} on convex polygons, and Chapter~\ref{:monotonep} on monotone polygons.
 The thesis concludes with Chapter~\ref{:conclusion} which summarizes our contributions and future work presented in earlier chapters.

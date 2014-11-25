@@ -1,8 +1,10 @@
-\chapter{Majority Range Queries on Monotone Polygons}
+\chapter{Partial Enclosure Range Searching on Monotone Polygons}
 \label{:monotonep}
 
 
-In this chapter, we show how to answer majority range queries on monotone polygons. The main contribution of this chapter is a method to calculate the area of the polygon appearing within a query rectangle. Once the enclosed area is calculated, determining if the majority property is satisfied is straight-forward.
+In this chapter, we show how we can answer the partial enclosure range searching problem on monotone polygons. 
+The main contribution of this chapter is a method to calculate the area of the polygon appearing within a query rectangle. 
+Once the enclosed area is calculated, determining if the partial enclosure property is satisfied is straight-forward.
 
 
 \section{Problem Definition}
@@ -26,7 +28,7 @@ A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$
 \end{center}
 \end{figure}
 
-We say that $P$ is \emph{mostly} enclosed by $Q$ if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$.
+We say that $P$ is sufficiently enclosed by $Q$ to satisfy the partial enclosure property if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$.
 
 
 %------------------------------------------------------------------------------
@@ -515,7 +517,7 @@ In this chapter we have developed methods for calculating the area of a monotone
 
 \end{enumerate}
 
-In every case, once the enclosed area is known, determining the majority property is just a matter of testing a simple inequality.
+In every case, once the enclosed area is known, deciding whether the partial enclosure property is satisfied is just a matter of testing a simple inequality.
 
 One possible direction for future research is to consider our options for extending Theorem~\ref{th:monotonep:rect:area} to simple polygons. 
 We've already seen that it does not work directly, but there may be alternate methods for partitioning the multi-region formulas or accounting for partially enclosed regions.

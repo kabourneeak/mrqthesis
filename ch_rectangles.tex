@@ -1,23 +1,27 @@
-\chapter{Majority Range Queries with Axis-Parallel Rectangles}
+\chapter{Partial Enclosure Range Searching with Axis-Parallel Rectangles}
 \label{:rectangles}
 
-In this chapter, we begin with a simple environment for performing majority range queries. Even with this simplified model, we will be able to identify where the main challenges of this problem domain lie and construct some techniques which we will use to solve many of the more complex problems.
+In this chapter, we begin with a simple environment for performing partial enclosure range searching. Even with this simplified model, we will be able to identify where the main challenges of this problem domain lie and construct some techniques which we will use to solve many of the more complex problems.
 
-We will present two variations of the majority range search problem in this chapter. Both use axis-parallel rectangles as their query. Both variations will query over line segments, which are the simplest type of object which has a concept of majority. In the first variation, the line segments will also be axis-parallel, whereas in Section~\ref{:rectangles:ao}, we allow segments of arbitrary orientation.
+We will present two variations of the \PERS{} problem in this chapter. 
+Both use axis-parallel rectangles as their query. 
+Both variations will query over line segments, which are the simplest type of object which has a concept of partial enclosure. 
+In the first variation, the line segments will also be axis-parallel, whereas in Section~\ref{:rectangles:ao}, we allow segments of arbitrary orientation.
 
 %------------------------------------------------------------------------------
 \section{Axis-Parallel Segments}
 \label{:rectangles:ap}
 
 In this section we consider axis-parallel line segments in the plane and queries in the form of axis-parallel rectangles.
-This is the simplest 2D environment on which we can perform a majority range query as the objects and query region are both simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. 
+This is the simplest 2D environment on which we can perform \PERS{} as the objects and query region are both simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. 
 We will discuss only horizontal segments here.
 The solution for vertical segments is identical, and we discuss how to combine the two approaches at the end of the section.
 
 We define our first problem as follows.
 
 \begin{problem}
-Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by an axis-parallel query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by an axis-parallel query rectangle $Q$ so as to satisfy the partial enclosure property. 
+A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
 
@@ -28,7 +32,7 @@ Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i =
 Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). 
 We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. 
 Our query $Q$ is given by its lower-left corner $(\alpha, \beta)$ and its upper-right corner $(\gamma, \delta)$. 
-$s_i \in_\rho Q$ if $s_i$ satisfies the majority property for $Q$, otherwise $s \not \in_\rho Q$.
+We say that $s_i \in_\rho Q$ if and only if $s_i$ satisfies the partial enclosure property with respect to $Q$, otherwise $s \not \in_\rho Q$.
 
 For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
 
@@ -55,26 +59,29 @@ In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, cruci
 
 Our goal is to identify and count all of the segments belonging to cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and none of the segments belonging to any other case.
 
-Our approach to solving this problem involves restricting and classifying segments step-by-step until, for some subset of segments, we are able to identify an expression representing its majority property.  Our solution proceeds as follows.
+Our approach to solving this problem involves restricting and classifying segments step-by-step until, for some subset of segments, we are able to identify an expression representing its partial enclosure property.  Our solution proceeds as follows.
 
 \paragraph{Step 1.} As we are only considering horizontal segments for now, we only need to consider those segments which are neither above nor below $Q$, since they can never intersect $Q$ at all. Let $S_1 = \{ s \in S \st \beta \leq b \leq \delta\}$. 
 
-\paragraph{Step 2.} We identify those segments which are not ``too long''.  Let $w = \gamma - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its majority property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
+\paragraph{Step 2.} We identify those segments which are not ``too long''.  Let $w = \gamma - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its partial enclosure property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
 
 \paragraph{Step 3.} We partition the remaining segments according the location of their left endpoint with respect to $\alpha$.
 Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
 
-\paragraph{Step 4.} We test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \gamma - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
+\paragraph{Step 4.} We test the appropriate partial enclosure expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \gamma - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the partial enclosure property is $S_\rho = S_L' \cup S_R'$. 
 
 \begin{proof}
 The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on Step 4 and show that for each case, a segment belonging to that case is correctly accepted or rejected.
 
-Consider the segments in $S_L$, which we check against the majority property expression $\alpha - a < (1 - \rho) \cdot l$. That is, we are looking at how much of $s$ is outside of $Q$. Segments in case $(1)$ have $\alpha - a > l$, so they are correctly rejected. Segments in cases $(4a)$ and $(4b)$ are accepted or rejected quite straight-forwardly by this condition; that is, if not too much of $s$ is outside $Q$, then ``enough'' of $s$ must be inside.  
+Consider the segments in $S_L$, which we check against the partial enclosure expression $\alpha - a < (1 - \rho) \cdot l$. 
+That is, we are looking at how much of $s$ is outside of $Q$. 
+Segments in case $(1)$ have $\alpha - a > l$, so they are correctly rejected. 
+Segments in cases $(4a)$ and $(4b)$ are accepted or rejected straight-forwardly by this condition as we measure precisely how much of $s$ is outside of $Q$, and thus, how much is inside. 
 
 The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  After Step 2, we know that $|s| < \frac{w}{\rho}$, which implies that any segment in $s \in S_L$ that crosses both $\alpha$ and $\gamma$ must satisfy $s \in_\rho Q$, since $|s \cap Q|$ is exactly $w$, and $w$ is sufficient. This property allows us to avoid explicitly deciding if $s$ crosses $\gamma$, since if not too much of $s$ is outside $Q$, $s$ either crosses only $\alpha$ and case $(4)$ holds, or it crosses $\alpha$ and $\gamma$, and $w$ is sufficient.
 
-Next, we consider the segments in $S_R$, which we check against the majority property expression $\gamma - a \geq  \rho l$ for $s \in S_R$. 
-This expression checks the affirmative case, that is, that enough of $s$ is inside $Q$.
+Next, we consider the segments in $S_R$, which we check against the partial enclosure expression $\gamma - a \geq  \rho l$ for $s \in S_R$. 
+This expression checks the affirmative case, checking that enough of $s$ is inside $Q$.
 For case $(2)$, $\gamma - a \geq l$. 
 Since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.
 On the other hand, for case $(3)$, $\gamma - a < 0$ and all such segments are rejected. 
@@ -88,7 +95,8 @@ In the final cases, $(5a)$ and $(5b)$, the value of $|s \cap Q|$ is measured dir
 
 Each step of Section~\ref{:rectangles:ap:approach} includes or excludes segments by examining inequalities. Each inequality is made up of some of the input parameters of each segment and a single query variable. To perform the query, we will map each segment to a point in 4D where each component of the point is based on the segment input parameters corresponding to one of our inequalities, and map the query variables given by $Q$ to a 4D box. The query can then be answered using a multi-level range tree.
 
-Recall that for every $s \in S$, we have $s = (a, b, l)$ as the $x$-coordinate of the left endpoint, $y$-coordinate of the left endpoint, and length of the segment, respectively.  The query region $Q$ has width $w = \gamma - \alpha$. Let $v$ be the 4D point we create which corresponds to $s$.
+Recall that for every $s \in S$, we know $a$, $b$, and $l$, which are the $x$ and $y$-coordinates of the left endpoint, and length of the segment, respectively. 
+The query region $Q$ has width $w = \gamma - \alpha$. Let $v$ be the 4D point we create which corresponds to $s$, constructed as follows.
 
 The first two conditions we need to check are the same for all cases. 
 We first isolate segments based directly on their $y$-coordinate; thus, the first component of $v$ will be $b$, and the first component of our 4D query box will be $[\beta, \delta]$.
@@ -100,7 +108,11 @@ We set the third component of $v$ to $a$.
 Our overall query will need to look at both cases and combine the results later. 
 The third component of the query box will be either $(-\infty, \alpha)$ or $[\alpha, \infty)$ depending on which phase of the query is executing.
 
-Finally, we need to check the majority expressions. We have two cases to check. The first expression is for segments whose left endpoint is left of $\alpha$. The majority expression $\alpha - a < (1 - \rho) \cdot l$ can be rewritten as $\alpha < a + (1-\rho) \cdot l$. Therefore, we set the fourth component of $v$ to $a + (1 - \rho) \cdot l$, and the fourth component of the query box to $(\alpha, \infty)$.  All together, to answer this case, every segment $s_i \in S$ is mapped to the 4D point 
+Finally, we need to check the partial enclosure expressions.
+We have two cases to check. The first expression is for segments whose left endpoint is left of $\alpha$.
+The partial enclosure expression $\alpha - a < (1 - \rho) \cdot l$ can be rewritten as $\alpha < a + (1-\rho) \cdot l$.
+Therefore, we set the fourth component of $v$ to $a + (1 - \rho) \cdot l$, and the fourth component of the query box to $(\alpha, \infty)$.
+All together, to answer this case, every segment $s_i \in S$ is mapped to the 4D point 
 \[ 
 v_i = (b_i, \rho l_i, a_i, a_i + (1-\rho) \cdot l_i)
 \]
@@ -110,7 +122,8 @@ v_i = (b_i, \rho l_i, a_i, a_i + (1-\rho) \cdot l_i)
 [\beta, \delta] \times (0, w] \times (-\infty, \alpha) \times (\alpha, \infty)
 \]
 
-The second expression is for segments whose left endpoint is at or right of $\alpha$. The majority expression $\gamma - a \geq \rho l$ can be rewritten as $\gamma \geq a + \rho l$. 
+The next expression is for segments whose left endpoints are at or right of $\alpha$. 
+The partial enclosure expression $\gamma - a \geq \rho l$ can be rewritten as $\gamma \geq a + \rho l$. 
 Therefore, we set the fourth component of $v$ to $a + \rho l$, and the fourth component of the query box to $(-\infty, \gamma]$.  
 All together, to answer this case, every segment $s_i \in S$ is mapped to the point
 \[
@@ -124,10 +137,10 @@ v_i' = (b_i, \rho l_i, a_i, a_i + \rho l_i)
 
 By Corollary~\ref{cor:rangetree}, we can answer either of these queries by constructing a multi-level range tree.
 As our points are in 4D, such a tree would require $\BigOh{n \log^3{n}}$ time and space for preprocessing and could answer queries in $\BigOh{\log^3{n}}$ time.
-To find all horizontal segments satisfying their majority property, we need to perform both queries and combine the results.  
+To find all horizontal segments satisfying their partial enclosure property, we need to perform both queries and combine the results.  
 
 A second data structure and query does not change the asymptotic requirements of the algorithm, however, we do note that since the mapped points for both data structures have the same three first components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. 
-At the third level of the multi-level tree, we create \emph{two} associate structures, one for each of the majority expressions, and query each one as needed. 
+At the third level of the multi-level tree, we create \emph{two} associate structures, one for each of the partial enclosure expressions, and query each one as needed. 
 In a similar way, we can save a constant factor of time during our queries, since both queries consider the same values for their first two components.
 
 
@@ -139,7 +152,7 @@ Preprocessing and querying this extra orientation of segments costs us a constan
 
 \begin{theorem}
 \label{th:ap}
-Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the majority property for a given query rectangle in $\BigOh{\log^3{n}}$ time, using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the partial enclosure property for a given query rectangle in $\BigOh{\log^3{n}}$ time, using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
 \end{theorem}
 
 %------------------------------------------------------------------------------
@@ -151,10 +164,12 @@ It does not matter if segments intersect.
 The problem statement is as follows.
 
 \begin{problem}
-Given a set $S$ of $n$ arbitrarily-oriented line segments in the plane, and a fixed parameter $\rho$ such that $1/2 < \rho \leq 1$, we want to return the number of segments from $S$ which are mostly enclosed by axis-parallel query rectangle $Q$. A given segment $s \in S$ satisfies the majority property (i.e., is considered mostly enclosed by $Q$) if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set $S$ of $n$ arbitrarily-oriented line segments in the plane, and a fixed parameter $\rho$ such that $1/2 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by axis-parallel query rectangle $Q$ so as to satisfy the partial enclosure property. 
+A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
-Throughout this section, the query region $Q$ and the segments in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}. Observe that the definition for $\rho$ is different than in Section~\ref{:rectangles:ap}; we discuss this difference in the conclusion of this chapter.
+Throughout this section, the query region $Q$ and the segments in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}. 
+Observe that the definition for $\rho$ is different than in Section~\ref{:rectangles:ap}; we discuss this difference in the conclusion of this chapter.
 
 
 \subsection{Decomposing the Problem}
@@ -196,11 +211,14 @@ A segment which passes through $Q$ may involve any of the following pairs of reg
 \begin{enumerate}[i.]
 \item Parallel sides: $(I, V), (III, VII)$.
 \item Perpendicular sides: $(I, III), (III, V), (V,VII), (VII, I)$.
-\item Diagonal to Orthogonal: $(II, V)$, $(II, VII)$, $(IV, I)$, $(IV, VII)$, $(VI, I)$, $(VI, III)$, $(VIII, III)$, $(VIII, V)$.
+\item Diagonal to Orthogonal: $(II, V)$, $(II, VII)$, $(IV, I)$, $(IV, VII)$, $(VI, I)$, \newline $(VI, III)$, $(VIII, III)$, $(VIII, V)$.
 \item Diagonal to Diagonal: $(II, VI), (IV, VIII)$.
 \end{enumerate}
 
-We will query for each case separately and combine our results at the end. For a segment $s \in S$, we can identify the regions of $p$ and $q$ using a 4-dimensional orthogonal range search. This classification allows us to determine which majority expressions we need to test in the second phase of the query. We develop expressions for deciding the majority property of each case below.
+We will query for each case separately and combine our results at the end. 
+For a segment $s \in S$, we can identify the regions of $p$ and $q$ using a 4-dimensional orthogonal range search. 
+This classification allows us to determine what we need to test in the second phase of the query. 
+We develop partial enclosure expressions for each case below.
 
 In all cases, we require the following additional definitions. Let $o_i = (e_i, f_i)$ be the centre point of $s_i$.  We define the function $d(u,v)$ as the Euclidean distance between any two points $u$ and $v$. We define $L_i = d(p_i, q_i)/2$ to be exactly half the length of $s_i$ (therefore, $d(p_i, o_i) = d(q_i, o_i) = L_i$). As with our previous definitions, when we discuss any single, general segment $s \in S$, we will drop the $i$ subscripts for clarity.
 
@@ -209,7 +227,8 @@ In all cases, we require the following additional definitions. Let $o_i = (e_i, 
 \subsubsection{Class (i); e.g., $(p, q) \in (I, V)$}
 \label{:rectangles:ao:class1}
 
-Class (i) is concerned with segments which cross parallel sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in V$; the solution for the $(III, VII)$ case is similar.
+Class (i) is concerned with segments which cross parallel sides of $Q$. 
+We present the details of the partial enclosure property for the case where $p \in I$ and $q \in V$; the solution for the $(III, VII)$ case is similar.
 
 \begin{figure}[t]
 \begin{center}
@@ -225,7 +244,7 @@ Let $u = (a, f)$ be the point vertically aligned with $p$ and horizontally align
 The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. 
 Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (\gamma, f)$ is the intersection point of $\overline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
 
-We will test the majority property by checking that ``not too much of $s$ is outside of $Q$''. Specifically, we need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
+We will test the partial enclosure property by checking that ``not too much of $s$ is outside of $Q$''. Specifically, we need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
 \frac{d(p, p')}{d(p, o)} = \frac{d(p, p')}{L} = \frac{d(u, u')}{d(u, o)} = \frac{2 d(u, u')}{2 d(u, o)} = \frac{2(\alpha - a)}{c - a}
 \]
@@ -262,7 +281,8 @@ Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ ca
 
 \noindent where the value of $\gamma - \alpha$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
 
-When $o \not \in Q$, we cannot construct similar triangles in the same way, since we require the points of intersection between the triangles and $Q$.  However, since we know that any segment which \emph{is} majority enclosed by $Q$ will have its centre point in $Q$, it is sufficient for our purposes if our test condition always reports a failure when $o$ is outside of $Q$.
+When $o \not \in Q$, we cannot construct similar triangles in the same way, since we require the points of intersection between the triangles and $Q$.  
+However, since we know that any segment which \emph{is} sufficiently enclosed by $Q$ will have its centre point in $Q$, it is enough for our purposes if our test condition always reports a failure when $o$ is outside of $Q$.
 
 We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\frac{\alpha - a}{c - a} > 0$ and $\frac{c - \gamma}{c - a} > 0$. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is right of $\gamma$, then $\frac{c - \gamma}{c - a} > 1/2$. Therefore, the sum $\frac{\alpha - a}{c - a} + \frac{c - \gamma}{c - a} > 1/2$ and is strictly larger than any allowable value for $(1 - \rho)$, resulting in the segment being rejected as desired.
 
@@ -271,12 +291,14 @@ We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\
 \subsubsection{Class (ii); e.g., $(p, q) \in (I, III)$}
 \label{:rectanges:ao:class2}
 
-Class (ii) is concerned with segments which cross perpendicular sides of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in III$; the solutions for other cases of class (ii) are similar. These expressions are not so different from the ones given in class (i), however we will see that we get two independent variables instead of one, and this has ramifications for how we will construct our query data structure later.
+Class (ii) is concerned with segments which cross perpendicular sides of $Q$. 
+We present the details of the partial enclosure property for the case where $p \in I$ and $q \in III$; the solutions for other cases of class (ii) are similar. 
+These expressions are not so different from the ones given in class (i), however we will see that we get two independent variables instead of one, and this has ramifications for how we will construct our query data structure later.
 
 \begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.80\textwidth]{figures/fig_ao_case2}
-  \caption[An example of a segment in class (ii), case $(I, III)$.]{An example of a segment in class (ii), case $(I, III)$. This particular segment is not majority enclosed by $Q$ for any allowable value of $\rho$.}
+  \caption[An example of a segment in class (ii), case $(I, III)$.]{An example of a segment in class (ii), case $(I, III)$. This particular segment is not sufficiently enclosed by $Q$ for any allowable value of $\rho$.}
   \label{fig:rectangles:ao:case2}
 \end{center}
 \end{figure}
@@ -328,7 +350,7 @@ Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ ca
 \left (\frac{c-a}{b-d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )
 \]
 
-\noindent In this space, segments matching the majority expression correspond to dual-points satisfying the following half-plane.
+\noindent In this space, segments matching the partial enclosure expression correspond to dual-points satisfying the following half-plane.
 \[
 y \geq \beta \cdot x + \alpha
 \]
@@ -340,7 +362,8 @@ Just as in class (i), when $o \not \in Q$, we cannot construct appropriate simil
 \subsubsection{Class (iii); e.g., $(p, q) \in (I, IV)$}
 \label{:rectanges:ao:class3}
 
-Class (iii) is concerned with segments which have one endpoint in a corner region of $Q$, and the other endpoint in an orthogonal region of $Q$. We present the details of the majority property for the case where $p \in I$ and $q \in IV$; the solutions for other variations of Class (iii) are similar.
+Class (iii) is concerned with segments which have one endpoint in a corner region of $Q$, and the other endpoint in an orthogonal region of $Q$. 
+We present the details of the partial enclosure property for the case where $p \in I$ and $q \in IV$; the solutions for other variations of Class (iii) are similar.
 
 \begin{figure}[t]
 \begin{center}
@@ -373,7 +396,8 @@ If $s$ belongs to subcase (a), then $\frac{c - \gamma}{c - a} \leq \frac{\beta -
 \subsubsection{Class (iv); e.g., $(p, q) \in (II, VI)$}
 \label{:rectanges:ao:class4}
 
-Class (iv) is concerned with segments whose endpoints appear in diagonally opposite corner regions of $Q$. We present the details of the majority property for the case where $p \in II$ and $q \in VI$; the solution for the $(VI, VIII)$ case is similar.
+Class (iv) is concerned with segments whose endpoints appear in diagonally opposite corner regions of $Q$. 
+We present the details of the partial enclosure property for the case where $p \in II$ and $q \in VI$; the solution for the $(VI, VIII)$ case is similar.
 
 \begin{figure}[t]
 \begin{center}
@@ -419,14 +443,17 @@ To illustrate that checking all four conditions simultaneously yields correct re
 \subsection{Construction and Analysis}
 \label{:rectangles:ao:analysis}
 
-The method we have developed above takes a very case-by-case approach to solving the problem. There are two overall phases to the steps above. The first phase must identify segments falling into each of the 16 cases outlined above. For each case, the second phase must then identify those segments satisfying their respective majority property. 
+The method we have developed above takes a very case-by-case approach to solving the problem. 
+There are two overall phases to the steps above. 
+The first phase must identify segments falling into each of the 16 cases outlined above. 
+For each case, the second phase must then identify those segments satisfying their respective partial enclosure property. 
 
-Broadly, our solution to this problem uses a multi-level range tree (Section~\ref{:prelim:range-trees}) for the classification phase, and a combination of range trees and canonical subsets structures (Section~\ref{:prelim:chan}) to check the majority expressions. 
+Broadly, our solution to this problem uses a multi-level range tree (Section~\ref{:prelim:range-trees}) for the classification phase, and a combination of range trees and canonical subsets structures (Section~\ref{:prelim:chan}) to check the partial enclosure expressions. 
 
 Identifying the segments which satisfy each case of each class is a matter of testing a set of several conditions, all of which must be true. The order that we test the conditions in makes no difference to the correctness of the algorithm, but can have an impact on its space requirements.
 
 \paragraph{Class (i), $(p, q) \in (I, V)$ case.} 
-To identify these segments, we need to find those segments whose endpoints are in the appropriate regions, and which satisfy the single, orthogonal majority expression for the case. 
+To identify these segments, we need to find those segments whose endpoints are in the appropriate regions, and which satisfy the single, orthogonal partial enclosure expression for the case. 
 Using an approach similar to Section~\ref{:rectangles:ap:analysis}, for each $s_i \in S$, we construct a corresponding 5D point $v_i$ as follows.
 \[
 v_i = (a_i, b_i, c_i, d_i, \rho(c_i - a_i))
@@ -441,14 +468,14 @@ v_i = (a_i, b_i, c_i, d_i, \rho(c_i - a_i))
 
 \begin{lemma}
 \label{lem:ao:class1:v}
-Given a set of $n$ line segments, we can identify segments belonging to class (i) \emph{and} which satisfy their majority property in $\BigOh{\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify segments belonging to class (i) \emph{and} which satisfy their partial enclosure property in $\BigOh{\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
 \end{lemma}
 
 \paragraph{Class (ii), $(p, q) \in (I, III)$ case.} 
 As with all cases, part of the problem involves first identifying those segments with endpoints in the appropriate regions.
-In this case, however, the majority expression is evaluated using a half-plane query.
+In this case, however, the partial enclosure expression is evaluated using a half-plane query.
 
-The classification portion is performed just as we have seen above. We map each segment to the 4D point $v_i = ( a_i, b_i, c_i, d_i )$. The majority expression will be queried by the dual-space we developed in Section~\ref{:rectanges:ao:class2}. For each $s_i \in S$, we define $h_i = \left ( \frac{c - a}{b - d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )$.  We will combine these two points into query object pairs $q_i = (v_i, h_i)$.
+The classification portion is performed just as we have seen above. We map each segment to the 4D point $v_i = ( a_i, b_i, c_i, d_i )$. The partial enclosure expression will be queried by the dual-space we developed in Section~\ref{:rectanges:ao:class2}. For each $s_i \in S$, we define $h_i = \left ( \frac{c - a}{b - d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )$.  We will combine these two points into query object pairs $q_i = (v_i, h_i)$.
 
 By Theorem~\ref{th:rangetree}, we can query the classification component using a range tree according to the following lemma.
 \begin{lemma}
@@ -460,7 +487,7 @@ By Theorem~\ref{th:chan}, we can query the half-plane component of our query obj
 
 \begin{lemma}
 \label{lem:ao:class2:h}
-Given a set of $n$ line segments, we can identify segments satisfying a half-plane representation of a majority expression in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure requiring $\BigOh{n\log{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify segments satisfying a half-plane representation of a partial enclosure expression in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure requiring $\BigOh{n\log{n}}$ preprocessing time and space.
 \end{lemma}
 
 Since the order that we check our conditions in does not affect correctness, we will check the half-plane condition first, then the endpoint classification.  
@@ -468,7 +495,7 @@ By Corollary~\ref{cor:multichan}, we can accomplish this by associating a classi
 
 \begin{lemma}
 \label{lem:ao:class2:c}
-Given a set of $n$ line segments, we can identify segments belonging to class (ii) \emph{and} which satisfy their majority property in $\BigOh{\sqrt{n}\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify segments belonging to class (ii) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
 \end{lemma}
 
 
@@ -483,18 +510,22 @@ By Corollary~\ref{cor:multichan}, we can combine these two data structures to cr
 
 \begin{lemma}
 \label{lem:ao:class3:c}
-Given a set of $n$ line segments, we can identify segments belonging to class (iii) \emph{and} which satisfy their majority property in $\BigOh{\sqrt{n}\log^5{n}}$ time using a data structure requiring $\BigOh{n\log^5{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify segments belonging to class (iii) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^5{n}}$ time using a data structure requiring $\BigOh{n\log^5{n}}$ preprocessing time and space.
 \end{lemma}
 
 
 \paragraph{Class (iv); $(p, q) \in (II, VI)$ case.} 
-This case has the largest number of majority expressions which need checking, in addition to the usual endpoint classification step. As a result, it will take the largest data structure to query.
+This case has the largest number of partial enclosure expressions which need checking, in addition to the usual endpoint classification step. 
+As a result, it will take the largest data structure to query.
 
-The basic steps are just as in the last three cases. To cover endpoint classification and the two orthogonal majority expressions, we will use a data structure and query box similar to Lemma~\ref{lem:ao:class1:v}, but extended to 6D to cover the extra majority expression.  We then apply Lemma~\ref{lem:ao:class2:h} and Corollary~\ref{cor:multichan} twice to handle the two half-plane majority expressions. The entire structure for this case is summarized by the following lemma.
+The basic steps are just as in the last three cases. 
+To cover endpoint classification and the two orthogonal partial enclosure expressions, we will use a data structure and query box similar to Lemma~\ref{lem:ao:class1:v}, but extended to 6D to cover the extra partial enclosure expression.
+We then apply Lemma~\ref{lem:ao:class2:h} and Corollary~\ref{cor:multichan} twice to handle the two half-plane partial enclosure expressions. 
+The entire structure for this case is summarized by the following lemma.
 
 \begin{lemma}
 \label{lem:ao:class4:c}
-Given a set of $n$ line segments, we can identify segments belonging to class (iv) \emph{and} which satisfy their majority property in $\BigOh{\sqrt{n}\log^7{n}}$ time using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify segments belonging to class (iv) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^7{n}}$ time using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
 \end{lemma}
 
 
@@ -512,16 +543,16 @@ Given a set of $n$ arbitrarily-oriented line segments, we can identify all segme
 \section{Conclusion}
 \label{:rectangles:concl}
 
-In this chapter, we have developed methods for answering the majority range query problem on both axis-parallel and arbitrarily oriented line segments with axis-parallel query regions. 
-We have seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region, but the segment nevertheless satisfies the majority property.  
-We have also seen how we can transform majority expressions into dual spaces which can be easily queried with a half-plane.
+In this chapter, we have developed methods for answering the partial enclosure range query problem on both axis-parallel and arbitrarily oriented line segments with axis-parallel query regions. 
+We have seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region, but the segment nevertheless satisfies the partial enclosure property.  
+We have also seen how we can transform partial enclosure expressions into dual spaces which can be easily queried with a half-plane.
 
 There are several possibilities for future work.
 Most notably is the condition that $\rho > 1/2$ for the arbitrary-orientation problem, which we will see is the only problem with such a limitation over all of the problems covered in this thesis.
 The limitation stems from our use of similar triangles anchored on the centrepoint of the segment.
-When $\rho > 1/2$, the centrepoint of any segment satisfying the majority property will be found inside the query region, guaranteeing intersections between $Q$ and our similar triangles.
+When $\rho > 1/2$, the centrepoint of any segment satisfying the partial enclosure property will be found inside the query region, guaranteeing intersections between $Q$ and our similar triangles.
 
-We would also like to reduce how many simultaneous majority expressions need to be checked. Having to check multiple expressions is a direct result of the uncertainty of which boundary of $Q$ a segment intersects. If we could directly identify the intersected boundaries with a better classification strategy, the number of nested levels required by our data structures could be reduced.
+We would also like to reduce how many simultaneous partial enclosure expressions need to be checked. Having to check multiple expressions is a direct result of the uncertainty of which boundary of $Q$ a segment intersects. If we could directly identify the intersected boundaries with a better classification strategy, the number of nested levels required by our data structures could be reduced.
 
 Finally, with the axis-parallel case, we are able to save a constant factor of space by sharing the classification steps between queries. 
 In the arbitrary-orientation case, we perform our half-plane queries first as this saves us a $\log{n}$ factor in our asymptotic preprocessing needs, but which prevents us from sharing the endpoint classification structures which are common to all cases.  

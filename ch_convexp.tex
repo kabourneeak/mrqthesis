@@ -1,7 +1,9 @@
-\chapter{Majority Range Queries on Convex Polygons}
+\chapter{Partial Enclosure Range Searching on Convex Polygons}
 \label{:convexp}
 
-In this chapter, we show how we can answer majority range queries on convex polygons. The main contribution of this section is a method to calculate the area of a convex polygon appearing within a query rectangle. With the enclosed area in hand, deciding on majority enclosure is straight-forward.
+In this chapter, we show how we can answer the partial enclosure range searching problem on convex polygons. 
+The main contribution of this section is a method to calculate the area of a convex polygon appearing within a query rectangle. 
+With the enclosed area in hand, deciding on the partial enclosure property is straight-forward.
 
 
 %------------------------------------------------------------------------------
@@ -24,7 +26,9 @@ A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$
 \end{center}
 \end{figure}
 
-We say that $P$ is \emph{mostly} enclosed by $Q$ if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$. Throughout this chapter we will assume that $Q$ is an axis-parallel rectangle for ease of discussion. In Section~\ref{:convexp:remarks} we will show how to use our method even when $Q$ has no fixed orientation.
+We say that $P$ is sufficiently enclosed by $Q$ to satisfy the partial enclosure property if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$. 
+Throughout this chapter we will assume that $Q$ is an axis-parallel rectangle for ease of discussion. 
+In Section~\ref{:convexp:remarks} we will show how to use our method even when $Q$ has no fixed orientation.
 
 %------------------------------------------------------------------------------
 \section{Overview of the Algorithm}
@@ -255,7 +259,7 @@ Work by Czyzowicz \textit{et al.}\cite{DBLP:conf/cccg/CzyzowiczCU98} gives an al
 \label{:convexp:concl}
 
 In this chapter we have developed a method for calculating the area of a convex polygon enclosed by a query rectangle or convex $k$-gon. 
-Our solution doesn't require complex data structures, using just a binary tree and some line intersection tests.
+Our solution does not require complex data structures, and uses only a binary tree and some line intersection tests.
 Specifically, we have described:
 
 \begin{enumerate}

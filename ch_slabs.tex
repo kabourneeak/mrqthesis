@@ -1,7 +1,7 @@
-\chapter{Majority Range Queries with Arbitrarily-Oriented Slabs}
+\chapter{Partial Enclosure Range Searching with Arbitrarily-Oriented Slabs}
 \label{:slabs}
 
-In this chapter, we show how we can answer majority range queries over horizontal line segments for queries in the form of an arbitrarily-oriented slab in the plane.  In Section~\ref{:slabs:two}, we extend our solution to allow a query region which is the intersection of two slabs; this type of query is a generalization of querying with an arbitrarily-oriented rectangle.
+In this chapter, we show how we can answer partial enclosure range searches over horizontal line segments for queries in the form of an arbitrarily-oriented slab in the plane.  In Section~\ref{:slabs:two}, we extend our solution to allow a query region which is the intersection of two slabs; this type of query is a generalization of querying with an arbitrarily-oriented rectangle.
 
 %------------------------------------------------------------------------------
 \section{Querying with One Slab}
@@ -17,32 +17,36 @@ In this section, we develop a method for identifying horizontal line segments wh
 The formal statement of our problem is as follows.
 
 \begin{problem}
-We are given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$. Our query $Q$ is an arbitrarily-oriented (i.e., slanted) slab. We want to count the number of segments $s \in S$ satisfying the property $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by an arbitrarily-oriented (i.e., slanted) slab $Q$ so as to satisfy the partial enclosure property.
+A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
-Throughout this section, we use the following definitions. Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$. When discussing a single, general segment, we drop the $i$ subscripts for clarity.
+Throughout this section, we use the following definitions. Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$. When discussing a single, general segment, we omit the $i$ subscripts for clarity.
 
-A query $Q$ is given as three inputs: $\alpha, \beta, w$ which we use to define an arbitrarily-oriented (i.e., slanted) slab. The left edge of the slab is defined by $L_1 : y = \alpha x + \beta$, while the right edge defined by $L_2: y = \alpha x + \beta - \alpha w$. Thus, $w$ is the horizontal width of $Q$.
+A query $Q$ is given as three inputs: $\alpha, \beta, w$ which we use to define an arbitrarily-oriented slab.
+The left edge of the slab is defined by $L_1 : y = \alpha x + \beta$, while the right edge defined by $L_2: y = \alpha x + \beta - \alpha w$. 
+Thus, $w$ is the horizontal width of $Q$.
 
-A segment $s \in S$ with length $|s|$ is sufficiently enclosed in $Q$ if and only if at least $\rho \cdot |s|$ of the segment is within $Q$. More precisely, we say that $s \in_\rho Q \Leftrightarrow |s \cap Q| \geq \rho \cdot |s|$. Otherwise, $s \not \in_\rho Q$.
+We say that $s_i \in_\rho Q$ if and only if $s_i$ satisfies the partial enclosure property with respect to $Q$, otherwise $s \not \in_\rho Q$.
 
 
 %------------------------------------------------------------------------------
 \subsection{Identifying the Segments}
 \label{:slabs:one:approach}
 
-Identifying the segments which meet our enclosure property takes place in three broad steps:
+Identifying the segments which satisfy the partial enclosure property takes place in three broad steps:
 
 \begin{enumerate}
- \item Restrict segments to those which are ``not too long'' to fit mostly inside $Q$.
+ \item Restrict segments to those which are ``not too long'' to fit sufficiently inside $Q$.
 
  \item Classify all segments depending on the location of their left endpoints. We are interested in those segments whose endpoints are left of $L_1$ and those which are between $L_1$ and $L_2$.
 
- \item For each class of interesting segments, we test their majority property.
+ \item For each class of interesting segments, test an appropriate partial enclosure expression.
 
 \end{enumerate}
 
-To answer these queries, we will use a multi-level canonical sets data structure, as described in Section~\ref{:prelim:chan}. We describe the different steps of the query in more detail here while Section~\ref{:slabs:one:analysis} describes the construction and analysis of the query data structure.
+To answer these queries, we will use a multi-level canonical sets data structure, as described in Section~\ref{:prelim:chan}. 
+We describe the different steps of the query in more detail next, while Section~\ref{:slabs:one:analysis} describes the construction and analysis of the query data structure.
 
 
 %------------------------------------------------------------------------------
@@ -63,16 +67,17 @@ Broadly speaking, there are three different regions where we may find the left e
  \item Right of $L_2$.
 \end{enumerate}
 
-However, only those segments belonging to cases 1 and 2 are interesting to us, since any segments whose left endpoint appears right of $L_2$ cannot be sufficiently enclosed by $Q$. We will see that simply partitioning segments as left or right of $L_1$ is sufficient, as we can discriminate between cases 2 and 3 when testing the majority property.
+However, only those segments belonging to cases 1 and 2 are interesting to us, since any segment whose left endpoint appears right of $L_2$ cannot be sufficiently enclosed by $Q$. 
+We will see that simply partitioning segments as left or right of $L_1$ is sufficient, as we can discriminate between cases 2 and 3 when testing the partial enclosure property.
 
 Identifying segments whose left endpoints appear to one side of $L_1$ can be accomplished using a half-plane query directly on the positions of the left endpoints and with $L_1$ itself.  Let $S_L = \{ s \in S_1 \st p \text{ is left of } L_1 \}$, and let $S_R = \{ s \in S_1 \st p \text{ is right of } L_1 \}$.
 
 
 %------------------------------------------------------------------------------
-\subsubsection{Check Majority Property}
-\label{:slabs:one:details:majority}
+\subsubsection{Check Partial Enclosure Property}
+\label{:slabs:one:details:pep}
 
-For each set $S_L$ and $S_R$, the final query step is to identify those segments which satisfy the majority property.
+For each set $S_L$ and $S_R$, the final query step is to identify those segments which satisfy the partial enclosure property.
 
 \begin{figure}[t]
 \begin{center}
@@ -87,28 +92,27 @@ For each set $S_L$ and $S_R$, the final query step is to identify those segments
 \begin{enumerate}
  \item The entire segment is left of $L_1$ (and should not be counted),
 
- \item The segment intersects $L_1$, and the segment is mostly enclosed by $Q$,
+ \item The segment intersects $L_1$, and the segment is sufficiently enclosed by $Q$,
 
- \item The segment intersects $L_1$, but the segment is not mostly enclosed by $Q$ (and should not be counted),
+ \item The segment intersects $L_1$, but the segment is insufficiently enclosed by $Q$ (and should not be counted),
 
  \item The segment intersects both $L_1$ and $L_2$. 
 
 \end{enumerate}
 
-We test their majority property as follows. 
 Given a segment $s \in S_L$ with left endpoint $p = (a,b)$, let $\iline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0). 
 Let $(a', b)$ be the intersection point of $\iline{s}$ and $L_1$. 
 Solving the equations of the two lines gives $a' = \frac{b - \beta}{\alpha}$. 
-It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', that is, that $a' - a < (1 - \rho)l$. 
+It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', which we can test with the expression $a' - a < (1 - \rho)l$.
 
 \begin{proof}
-We look at each case to show that this single test is enough to identify all segments correctly. 
-First, the test directly identifies segments belonging to cases 2 or 3 since $a' - a$ is precisely the amount of $s$ outside of $Q$. This test will also reject segments, as we desire, from case 1 since $a' - a > l$ and cannot satisfy the majority property for any allowed value of $\rho$. 
+We look at each case to show that this single expression is enough to identify all segments correctly. 
+First, the test directly identifies segments belonging to cases 2 or 3 since $a' - a$ is precisely the amount of $s$ outside of $Q$. This test will also reject segments, as we desire, from case 1 since $a' - a > l$ and cannot satisfy the partial enclosure property for any allowed value of $\rho$. 
 
 Finally, this test is also sufficient for case 4 owing to the length restriction step we perform in Section\ref{:slabs:one:details:restrict}. That is, after the length restriction step, we know that $|s| < \frac{w}{\rho}$, where $w$ is the width of the query slab. Since any segment in case 4 has the property $|s \cap Q| = w$, this implies that $s \in_\rho Q$.
 \end{proof}
 
-We test for segments satisfying $a' - a < (1 - \rho)l$ using a half-plane query. Expanding this expression gives:
+We test for segments satisfying $a' - a < (1 - \rho)l$ by transforming it to a half-plane query. Expanding this expression gives:
 \[
 \begin{split}
 a' - a &< (1 - \rho)l \\
@@ -119,7 +123,8 @@ a + (1 - \rho)l &> \frac{1}{\alpha} b - \frac{\beta}{\alpha}  \\
 \end{split}
 \]
 
-From this inequality, we can construct an appropriate dual-space to perform the half-plane query. We map each segment $s$ to a dual-point with coordinates $(b, a + (1-\rho)l)$. Segments matching the majority expression then correspond to the dual-points satisfying the half-plane
+From this inequality, we can construct an appropriate dual-space to perform the half-plane query. We map each segment $s$ to a dual-point with coordinates $(b, a + (1-\rho)l)$. 
+Segments matching the partial enclosure expression then correspond to the dual-points satisfying the half-plane
 \[
 y > \frac{1}{\alpha} - \frac{\beta}{\alpha}
 \]
@@ -149,10 +154,7 @@ There are 4 cases of segments whose left-endpoints are right of $L_1$, as shown 
 
 \end{enumerate}
 
-For each $s \in S_R$, we test the majority property by checking that ``enough of the segment is inside of $Q$''.  Just as we did with the segments of $S_L$, let $\iline{s}$ be the horizontal line through $s$.  Let $(a'', b)$ be the intersection point of $\iline{s}$ with $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.  We will show:
-\[
-a'' - a \geq \rho l \imply s \in_\rho Q
-\]
+For each $s \in S_R$, we test the partial enclosure property by checking that ``enough of the segment is inside of $Q$''.  Just as we did with the segments of $S_L$, let $\iline{s}$ be the horizontal line through $s$.  Let $(a'', b)$ be the intersection point of $\iline{s}$ with $L_2$. Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.  We will show a segment satisfies the partial enclosure property when $a'' - a \geq \rho l$.
 
 \begin{proof}
 We look at each case. 
@@ -173,7 +175,9 @@ a'' - a &\geq \rho l \\
 \end{split}
 \]
 
-From this inequality, we can construct an appropriate dual-space to perform the half-lane query.  We map each segment $s$ to a dual-point with coordinates $(b, \rho l + a)$. Segments matching the majority expression then correspond to the dual-points satisfying the half-plane 
+From this inequality, we can construct an appropriate dual-space to perform the half-plane query.  
+We map each segment $s$ to a dual-point with coordinates $(b, \rho l + a)$. 
+Segments matching the partial enclosure expression then correspond to the dual-points satisfying the half-plane 
 \[
 y \leq \frac{1}{\alpha} x - \frac{\beta}{\alpha} + w
 \]
@@ -194,14 +198,14 @@ The innermost structure answers the length restriction step of the overall query
 
 \begin{lemma}
 \label{lem:slabs:one:step1}
-Given a set of $n$ horizontal line segments, we can count all segments with length at most that of a given query parameter in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built in $\BigOh{n \log{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can count all segments with length at most $\frac{w}{\rho}$ in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built in $\BigOh{n \log{n}}$ preprocessing time.
 \end{lemma}
 
 
 % -----------------------------------------------------------------------------
-\subsubsection{Majority Property}
+\subsubsection{Partial Enclosure Property}
 
-To query segments having the majority property, we use the half-plane expressions we developed in Section \ref{:slabs:one:details:majority}.
+To identify segments satisfying the partial enclosure property, we use the half-plane expressions we developed in Section \ref{:slabs:one:details:pep}.
 There are two expressions we need to test, depending on whether the left endpoint of a segment is left or right of $L_1$.
 We will examine the left case specifically, but the other case is similar.
 
@@ -237,14 +241,13 @@ Given a set of $n$ horizontal line segments, we can locate all segments whose le
 % -----------------------------------------------------------------------------
 \subsubsection{Combining the Steps}
 
-The previous three steps combine to create a data structure which can answer a majority range query for segments whose left endpoints are found on one side of $L_1$ or the other.
-To answer any query $Q$, we need to preprocess two such data structures, choosing our expressions appropriately for the left and right cases.
+To fully answer any query $Q$, we need to preprocess two such data structures, choosing our expressions appropriately for the left and right cases.
 During query time, we will query both structures and combine their results.
 The following theorem summarizes the overall solution.
 
 \begin{theorem}
 \label{th:slabs:one}
-Given a set of $n$ horizontal line segments, we can locate all segments which satisfy the majority property for a given query slab in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can identify all segments which satisfy the partial enclosure property for a given query slab in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
 \end{theorem}
 
 
@@ -266,7 +269,8 @@ The overall approach is very similar to Section~\ref{:slabs:one}, and the data s
 The formal statement of this problem is as follows.
 
 \begin{problem}
-We are given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$. Our query $Q$ is an arbitrarily-oriented parallelogram specified as the intersection of two slabs. We want to count the number of segments $s \in S$  satisfying the property $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by an arbitrarily parallelogram $Q$ so as to satisfy the partial enclosure property.
+A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
 Throughout this section, we use the following definitions. Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$.
@@ -301,14 +305,14 @@ Specifically, a query is given as six inputs $\alpha, \beta, w_p, \delta, \gamma
 
 \end{itemize}
 
-A segment $s \in S$ with length $l$ is sufficiently enclosed in $Q$ if and only if at least $\rho \cdot l$ of the segment is within $Q$. More precisely, we say that $s \in_\rho Q \Leftrightarrow |s \cap Q| \geq \rho \cdot l$. Otherwise, $s \not \in_\rho Q$.
+We say that $s_i \in_\rho Q$ if and only if $s_i$ satisfies the partial enclosure property with respect to $Q$, otherwise $s \not \in_\rho Q$.
 
 
 % -----------------------------------------------------------------------------
 \subsection{Identifying the Segments}
 \label{:slabs:two:approach}
 
-Just as in the single slab problem, identifying which segments meet our enclosure property is accomplished by ignoring some segments, classifying the remaining segments, and developing an appropriate majority property expression.
+Just as in the single slab problem, identifying segments satisfying the partial enclosure property is accomplished by ignoring some segments, classifying the remaining segments, and developing an appropriate partial enclosure expression.
 The overall steps are as follows.
 
 \begin{enumerate}
@@ -318,7 +322,7 @@ The overall steps are as follows.
  \begin{enumerate}
   \item Identify the two lines out of $L_1, L_2, L_3,$ and $L_4$ which border the subregion,
   \item Classify segments based on the location of their endpoints with respect to the border lines,
-  \item Check the appropriate majority property.
+  \item Check the appropriate partial enclosure expression.
  \end{enumerate}
 \end{enumerate}
 
@@ -378,12 +382,13 @@ We classify the endpoints of $s$, namely $p = (a, b)$ and $q = (a + l, b)$ with 
  \end{enumerate}
 \end{enumerate}
 
-None of the segments in Cases 1(a) and 3(a) are counted, and all of the segments in Case 2(a) \emph{are} counted. All segments falling into cases $1(b)$, $1(c)$, and $2(b)$ need to be tested for their majority property.
+None of the segments in Cases 1(a) and 3(a) are counted, and all of the segments in Case 2(a) \emph{are} counted. All segments falling into cases $1(b)$, $1(c)$, and $2(b)$ need to be tested further.
 
 
-\subsubsection{Majority Property}
+\subsubsection{Partial Enclosure Property}
 
-For Case 1(b), we know that $s$ only crosses $L_1$. In this case, we can either check that enough of $s$ is inside $Q_a$, or we can check that not too much of $s$ is \emph{outside} of $Q_a$.  We will check the latter condition, which gives the following expression.
+For Case 1(b), we know that $s$ only crosses $L_1$. In this case, we can either check that enough of $s$ is inside $Q_a$, or that not too much of $s$ is \emph{outside} of $Q_a$.  
+We will check the latter condition, which gives the following partial enclosure expression.
 \[
 \begin{split}
 a' - a &< (1 - \rho)l \\
@@ -395,9 +400,10 @@ b \frac{1}{\alpha} - \frac{\beta}{\alpha} &< a + (1 - \rho)l \\
 \end{split}
 \]
 
-We can query for segments matching this expression by performing a half-plane query on an appropriate dual-space, just as we did in Section~\ref{:slabs:one:details:majority}. For this expression in particular, we map each segment $s$ to a dual-point with coordinates $(b, a + (1-\rho)l)$, and query with the half-plane $y > \frac{1}{\alpha} - \frac{\beta}{\alpha}$.
+We can query for segments matching this expression by performing a half-plane query on an appropriate dual-space, just as we did in Section~\ref{:slabs:one:details:pep}. 
+For this expression in particular, we map each segment $s$ to a dual-point with coordinates $(b, a + (1-\rho)l)$, and query with the half-plane $y > \frac{1}{\alpha} - \frac{\beta}{\alpha}$.
 
-For Case 2(b), where $s$ crosses only $L_4$ we may check that enough of $s$ is inside $Q_a$, or that not too much is outside of $Q_a$. In this case, we will check the former condition, which gives the following expression.
+For Case 2(b), where $s$ crosses only $L_4$ we may check that enough of $s$ is inside $Q_a$, or that not too much is outside of $Q_a$. In this case, we will check the former condition, which gives the following partial enclosure expression.
 \[
 \begin{split}
 a'' - a &\geq \rho l \\
@@ -425,7 +431,7 @@ b \cdot \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) + \left ( \frac{\be
 \end{split}
 \]
 
-This expression can be queried by mapping each segment $s$ to a dual-point with coordinates $(b, \rho l)$ and locating those which satisfy the half-plane
+This partial enclosure expression can be queried by mapping each segment $s$ to a dual-point with coordinates $(b, \rho l)$ and locating those which satisfy the half-plane
 \[
 y \leq \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) \cdot x + \left ( \frac{\beta}{\alpha} - \frac{\delta}{\gamma} + w_n \right )
 \]
@@ -453,9 +459,10 @@ Given a set of $n$ horizontal line segments, we can count all segments whose $y$
 \end{lemma}
 
 
-\subsubsection{Check Majority Property}
+\subsubsection{Check Partial Enclosure Property}
 
-To check for segments having the majority property, we use the half-plane dual-spaces we developed in Section~\ref{:slabs:two:approach}. By Theorem~\ref{:prelim:chan}, we can answer such a half-plane query directly using a canonical subsets data structure, yielding the following lemma.
+To identify segments satisfying the partial enclosure property, we use the half-plane dual-spaces we developed in Section~\ref{:slabs:two:approach}. 
+By Theorem~\ref{:prelim:chan}, we can answer such a half-plane query directly using a canonical subsets data structure, yielding the following lemma.
 
 \begin{lemma}
 \label{lem:slabs:two:step2a}
@@ -473,7 +480,7 @@ Given a set of $n$ horizontal line segments, we can locate all segments which ar
 
 \subsubsection{Classify Right Endpoint}
 
-We need to be able to classify the right endpoints of our segments into one of several half-planes or simplices. These cases are:
+We need to be able to classify the right endpoints of our segments into one of several locations:
 \begin{itemize}
  \item Within the triangle $Q_a$.
  \item Within the parallelogram $Q_b$, which can be decomposed into two triangles at query time.
@@ -495,7 +502,6 @@ Given a set of $n$ horizontal line segments, we can locate all segments which ha
 \subsubsection{Classify Left Endpoint}
 
 We need to be able to classify the left endpoints of our segments as well. We are interested in endpoints appearing in the following locations:
-
 \begin{itemize}
  \item To the left of $L_1$.
  \item To the left of $L_3$.
@@ -504,26 +510,25 @@ We need to be able to classify the left endpoints of our segments as well. We ar
  \item Within the triangle $Q_c$.
 \end{itemize}
 
-These simplex queries can also be answered with a canonical subsets query. 
+These queries can also be answered with a canonical subsets query. 
 With each subset of this structure, we continue to build up our multi-level structure by associating the structure from Lemma~\ref{lem:slabs:two:step3}. 
 By applying Corollary~\ref{cor:multichan} again, we have the following lemma.
 
 \begin{lemma}
 \label{lem:slabs:two:step4}
-Given a set of $n$ horizontal line segments, we can locate all segments which have their left and right endpoints in given query simplicies, which are not ``too much'' to one side of a query line, and which lie within a specified range of $y$-values in $\BigOh{\sqrt{n}\log^4{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^4{n}}$ time.
+Given a set of $n$ horizontal line segments, we can locate all segments which have their left and right endpoints in given query simplices, which are not ``too much'' to one side of a query line, and which lie within a specified range of $y$-values in $\BigOh{\sqrt{n}\log^4{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^4{n}}$ time.
 \end{lemma}
 
 
 \subsubsection{Combining the Steps}
 
-The previous steps combine to create a data structure which can answer a majority range query for the parallelogram formed by the intersection of two slabs. 
-To answer a query $Q$, we need to preprocess several versions of this data structure, one for each of $Q_a$ and $Q_c$, and one for each of the two possible orientations of $Q_b$.
-
-During query time, we need to query three of those structures as appropriate for the orientation of $Q$, and combine their results. The following theorem summarizes this process.
+To fully answer a query $Q$, we need to preprocess several versions of this data structure, one for each of $Q_a$ and $Q_c$, and one for each of the two possible orientations of $Q_b$.
+During query time, we need to query three of those structures as appropriate for the orientation of $Q$, and combine their results. 
+The following theorem summarizes this process.
 
 \begin{theorem}
 \label{th:slabs:two}
-Given a set of $n$ horizontal line segments, we can locate all segments which satisfy the majority property with respect to the intersection of two query slabs in $\BigOh{\sqrt{n}\log^4{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, requiring $\BigOh{n\log^4{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can locate all segments which satisfy the partial enclosure property with respect to the intersection of two query slabs in $\BigOh{\sqrt{n}\log^4{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, requiring $\BigOh{n\log^4{n}}$ preprocessing time.
 \end{theorem}
 
 
@@ -532,12 +537,12 @@ Given a set of $n$ horizontal line segments, we can locate all segments which sa
 \section{Notes about Arbitrarily-Oriented Segments}
 \label{:slabs:remarks}
 
-Our general approach can be extended identifying arbitrarily-oriented line segments which satisfy the majority property for one or two slabs, however, the resulting structure is very ``case heavy'' and involves a large number of query variables.
+Our general approach can be extended to identify arbitrarily-oriented line segments which satisfy the partial enclosure property for one or two slabs, however, the resulting structure is very ``case heavy'' and involves a large number of query variables.
 
-With respect to the high number of cases required, arbitrarily-oriented segments can cross through the borders of $Q$ in several different ways, preventing us from partitioning the environment in a simple way, such as by $y$ value.
+With respect to the high number of cases required, arbitrarily-oriented segments can cross through the borders of $Q$ in several different ways, preventing us from partitioning the environment in a simple way, such as by $y$-coordinate.
 Without an easy way to decompose the problem, the two endpoints of a segment need to be classified as left or right of four different query lines, and we would require a separate data structure for each combination.
 
-The majority expressions for each combination are also higher degree polynomials.
+The partial enclosure expressions for each combination are also higher degree polynomials.
 For example, a segment $s$ which crosses $L_1$ and $L_2$ has intersection points $p' = (a', b')$ with $L_1$ and $q' = (a'', b'')$ with $L_2$.  
 To consider how much of the segment is inside the slab, we need to calculate the length of the segment from $p'$ to $q'$, as follows.
 \[
@@ -569,7 +574,8 @@ Such an expression \emph{can} be queried with a canonical subset structure, but 
 \section{Conclusion}
 \label{:slabs:concl}
 
-In this chapter, we have developed methods for identifying horizontal segments which have the majority property with respect to an arbitrary slab or to the intersection of two arbitrary slabs.  The latter case is a generalization of arbitrarily-oriented rectangles, when the two slabs are chosen to be orthogonal to each other.
+In this chapter, we have developed methods for identifying horizontal segments which have the partial enclosure property with respect to an arbitrary slab or to the intersection of two arbitrary slabs.
+The latter case is a generalization of arbitrarily-oriented rectangles when the two slabs are chosen to be orthogonal to each other.
 
 For future work, we would like to find a more straight-forward method for relaxing the horizontal restriction on the input segments.  
-A less case-heavy method for querying arbitrarily oriented segments against slabs would automatically improve our results from Section~\ref{:rectangles:ao}, as well.
+A less case-heavy method for querying arbitrarily-oriented segments against slabs would automatically improve our results from Section~\ref{:rectangles:ao}, as well.
