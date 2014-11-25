@@ -102,7 +102,8 @@ The preprocessing space of the multi-level structure requires $\BigOh{n \log{n}}
 \BigOh{n \log{n}} + \BigOh{n\log^{f+1}{n}} = \BigOh{n\log^{f+1}{n}}
 \]
 
-Preprocessing time is calculated using similar reasoning, and includes the $\BigOh{n \log{n}}$ time for building the canonical subsets structure itself, plus
+Preprocessing time is calculated in the same manner. 
+We start with $\BigOh{n \log{n}}$ time for building the canonical subsets structure itself, plus
 \[
 \begin{split}
 \sum_{i=1}^k{T(|C_i|)}

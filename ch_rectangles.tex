@@ -59,12 +59,12 @@ Our approach to solving this problem involves restricting and classifying segmen
 
 \paragraph{Step 1.} As we are only considering horizontal segments for now, we only need to consider those segments which are neither above nor below $Q$, since they can never intersect $Q$ at all. Let $S_1 = \{ s \in S \st \beta \leq b \leq \delta\}$. 
 
-\paragraph{Step 2.} Identify those segments which are not ``too long''.  Let $w = \gamma - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its majority property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
+\paragraph{Step 2.} We identify those segments which are not ``too long''.  Let $w = \gamma - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its majority property satisfied, no matter how it intersects $Q$.  Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
 
-\paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint with respect to $\alpha$.
+\paragraph{Step 3.} We partition the remaining segments according the location of their left endpoint with respect to $\alpha$.
 Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
 
-\paragraph{Step 4.} Test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \gamma - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
+\paragraph{Step 4.} We test the appropriate majority expression to determine if $s$ should be counted. For segments whose left endpoint is left of $\alpha$, we want to ensure that ``not too much of $s$ is outside of $Q$''; Let $S_L' = \{ s \in S_L \st \alpha - a < (1 - \rho) \cdot l\}$. For segments whose left endpoint is at or right of $\alpha$, we want to ensure that ``enough of $s$ is inside $Q$''; Let $S_R' = \{ s \in S_R \st \gamma - a \geq  \rho l \}$. Our claim is that the subset of segments satisfying the majority property is $S_\rho = S_L' \cup S_R'$. 
 
 \begin{proof}
 The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on Step 4 and show that for each case, a segment belonging to that case is correctly accepted or rejected.
@@ -196,7 +196,7 @@ A segment which passes through $Q$ may involve any of the following pairs of reg
 \begin{enumerate}[i.]
 \item Parallel sides: $(I, V), (III, VII)$.
 \item Perpendicular sides: $(I, III), (III, V), (V,VII), (VII, I)$.
-\item Diagonal to Orthogonal: $(II, V)$, $(II, VII)$, $(IV, I)$, $(IV,VII)$, $(VI, I)$, $(VI, III)$, $(VIII, III)$, $(VIII, V)$.
+\item Diagonal to Orthogonal: $(II, V)$, $(II, VII)$, $(IV, I)$, $(IV, VII)$, $(VI, I)$, $(VI, III)$, $(VIII, III)$, $(VIII, V)$.
 \item Diagonal to Diagonal: $(II, VI), (IV, VIII)$.
 \end{enumerate}
 
@@ -504,7 +504,7 @@ Querying the entire environment requires us to create data structures for handli
 
 \begin{theorem}
 \label{th:ao}
-Given a set of $n$ arbitrarily-oriented line segments, we can identify all segments which satisfy the majority property for a given query rectangle in $\BigOh{\sqrt{n}\log^7{n}}$ time, using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
+Given a set of $n$ arbitrarily-oriented line segments, we can identify all segments which satisfy the partial enclosure property for a given query rectangle in $\BigOh{\sqrt{n}\log^7{n}}$ time, using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
 \end{theorem}
 
 

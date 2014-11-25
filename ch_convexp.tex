@@ -205,12 +205,17 @@ Querying involves several steps given below. Each of these steps requires only $
 
 \begin{theorem}
 \label{th:convexp:area}
-There exists an algorithm which preprocesses a convex polygon $P$ in $\BigOh{n}$ time and space which allows us to calculate the area of $P$ enclosed by a query rectangle $Q$ in $\BigOh{\log{n}}$ time.
+Let $P$ be a convex polygon consisting of $n$ edges. In $\BigOh{n}$ time and space, we can create a data structure which allows us to determine $\area{Q \cap P}$ in $\BigOh{\log{n}}$ time, for any axis-parallel rectangular query region $Q$.
 \end{theorem}
 
 \begin{corollary}
 \label{cor:convexp:mp}
-Given a convex polygon $P$, and query rectangle $Q$, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we can determine if $\area{Q \cap P} \geq \rho \cdot \area{P}$ in $\BigOh{\log{n}}$ time using a data structure requiring only $\BigOh{n}$ preprocessing time and space.
+Let $P$ be a convex polygon consisting of $n$ edges, and let $0 < \rho \leq 1$ be a fixed parameter. With $\BigOh{n}$ time and space, we can determine if
+\[ 
+\area{Q \cap P} \geq_? \rho \cdot \area{P}
+\]
+
+\noindent in $\BigOh{\log{n}}$ time for any axis-parallel rectangular query $Q$.
 \end{corollary}
 
 
@@ -239,7 +244,7 @@ The overall approach is summarized by the following corollary.
 
 \begin{corollary}
 \label{cor:convexp:karea}
-There exists an algorithm which preprocesses a convex polygon $P$ in $\BigOh{n}$ time and space which allows us to calculate the area of $P$ enclosed by a convex $k$-gon $\BigOh{k \log{n}}$ time.
+Let $P$ be a convex polygon consisting of $n$ edges. In $\BigOh{n}$ time and space, we can create a data structure which allows us to determine $\area{Q \cap P}$ in $\BigOh{k \log{n}}$ time, for any convex $k$-gon query region $Q$.
 \end{corollary}
 
 Work by Czyzowicz \textit{et al.}\cite{DBLP:conf/cccg/CzyzowiczCU98} gives an alternate method for calculating the area of a convex polygon cut by a chord.  This method requires only $\BigOh{n}$ preprocessing time and space, and can answer area queries in $\BigOh{1}$ time. We could use this method to reduce the time needed to find the area within each cap of $P$ to $\BigOh{1}$ with no increase in the cost of our preprocessing. However, calculating the area of a rectangle still requires us to expend $\BigOh{\log{n}}$ time locating the points of intersection between $P$ and $Q$, so our overall query time remains unchanged.

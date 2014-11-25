@@ -12,7 +12,7 @@ When addressing a range searching problem, we want to develop a method for prepr
 Given how common and flexible range searching is to such a wide range of practical computer science, it is not surprising to  find that a great deal of research has been expended in this area.  
 
 In this thesis, we address the notion of \emph{Partial Enclosure Range Searching}, which, to the best of our knowledge, has not been explored previously. 
-In this setting, our goal is to identify, for a given query, all elements which satisfy the \emph{Partial Enclosure Property}. 
+In this setting, our goal is to identify, for a given query region, all objects which satisfy the \emph{Partial Enclosure Property}. 
 This property specifies that an object must intersect a query region by at least some fixed proportion of the object's own size (e.g., length, area, volume) in order to be matched.
 
 In this chapter, Section~\ref{:intro:motivation} begins by describing our motivation for this problem. 
@@ -71,7 +71,6 @@ We also consider a query defined as the intersection of two slabs.
 
 \paragraph{Convex Polygons and Rectangles.} Moving away from line segments, we consider problems of partial area enclosure. 
 Starting with convex polygons, we address methods for calculating the area enclosed by a rectangle. 
-Once the enclosed area is known, determining the partial enclosure property is straight-forward.
  
 \paragraph{Monotone Polygons and Rectangles.} This more complex shape does not generally decompose into big convex regions, so a different method of preprocessing will be needed.
 We consider methods for calculating the area of the polygon to one side of a query line. 
@@ -100,16 +99,9 @@ Should explain why this is easier than our problem
 \section{Summary of Contributions}
 \label{:intro:contributions}
 
-XXX TODO  These list the theorems themselves.
-
-Maybe use a table?
-
-We develop several contributions throughout this thesis to answer the partial enclosure range searching problem.  Some of the ancillary methods we develop are noteworthy as well.
-
-In Theorem~\ref{th:convexp:area}, a method for calculating the area of a convex polygon within a rectangle in $\BigOh{\log{n}}$ time with only $\BigOh{n}$ preprocessing time and space. This immediately gives rise to a method to answer partial enclosure queries in the same time and space.
-
-In Theorem~\ref{th:monotonep:rect:area}, a method for calculating the area of a monotone polygon within a rectangle in $\BigOh{\log{n}}$ time with only
-$\BigOh{n \log{n}}$ preprocessing time and space. As with the convex polygon case, this immediately gives a method for answering majority enclosure queries in the same time and space.
+Throughout this thesis, we develop contributions towards several variations of the partial enclosure range searching problem, along with some noteworthy ancillary methods. 
+Table~\ref{tab:contributions} gives a broad overview of the data structures we develop. 
+The table uses `AP' for ``Axis-Parallel'', `AO' for ``Arbitrary Orientation'', and `P' for ``Polygon'', and omits ``Big Oh'' for clarity.
 
 \begin{table}[t]
 \label{tab:contributions}
@@ -117,21 +109,28 @@ $\BigOh{n \log{n}}$ preprocessing time and space. As with the convex polygon cas
 \centering
 \begin{tabular}{l l l l l l}
 \hline \hline
-Object & Query & Theorem & Size & Time & Query \\
+Object & Query & Theorem & Space & Time & Query \\
 \hline
-AP Segment & AP Rectangle & Th~\ref{th:ap} & $\BigOh{n\log^3{n}}$ & $\BigOh{n\log^3{n}}$ & $\BigOh{\log^3{n}}$ \\
-AO Segment & AP Rectangle & Th~\ref{th:ao} & $\BigOh{n\log^7{n}}$ & $\BigOh{n\log^7{n}}$ & $\BigOh{\sqrt{n}\log^7{n}}$ \\
-AP Segment & Slab & Th~\ref{th:slabs:one} & $\BigOh{n\log^2{n}}$ & $\BigOh{n\log^3{n}}$ & $\BigOh{\sqrt{n}\log^3{n}}$ \\
-AP Segment & 2 Slabs & Th~\ref{th:slabs:two} & $\BigOh{n\log^3{n}}$ & $\BigOh{n\log^4{n}}$ & $\BigOh{\sqrt{n}\log^4{n}}$ \\
-Convex P & Rectangle & Th~\ref{th:convexp:area} & $\BigOh{n}$ & $\BigOh{n}$ & $\BigOh{\log{n}}$ \\
-Convex P & Convex $k$-gon & Cor~\ref{cor:convexp:karea} & $\BigOh{n}$ & $\BigOh{n}$ & $\BigOh{k \log{n}}$ \\
-Monotone P & AP Rectangle & Th~\ref{th:monotonep:rect:area} & $\BigOh{n\log{n}}$ & $\BigOh{n\log{n}}$ & $\BigOh{k \log{n}}$ \\
-Monotone P & AP Rectangle & Th~\ref{th:mono2} & $\BigOh{n}$ & $\BigOh{n\log{n}}$ & $\BigOh{\sqrt{n}}$ \\
-Simple P & H Slab & Cor~\ref{cor:monotonep:simplep-area} & $\BigOh{n}$ & $\BigOh{n}$ & $\BigOh{\log{n}}$ \\
+AP Segment & AP Rectangle & Th~\ref{th:ap} & ${n\log^3{n}}$ & ${n\log^3{n}}$ & ${\log^3{n}}$ \\
+AO Segment & AP Rectangle & Th~\ref{th:ao} & ${n\log^7{n}}$ & ${n\log^7{n}}$ & ${\sqrt{n}\log^7{n}}$ \\
+AP Segment & AO Slab & Th~\ref{th:slabs:one} & ${n\log^2{n}}$ & ${n\log^3{n}}$ & ${\sqrt{n}\log^3{n}}$ \\
+AP Segment & 2 AO Slabs & Th~\ref{th:slabs:two} & ${n\log^3{n}}$ & ${n\log^4{n}}$ & ${\sqrt{n}\log^4{n}}$ \\
+Convex P & Rectangle & Th~\ref{th:convexp:area} & ${n}$ & ${n}$ & ${\log{n}}$ \\
+Convex P & Convex $k$-gon & Cor~\ref{cor:convexp:karea} & ${n}$ & ${n}$ & ${k \log{n}}$ \\
+Monotone P & AP Rectangle & Th~\ref{th:monotonep:rect:area} & ${n\log{n}}$ & ${n\log{n}}$ & ${\log{n}}$ \\
+Monotone P & AP Rectangle & Th~\ref{th:mono2} & ${n}$ & ${n\log{n}}$ & ${\sqrt{n}}$ \\
+Simple P & Horiz Slab & Cor~\ref{cor:monotonep:simplep-area} & ${n}$ & ${n}$ & ${\log{n}}$ \\
 \hline
 \end{tabular}
-\end{table} 
+\end{table}
 
+In the line segment cases, we develop methods for restating the partial enclosure property as something which can be evaluated as a one or two variable inequality. 
+These expressions can then be queried by a known structures for orthogonal or half-plane queries. 
+We discuss the transformation to an appropriate dual space and the design of a data structure which can answer the necessary multi-part query.
+
+In the polygon cases, we primarily develop methods for calculating area within a simple region, such as below a query line.
+These methods are then repeated and combined to find the area enclosed by the actual query region.
+Once the enclosed area is known, determining the partial enclosure property is straight-forward.
 
 %------------------------------------------------------------------------------
 %------------------------------------------------------------------------------
