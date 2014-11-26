@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20140515115418" modified="D:20141107104311"/>
+<info created="D:20140515115418" modified="D:20141126100231"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -265,7 +265,7 @@ h
 </path>
 <use matrix="1 0 0 1 -96 -64" name="mark/disk(sx)" pos="384 768" size="normal" stroke="black"/>
 <text matrix="1 0 0 1 -13 4" transformations="translations" pos="112 592" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
+<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.693" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <path stroke="black" pen="heavier">
 112 584 m
 336 712 l
@@ -279,7 +279,7 @@ h
 <use matrix="1 0 0 1 0 -8" name="mark/disk(sx)" pos="336 656" size="normal" stroke="blue"/>
 <use matrix="1 0 0 1 26 -68" name="mark/disk(sx)" pos="128 676" size="normal" stroke="black"/>
 <use matrix="1 0 0 1 0 49" name="mark/disk(sx)" pos="288 636" size="normal" stroke="black"/>
-<text matrix="1 0 0 1 44 -111" transformations="translations" pos="55.3794 693.686" stroke="black" type="label" width="5.012" height="4.297" depth="1.93" valign="baseline">$p$</text>
+<text matrix="1 0 0 1 48 -112" transformations="translations" pos="55.3794 693.686" stroke="black" type="label" width="5.012" height="4.297" depth="1.93" valign="baseline">$p$</text>
 <text matrix="1 0 0 1 -16 93" transformations="translations" pos="349.474 625.069" stroke="black" type="label" width="4.805" height="4.297" depth="1.93" valign="baseline">$q$</text>
 <text matrix="1 0 0 1 10 -71" transformations="translations" pos="135.959 683.061" stroke="black" type="label" width="7.808" height="7.497" depth="1.93" valign="baseline">$p&apos;$</text>
 <text matrix="1 0 0 1 157 -63" transformations="translations" pos="70.5869 645.63" stroke="blue" type="label" width="5.703" height="4.289" depth="0" valign="baseline">$u$</text>

@@ -235,7 +235,13 @@ Let $P$ be a convex polygon consisting of $n$ edges, and let $0 < \rho \leq 1$ b
 
 Our method works for a query rectangle which has any orientation; that is, $Q$ need not be axis-parallel. Nearly all of the steps involved in calculating the area are only concerned with edges of $P$ and intersection points of lines through the boundaries of $Q$. The only place we use the axis-parallel property of $Q$ is in Section~\ref{:convexp:intersections} where we calculate those intersection points of $P$ and $Q$.
 
-We can allow for $Q$ to be arbitrarily-oriented by modifying our intersection testing in the following way.  During preprocessing, we calculate $c$, the center point of $P$, which can be done in $\BigOh{n}$ time. Let $\iline{l}$ be a line through any boundary of $Q$ and let $\iline{c}$ be the line perpendicular to $\iline{l}$ through the center point of $P$.  The line $\iline{c}$ crosses the boundary of $P$ in two places, and, using a binary search on the edges of $P$, we can identify the edges $e_a$ and $e_b$ that $\iline{c}$ crosses. These two edges divide $P$ into two chains, $E_{ab}$ and $E_{ba}$. We can now perform a binary search on each of these chains looking for intersections with $\iline{l}$ (which may or may not cross $P$ at all). Figure~\ref{fig:convexp:ao} illustrates this process.
+We can allow for $Q$ to be arbitrarily-oriented by modifying our intersection testing in the following way. 
+During preprocessing, we calculate $c$, the centrepoint of $P$, which can be done in $\BigOh{n}$ time.
+Let $\iline{l}$ be a line through any boundary of $Q$ and let $\iline{c}$ be the line perpendicular to $\iline{l}$ through the centrepoint of $P$.
+The line $\iline{c}$ crosses the boundary of $P$ in two places, and, using a binary search on the edges of $P$, we can identify the edges $e_a$ and $e_b$ that $\iline{c}$ crosses.
+These two edges divide $P$ into two chains, $E_{ab}$ and $E_{ba}$.
+We can now perform a binary search on each of these chains looking for intersections with $\iline{l}$ (which may or may not cross $P$ at all).
+Figure~\ref{fig:convexp:ao} illustrates this process.
 
 \begin{figure}[t]
 \begin{center}

@@ -26,6 +26,8 @@ for f in $F; do grep -Hn "\\\\BigOh(" $f; done
 echo
 echo "centrepoint"
 for f in $F; do grep -Hn "centerpoint" $f; done
+for f in $F; do grep -Hn "center point" $f; done
+for f in $F; do grep -Hn "centre point" $f; done
 
 echo
 echo "data structure"

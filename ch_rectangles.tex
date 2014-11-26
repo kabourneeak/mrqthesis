@@ -93,7 +93,7 @@ In the final cases, $(5a)$ and $(5b)$, the value of $|s \cap Q|$ is measured dir
 \label{:rectangles:ap:analysis}
 
 Each step of Section~\ref{:rectangles:ap:approach} includes or excludes segments by examining inequalities.
-Each inequality is comprised of segment parameters which we know during preprocessing, and a single query variable. 
+Each inequality is comprised of segment parameters which we know during preprocessing, and a single query variable expression, i.e., an expression consisting only of query variables which can be calculated at query time. 
 To perform the query, we map each segment to a point in 4D where each component of the point is based on the segment input parameters corresponding to one of our inequalities, and map the query variables given by $Q$ to a 4D box.
 The query can then be answered using a multi-level range tree.
 
@@ -107,8 +107,7 @@ Thus, the second component of $v$ will be $\rho l$, and the second component of 
 
 Our segments are next classified according to which side of $\alpha$ their left endpoints are found.
 We set the third component of $v$ to $a$.
-Our overall query will need to look at both cases and combine the results later. 
-The third component of the query box will be either $(-\infty, \alpha)$ or $[\alpha, \infty)$ depending on which phase of the query is executing.
+The third component of the query box will be either $(-\infty, \alpha)$ or $[\alpha, \infty)$. Our overall query must execute both cases and combine the results later.
 
 Finally, we need to check the partial enclosure expressions.
 We have two cases to check. The first expression is for segments whose left endpoint is left of $\alpha$.
@@ -141,17 +140,16 @@ By Corollary~\ref{cor:rangetree}, we can answer either of these queries by const
 As our points are in 4D, such a tree requires $\BigOh{n \log^3{n}}$ time and space for preprocessing and can answer queries in $\BigOh{\log^3{n}}$ time.
 To find all horizontal segments satisfying their partial enclosure property, we need to perform both queries and combine the results.  
 
-A second data structure and query does not change the asymptotic requirements of the algorithm, however, we note that since the mapped points for both data structures have the same three first components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. 
-At the third level of the multi-level tree, we create \emph{two} associate structures, one for each of the partial enclosure expressions, and query each one as needed. 
-In a similar way, we can save a constant factor of time during our queries, since both queries consider the same values for their first two components.
+A second data structure and query does not change the asymptotic requirements of the algorithm, however, we note that since both point mappings start with the same three components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. 
+At the third level of the tree, we create \emph{two} associate structures, one for each of the partial enclosure expressions, and query each one as needed. 
+In a similar way, we can save a constant factor of time during our queries, since both queries begin with the same two values.
 
 
 \paragraph{Vertical Segments.} The method for querying vertical segments is very similar to that for horizontal segments, except that we care about the height of $Q$ rather than its width, and need to consider symmetric coordinates of each segment when going through each of the 4 steps.
-Preprocessing and querying this extra orientation of segments costs us a constant factor of time, since the number of orientations remains fixed.
+Preprocessing and querying this extra orientation does not change our asymptotic analysis, since the number of orientations remains fixed.
 
 
-\paragraph{Combining the Steps.} Combining the structures necessary for both the horizontal and vertical portions of the query completes our solution to then problem statement given at the beginning of this section.
-This solution is summarized by the following theorem.
+\paragraph{Combining the Steps.} We maintain the structures necessary for both the horizontal and vertical portions of the query. During query time, each is queried independently and their results combined, which is straight-forward for counting or reporting queries. Our solution is summarized by the following theorem.
 
 \begin{theorem}
 \label{th:ap}
@@ -180,16 +178,19 @@ Observe that the definition for $\rho$ is different than in Section~\ref{:rectan
 
 There are three principal cases to consider; those segments which have both endpoints inside $Q$, those with only one endpoint inside $Q$, and those with both endpoints outside $Q$.  
 
-The first case, where both endpoints are inside $Q$, is answered by mapping each segment to a point in 4D space and then using a multi-level range tree, just as we did in the previous section.  Specifically, we map each segment $s_i$ to the point $v_i = (a_i, b_i, c_i, d_i)$. The query $Q$ is mapped to the following 4D box
+The first case, where both endpoints are inside $Q$, is answered by mapping each segment to a point in 4D space and then using a multi-level range tree, much like we did in the previous section.  Specifically, we map each segment $s_i$ to the point $v_i = (a_i, b_i, c_i, d_i)$. The query $Q$ is mapped to the following 4D box
 \[
 [\alpha, \gamma] \times [\beta, \delta] \times [\alpha, \gamma] \times [\beta, \delta]
 \]
 
-In essence, we are just testing to ensure that both of the endpoints appear within the horizontal and vertical components of the query.
+In essence, we are just testing to ensure that both endpoints appear within query rectangle.
+The second case, where only one endpoint is inside $Q$ is solved using the same method as the first case, but on a ``virtual'' segment.
+For each segment $s_i$, we create virtual segments which share endpoints with $s_i$.
+Specifically, we define the segment $s_{i,p} \subseteq s_i$ where $s_i$ and $s_{i,p}$ share the endpoint $p_i$ and $|s_{i,p}| = \rho \cdot |s_i|$.
+Likewise, we define the segment $s_{i,q} \subseteq s_i$ where $s_i$ and $s_{i,q}$ share the endpoint $q$ and $|s_{i,q}| = \rho \cdot |s_i|$.
 
-The second case, where only one endpoint is inside $Q$ is solved using the exact same method as the first case, but on a ``virtual'' segment.  For each segment $s_i$, we create virtual segments which share endpoints with $s_i$.  Specifically, we define the segment $s_{i,p} \subseteq s_i$ where $s_i$ and $s_{i,p}$ share the endpoint $p_i$ and $|s_{i,p}| = \rho \cdot |s_i|$. Likewise, we define the segment $s_{i,q} \subseteq s_i$ where $s_i$ and $s_{i,q}$ share the endpoint $q$ and $|s_{i,q}| = \rho \cdot |s_i|$.
-
-Then, as a direct consequence of their construction, if $s_{i,p} \in Q$, then $s_i \in_\rho Q$, and if $s_{i,q} \in Q$, then $s_i \in_\rho Q$.  Counting both of these cases will double-count any segment which has both endpoints in $Q$, so we subtract any such segments to compensate.
+Then, as a direct consequence of their construction, if $s_{i,p} \in Q$, then $s_i \in_\rho Q$, and if $s_{i,q} \in Q$, then $s_i \in_\rho Q$.
+Counting both cases will double-count any segment which has both endpoints in $Q$, so we subtract accordingly.
 
 We can query these higher dimensional points by applying the multi-level range tree method given by Theorem~\ref{th:rangetree}.
 
@@ -224,10 +225,12 @@ A segment which passes through $Q$ may involve any of the following pairs of reg
 
 We will query for each case separately and combine our results at the end. 
 For a segment $s \in S$, we can identify the regions of $p$ and $q$ using a 4-dimensional orthogonal range search. 
-This classification allows us to determine what we need to test in the second phase of the query. 
-We develop partial enclosure expressions for each case below.
+This classification determines which partial enclosure expressions we need to test in the second phase of the query. We develop expressions for each case below. 
 
-In all cases, we require the following additional definitions. Let $o_i = (e_i, f_i)$ be the centre point of $s_i$.  We define the function $d(u,v)$ as the Euclidean distance between any two points $u$ and $v$. We define $L_i = d(p_i, q_i)/2$ to be exactly half the length of $s_i$ (therefore, $d(p_i, o_i) = d(q_i, o_i) = L_i$). As with our previous definitions, when we discuss any single, general segment $s \in S$, we will drop the $i$ subscripts for clarity.
+In all cases, we require the following additional definitions. Let $o_i = (e_i, f_i)$ be the centrepoint of $s_i$.
+We define the function $d(u,v)$ as the Euclidean distance between any two points $u$ and $v$.
+We define $L_i = d(p_i, q_i)/2$ to be exactly half the length of $s_i$ (therefore, $d(p_i, o_i) = d(q_i, o_i) = L_i$).
+As with our previous definitions, when we discuss any single, general segment $s \in S$, we will drop the $i$ subscripts for clarity.
 
 
 %------------------------------------------------------------------------------
@@ -248,8 +251,10 @@ We present the details of the partial enclosure property for the case where $p \
 Let $s \in S$ be a segment belonging to class (i), case $(I, V)$.
 Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  
 Let $u = (a, f)$ be the point vertically aligned with $p$ and horizontally aligned with $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\iline{u o}$ with the boundary of $Q$.  
-The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. 
-Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (\gamma, f)$ is the intersection point of $\iline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
+The triangle $\Delta p' u' o$ is a right triangle and is similar to $\Delta p u o$. 
+Likewise, let $v = (c, f)$ be the point vertically aligned with $q$ and horizontally aligned with $o$.
+Then, $\Delta q v o$ is a right triangle, and $v' = (\gamma, f)$ is the intersection point of $\iline{v o}$ with the boundary of $Q$. 
+The triangle $\Delta q' v' o$ is a right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case1}.
 
 We will test the partial enclosure property by checking that ``not too much of $s$ is outside of $Q$''. Specifically, we need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
@@ -281,15 +286,16 @@ We will test the partial enclosure property by checking that ``not too much of $
 \end{split}
 \]
 
-Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can instead be evaluated as $1 + \frac{\alpha - \gamma}{c - a} \leq 1 - \rho$, which is based on two query variables $\alpha$ and $\gamma$.  We can further simplify the expression to
+\noindent Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can instead be evaluated as $1 + \frac{\alpha - \gamma}{c - a} \leq 1 - \rho$, which is based on two query variables $\alpha$ and $\gamma$.  
+We can further simplify the expression to
 \[ 
 \rho(c - a) \leq \gamma - \alpha
 \]
 
-\noindent where the value of $\gamma - \alpha$ is a single variable calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
+\noindent where the value of $\gamma - \alpha$ is a single query variable expression calculated at query time.  This inequality can therefore be checked by an orthogonal range search similar to the techniques used in Section~\ref{:rectangles:ap:approach}.
 
 When $o \not \in Q$, we cannot construct similar triangles in the same way, since we require the points of intersection between the triangles and $Q$.  
-However, since we know that any segment which \emph{is} sufficiently enclosed by $Q$ will have its centre point in $Q$, it is enough for our purposes if our test condition always reports a failure when $o$ is outside of $Q$.
+However, since we know that any segment which \emph{is} sufficiently enclosed by $Q$ will have its centrepoint in $Q$, it is enough for our purposes if our test condition always reports a failure when $o$ is outside of $Q$.
 
 We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\frac{\alpha - a}{c - a} > 0$ and $\frac{c - \gamma}{c - a} > 0$. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is right of $\gamma$, then $\frac{c - \gamma}{c - a} > 1/2$. Therefore, the sum $\frac{\alpha - a}{c - a} + \frac{c - \gamma}{c - a} > 1/2$ and is strictly larger than any allowable value for $(1 - \rho)$, resulting in the segment being rejected as desired.
 
@@ -300,7 +306,7 @@ We know that both $p$ and $q$ are outside of $Q$, so it must be the case that $\
 
 Class (ii) is concerned with segments which cross perpendicular sides of $Q$. 
 We present the details of the partial enclosure property for the case where $p \in I$ and $q \in III$; the solutions for other cases of class (ii) are similar. 
-These expressions are not so different from the ones given in class (i), however we will see that we get two independent variables instead of one, and this has ramifications for how we will construct our query data structure later.
+These expressions are not so different from the ones given in class (i), however we will see that we get two query variable expressions instead of one, and this has ramifications for how we will construct our data structure.
 
 \begin{figure}[t]
 \begin{center}
@@ -310,7 +316,14 @@ These expressions are not so different from the ones given in class (i), however
 \end{center}
 \end{figure}
 
-Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).  Let $u = (a, f)$ be the point under $p$ directly left of $o$. Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\iline{u o}$ with the boundary of $Q$.  The triangle $\Delta p' u' o$ is right triangle and is similar to $\Delta p u o$. Likewise, let $v = (e, d)$ be the point left of $q$ directly under $o$. Then, $\Delta q v o$ is a right triangle, and $v' = (e, \beta)$ is the intersection point of $\iline{v o}$ with the boundary of $Q$. The triangle $\Delta q' v' o$ is right triangle and is similar to $\Delta q v o$. See Figure~\ref{fig:rectangles:ao:case2}.
+Assume for now that $o \in Q$ and let $p'$ ($q'$) be the intersection of $s$ with $Q$ closest to $p$ ($q$).
+Let $u = (a, f)$ be the point under $p$ directly left of $o$.
+Then, $\Delta p u o$ is a right triangle, and $u' = (\alpha, f)$ is the intersection point of $\iline{u o}$ with the boundary of $Q$.
+The triangle $\Delta p' u' o$ is a right triangle and is similar to $\Delta p u o$.
+Likewise, let $v = (e, d)$ be the point left of $q$ directly under $o$.
+Then, $\Delta q v o$ is a right triangle, and $v' = (e, \beta)$ is the intersection point of $\iline{v o}$ with the boundary of $Q$.
+The triangle $\Delta q' v' o$ is a right triangle and is similar to $\Delta q v o$.
+See Figure~\ref{fig:rectangles:ao:case2}.
 
 We need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$. By similarity of triangles, 
 \[ 
@@ -338,7 +351,9 @@ We need to find those segments where $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1
 \end{split}
 \]
 
-Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can be tested by checking the equivalent inequality $\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho$, defined on the two query variables $\alpha$ and $\beta$. We will perform this test using a half-plane range query. To construct an appropriate dual-space for the half-plane query, we reorder the expression as follows:
+\indent Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ can be tested by checking the equivalent inequality $\frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho$, defined on the two query variables $\alpha$ and $\beta$. 
+We will perform this test using a half-plane range query. 
+To construct an appropriate dual-space for the half-plane query, we reorder the expression as follows:
 \[
 \begin{split}
 \frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} &\leq 1 - \rho \\
@@ -357,10 +372,7 @@ Therefore, the inequality $\frac{d(p, p') + d(q, q')}{d(p, q)} \leq 1 - \rho$ ca
 \left (\frac{c-a}{b-d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )
 \]
 
-\noindent In this space, segments matching the partial enclosure expression correspond to dual-points satisfying the following half-plane.
-\[
-y \geq \beta \cdot x + \alpha
-\]
+\noindent In this space, segments matching the partial enclosure expression correspond to dual-points satisfying the half-plane $y \geq \beta \cdot x + \alpha$
 
 Just as in class (i), when $o \not \in Q$, we cannot construct appropriate similar triangles for our method, but it remains sufficient for the expressions to reject any such segment. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is below $\beta$, then $\frac{\beta - d}{b - d} > 1/2$. Their sum is therefore strictly greater than $1/2$, and larger than any allowable value for $(1 - \rho)$, rejecting the segment as desired.
 
@@ -370,22 +382,22 @@ Just as in class (i), when $o \not \in Q$, we cannot construct appropriate simil
 \label{:rectanges:ao:class3}
 
 Class (iii) is concerned with segments which have one endpoint in a corner region of $Q$, and the other endpoint in an orthogonal region of $Q$. 
-We present the details of the partial enclosure property for the case where $p \in I$ and $q \in IV$; the solutions for other variations of Class (iii) are similar.
+We present the details of the partial enclosure property for the case where $p \in I$ and $q \in IV$; the solutions for other cases of Class (iii) are similar.
 
 \begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.45\textwidth]{figures/fig_ao_case3}
   \hspace{1.0em}
   \includegraphics[width=0.45\textwidth]{figures/fig_ao_case3b}
-  \caption[An example of a segment in class (iii), case $(I, IV)$.]{An example of segments from each subcase of in class (iii), case $(I, IV)$. The blue follows the proper handling of the subcase, while the red shows the incorrect handling.}
+  \caption[An example of a segment in class (iii), case $(I, IV)$.]{An example of segments from each subcase of class (iii), case $(I, IV)$. The blue follows the proper handling of the subcase, while the red shows the incorrect handling.}
   \label{fig:rectangles:ao:case3}
 \end{center}
 \end{figure}
 
 Assume for now that $o \in Q$. We need to consider two subcases: (a) $s$ crosses $\alpha$ and $\beta$ or (b) $s$ crosses $\alpha$ and $\gamma$. See Figure~\ref{fig:rectangles:ao:case3} for examples. Subcase (a) is very nearly exactly the example presented for class (ii). In that case, the only use of the fact that the endpoints of $s$ were located in regions $I$ and $III$ was to imply that $s$ crossed $\alpha$ and $\beta$. As such, this subcase can use the same expression for testing $s$. Likewise, subcase (b) is similar to the example presented for class (i) and can use exactly that expression for testing $s$.
 
-Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check both subcases simultaneously.
-
+Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases.
+Instead, we will check both subcases simultaneously.
 From class (i) and class (ii), we have the following expressions:
 \[ 
 \frac{\alpha - a}{c - a} + \frac{c - \gamma}{c - a} \leq 1 - \rho
@@ -396,7 +408,10 @@ From class (i) and class (ii), we have the following expressions:
 \frac{\alpha - a}{c - a} + \frac{\beta - d}{b - d} \leq 1 - \rho
 \]
 
-If $s$ belongs to subcase (a), then $\frac{c - \gamma}{c - a} \leq \frac{\beta - d}{b - d}$ since $\gamma$ is farther right than the point where $s$ exits $Q$. Likewise, in subcase (b), $\frac{\beta - d}{b - d} \leq \frac{c - \gamma}{c - a}$.  Therefore, in either subcase, the result of the correct expression is larger than the incorrect one, allowing us to correctly reject segments by blindly checking both conditions.  This also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
+\noindent If $s$ belongs to subcase (a), then $\frac{c - \gamma}{c - a} \leq \frac{\beta - d}{b - d}$ since $\gamma$ is farther right than the point where $s$ exits $Q$.
+Likewise, in subcase (b), $\frac{\beta - d}{b - d} \leq \frac{c - \gamma}{c - a}$.
+Therefore, in either subcase, the result of the correct expression is larger than the incorrect one, allowing us to correctly reject segments by blindly checking both conditions.
+This also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
 
 
 % -----------------------------------------------------------------------------
@@ -418,7 +433,7 @@ We present the details of the partial enclosure property for the case where $p \
   \hspace{1.0em}
   \includegraphics[width=0.45\textwidth]{figures/fig_ao_case4d}
 
-  \caption[An example of a segment in class (iv), case $(II, VI)$.]{An example of segments from each subcase of in class (iv), case $(II, VI)$. The blue follows the proper handling of the subcase, while the red shows the incorrect handling.}
+  \caption[An example of a segment in class (iv), case $(II, VI)$.]{An example of segments from each subcase of class (iv), case $(II, VI)$. The blue lines show the proper handling of the subcase.}
   \label{fig:rectangles:ao:case4}
 \end{center}
 \end{figure}
@@ -432,7 +447,10 @@ Assume for now that $o \in Q$. As with class (iii), we need to consider several 
 \item $s$ crosses $\beta$ and $\gamma$,
 \end{enumerate}
 
-See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. However, it is sufficient to check all subcases simultaneously. The expression for subcase (b) comes directly from class (i).  Using similar techniques as we did in class (i) and class (ii), we develop the following set of expressions:
+See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. 
+Our initial query for identifying the regions of $p$ and $q$ does not allow us to differentiate between subcases. 
+However, it is sufficient to check all subcases simultaneously. The expression for subcase (b) comes directly from class (i).
+Using similar techniques as we did for classes (i) and (ii), we develop the following set of partial enclosure expressions:
 
 \begin{align*}
 & (a) \quad \frac{\alpha - a}{c - a} + \frac{d - \delta}{d - b} \leq 1 - \rho
@@ -441,7 +459,7 @@ See Figure~\ref{fig:rectangles:ao:case4} for examples of each subcase. Our initi
 & (d) \quad \frac{\beta  - b}{d - b} + \frac{c - \gamma}{c - a} \leq 1 - \rho \\
 \end{align*}
 
-Subcases (b) and (c) can be simplified to orthogonal range queries, while subcases (a) and (d) will need to be mapped to appropriate half-plane queries as we saw in class (ii).
+Subcases (b) and (c) can be simplified to orthogonal range queries, while subcases (a) and (d) will need to be mapped to appropriate dual-spaces and queried with half-planes as in class (ii).
 
 To illustrate that checking all four conditions simultaneously yields correct results, consider what happens if $s$ belongs to subcase (a), where $s$ crosses $\alpha$ and $\delta$. In these circumstances, $u'$ is above $\beta$, and we have that $\frac{\alpha - a}{c - a} \geq \frac{\beta - b}{d - b}$.  Likewise, $v'$ is left of $\gamma$, so $\frac{d - \delta}{d - b} \geq \frac{c - \gamma}{c - a}$.  Therefore, the expression for (a) dominates the other expressions (i.e., $\text{(a)} \geq \text{(b)}$, $\text{(a)} \geq \text{(c)}$, and $\text{(a)} \geq \text{(d)}$), allowing us to identify qualifying segments for subcase (a) by blindly checking all conditions. This property is true for segments belonging to subcases (b), (c), and (d) as well. Furthermore, this test also holds when $o \not \in Q$, since the expression for at least one subcase would exclude the segment.
 
@@ -450,9 +468,8 @@ To illustrate that checking all four conditions simultaneously yields correct re
 \subsection{Construction and Analysis}
 \label{:rectangles:ao:analysis}
 
-The method we have developed above takes a very case-by-case approach to solving the problem. 
-There are two overall phases to the steps above. 
-The first phase must identify segments falling into each of the 16 cases outlined above. 
+Our method takes a very case-by-case approach to solving the problem, and executes in two phases.
+The first phase must classify segments belonging to each of the 16 pairs of regions around $Q$ which are of interest. 
 For each case, the second phase must then identify those segments satisfying their respective partial enclosure property. 
 
 Broadly, our solution to this problem uses a multi-level range tree (Section~\ref{:prelim:range-trees}) for the classification phase, and a combination of range trees and canonical subsets structures (Section~\ref{:prelim:chan}) to check the partial enclosure expressions. 
@@ -482,7 +499,10 @@ Given a set of $n$ line segments, we can identify segments belonging to class (i
 As with all cases, part of the problem involves first identifying those segments with endpoints in the appropriate regions.
 In this case, however, the partial enclosure expression is evaluated using a half-plane query.
 
-The classification portion is performed just as we have seen above. We map each segment to the 4D point $v_i = ( a_i, b_i, c_i, d_i )$. The partial enclosure expression will be queried by the dual-space we developed in Section~\ref{:rectanges:ao:class2}. For each $s_i \in S$, we define $h_i = \left ( \frac{c - a}{b - d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )$.  We will combine these two points into query object pairs $q_i = (v_i, h_i)$.
+The classification portion is performed just as we have seen above. We map each segment to the 4D point $v_i = ( a_i, b_i, c_i, d_i )$.
+The partial enclosure expression will be queried by the dual-space we developed in Section~\ref{:rectanges:ao:class2}. 
+For each $s_i \in S$, we define $h_i = \left ( \frac{c - a}{b - d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )$.
+We need to construct a data structure which can answer queries on pairs $(v_i, h_i)$.
 
 By Theorem~\ref{th:rangetree}, we can query the classification component using a range tree according to the following lemma.
 \begin{lemma}
@@ -527,7 +547,7 @@ As a result, it will take the largest data structure to query.
 
 The basic steps are just as in the last three cases. 
 To cover endpoint classification and the two orthogonal partial enclosure expressions, we will use a data structure and query box similar to Lemma~\ref{lem:ao:class1:v}, but extended to 6D to cover the extra partial enclosure expression.
-We then apply Lemma~\ref{lem:ao:class2:h} and Corollary~\ref{cor:multichan} twice to handle the two half-plane partial enclosure expressions. 
+We then apply Lemma~\ref{lem:ao:class2:h} and Corollary~\ref{cor:multichan} twice to handle the two half-plane partial enclosure expressions and associate the orthogonal range tree. 
 The entire structure for this case is summarized by the following lemma.
 
 \begin{lemma}
@@ -538,11 +558,13 @@ Given a set of $n$ line segments, we can identify segments belonging to class (i
 
 \paragraph{Combining the Steps.} 
 
-Querying the entire environment requires us to create data structures for handling when one or both endpoints of a line segment lie entirely inside a query $Q$, as well as the structures for each of the cases when both endpoints lie outside of $Q$. Overall, this process is dominated by the structure required for the class (iv) segments. The following theorem summarizes the overall solution.
+Querying the entire environment requires us to create the structures for handling the cases where one or both endpoints of a line segment lie entirely inside a query $Q$, as well as the structures for each of the cases when both endpoints lie outside of $Q$. 
+Overall, this process is dominated by the structure required for the class (iv) segments. 
+The following theorem summarizes the overall solution.
 
 \begin{theorem}
 \label{th:ao}
-Given a set of $n$ arbitrarily-oriented line segments, we can identify all segments which satisfy the partial enclosure property for a given query rectangle in $\BigOh{\sqrt{n}\log^7{n}}$ time, using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
+Given a set of $n$ arbitrarily-oriented line segments, we can identify all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\sqrt{n}\log^7{n}}$ time, using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
 \end{theorem}
 
 
@@ -550,17 +572,17 @@ Given a set of $n$ arbitrarily-oriented line segments, we can identify all segme
 \section{Conclusion}
 \label{:rectangles:concl}
 
-In this chapter, we have developed methods for answering the partial enclosure range query problem on both axis-parallel and arbitrarily-oriented line segments with axis-parallel query regions. 
-We have seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region, but the segment nevertheless satisfies the partial enclosure property.  
+In this chapter, we have developed methods for answering the partial enclosure range searching problem on both axis-parallel and arbitrarily-oriented line segments with axis-parallel query rectangles. 
+We have seen that the most challenging cases occur when both endpoints of a segment exist outside of the query region.
 We have also seen how we can transform partial enclosure expressions into dual-spaces which can be easily queried with a half-plane.
 
 There are several possibilities for future work.
-Most notably is the condition that $\rho > 1/2$ for the arbitrary-orientation problem, which we will see is the only problem with such a limitation over all of the problems covered in this thesis.
+Most notably is the condition that $\rho > 1/2$ for the arbitrary-orientation problem, which we will see is the only problem with such a limitation presented in this thesis.
 The limitation stems from our use of similar triangles anchored on the centrepoint of the segment.
 When $\rho > 1/2$, the centrepoint of any segment satisfying the partial enclosure property will be found inside the query region, guaranteeing intersections between $Q$ and our similar triangles.
 
 We would also like to reduce how many simultaneous partial enclosure expressions need to be checked. Having to check multiple expressions is a direct result of the uncertainty of which boundary of $Q$ a segment intersects. If we could directly identify the intersected boundaries with a better classification strategy, the number of nested levels required by our data structures could be reduced.
 
 Finally, with the axis-parallel case, we are able to save a constant factor of space by sharing the classification steps between queries. 
-In the arbitrary-orientation case, we perform our half-plane queries first as this saves us a $\log{n}$ factor in our asymptotic preprocessing needs, but which prevents us from sharing the endpoint classification structures which are common to all cases.  
+In the arbitrary-orientation case, we perform our half-plane queries first as this saves us a $\log{n}$ factor in our asymptotic preprocessing needs. A side effect of this choice is that we cannot share the endpoint classification structures which are common to all cases.  
 Some experimentation is needed to identify for which inputs this trade-off makes practical sense.
