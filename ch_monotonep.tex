@@ -18,7 +18,7 @@ We are given a monotone polygon $P$ consisting of $n$ vertices and a fixed param
 
 Throughout this chapter, we will use the following definitions.
 The input is a polygon $P$ embedded in the plane which, without loss of generalization, is monotone with respect to the $x$-axis (i.e., from left to right). 
-$P$ is defined by its vertices $v_1, v_2, \ldots, v_n$, where $v_n$ and $v_1$ share an edge to close the polygon. 
+$P$ is defined by its vertices $v_1, v_2, \ldots, v_n$, where $v_n$ and $v_1$ share an edge to close the polygon.
 
 A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. See Figure~\ref{fig:monotonep:query-example} for an example.
 
@@ -51,14 +51,16 @@ Our overall approach for this problem is to define a function (actually, a colle
 
 In order to create an area formula for the entire polygon, we decompose $P$ into a linear number of regions and calculate area formulas for each. These regional formulas are then combined into an overarching \emph{multi-region formula}.
 
-We begin by sorting all of the vertices by their $x$-coordinates. If two vertices share the same $x$-coordinate (no more than two can do so, since $P$ is monotone), we can skip the duplicate without any other change to the algorithm. However, for ease of discussion, we will assume that every vertex has a distinct $x$-coordinate.
+We begin by sorting all of the vertices by their $x$-coordinates. 
+If two vertices share the same $x$-coordinate (no more than two can do so, since $P$ is monotone), we can skip the duplicate without any other change to the algorithm. 
+However, for ease of discussion, we will assume that every vertex has a distinct $x$-coordinate.
+For the remainder of this chapter, we relabel the $x$-coordinates by their sorted order so that $x_1$ is the $x$-coordinate of the leftmost vertex of $P$, $x_2$ the next leftmost, etc.
 
-Let $\iline{x}$ be the vertical line through any $x$-coordinate, and let $P_U$ and $P_L$ be the upper and lower chains of $P$, respectively. 
-The sequence of lines $\iline{x_1}, \iline{x_2}, \ldots, \iline{x_n}$ passes through the leftmost vertex of $P$, the next leftmost, and so on from left to right to the rightmost vertex.
-For every line $\iline{x_i}$, let $x_i = \iline{x_i} \cap P_U$ and $x_i' = \iline{x_i} \cap P_L$ be the intersections of $\iline{x_i}$ with the upper and lower chains of $P$, respectively.
+Let $\iline{x}$ be the vertical line through any $x$-coordinate, and let $P_U$ and $P_L$ be the upper and lower chains of $P$, respectively. Consider the sequence of lines $\iline{x_1}, \iline{x_2}, \ldots, \iline{x_n}$ through the vertices of $P$.
+For every line $\iline{x_i}$, let $a_i = \iline{x_i} \cap P_U$ and $a_i' = \iline{x_i} \cap P_L$ be the intersections of $\iline{x_i}$ with the upper and lower chains of $P$, respectively.
 
 We will calculate all of these intersections as we walk from left to right over both $P_U$ and $P_L$ simultaneously. 
-We also keep track of $e_i$ and $e_i'$, the edges of $P_U$ and $P_L$, respectively, which are intersected by $\iline{x_i}$, and upon which reside the points $x_i$ and $x_i'$. 
+We also keep track of $e_i$ and $e_i'$, the edges of $P_U$ and $P_L$, respectively, which are intersected by $\iline{x_i}$, and upon which reside the points $a_i$ and $a_i'$. 
 Where $\iline{x_i}$ intersects a vertex of $P_U$ or $P_L$, we store the edge to the right of that vertex as the corresponding value of $e_i$ or $e_i'$.
 Finally, this walk allows us to generate a sequence of regions $R_1, R_2, \dots, R_{n-1}$ which have the following, equivalent definitions.
 \begin{itemize}
@@ -66,7 +68,7 @@ Finally, this walk allows us to generate a sequence of regions $R_1, R_2, \dots,
 
  \item $R_i$ is the area of $P$ bounded by the vertical segments $\iline{x_i} \cap P$ and $\iline{x_{i+1}} \cap P$ to the left and right, and some portion of the edges $e_i$ and $e_i'$ to the top and bottom (while, in general, $e_i$ and  $e_i'$ extend beyond $\iline{x_i}$ and $\iline{x_{i+1}}$, this excess is irrelevant to the definition of $R_i$).
  
- \item $R_i$ is the polygon formed by the cycle on $x_i, x_{i+1}, x_{i+1}', x_i'$.
+ \item $R_i$ is the polygon formed by the cycle on $a_i, a_{i+1}, a_{i+1}', a_i'$.
 \end{itemize}
 
 \noindent
@@ -119,12 +121,7 @@ The angle $\theta'$ between $e_i'$ and the vertical can be calculated as
 \tan(\theta') = \frac{x_{i+1} - x_i}{h_1 - h_0}
 \]
 
-Let $t'$ be this ratio, then at $h'$, the base of the triangle has width $h' \cdot t'$. The area of the triangle is therefore
-\[ 
-\frac{1}{2} h'^2 t'
-\]
-
-And we set the constant $A = \frac{1}{2} t'$.
+Let $t'$ be this ratio, then at $h'$, the base of the triangle has width $h' \cdot t'$. The area of the triangle is therefore $\frac{1}{2} (h')^2 t'$ and we set the constant $A = \frac{1}{2} t'$.
 
 \item When $h_1 \leq h < h_2$, the area of $R$ includes all of the area between $h_0$ and $h_1$, which we store as the constant $C$.
 The remaining area of $R$ up to $h'$ grows as a rectangle.
@@ -146,11 +143,7 @@ The angle $\theta$ between $e_i$ and the vertical can be calculated as
 \tan(\theta) = \frac{x_{i+1} - x_i}{h_3 - h_2}
 \]
 
-Let $t$ be this ratio, then the smaller triangle from $h_3$ down to $h'$ can be calculated as in case 2, giving
-\[
-a' = \frac{1}{2}(h')^2 t
-\]
-
+Let $t$ be this ratio, then the smaller triangle from $h_3$ down to $h'$ can be calculated as in case 2, giving $a' = \frac{1}{2}(h')^2 t$. 
 The overall area from $h_2$ up to $h$ is then
 \[ 
 \begin{split}
@@ -159,7 +152,7 @@ a' - a &= \frac{1}{2}(h')^2 t - \frac{1}{2} \cdot (h_2 - h_3) \cdot (x_{i+1} - x
 \end{split}
 \]
 
-This expression is of the form $A'h^2 + C_b'$.
+This expression is of the form $A'(h')^2 + C_b'$.
 Thus we set the constants $A' = \frac{1}{2}t$, $C_b' = -\frac{1}{2} \cdot (h_2 - h_3) \cdot (x_{i+1} - x_i)$, and $C' = C_a' + C_b'$ to complete the formula for this part of $F(R, h)$.
 
 \item When $h_3 \leq h$, the total area of $R$ should be reported, which we store in $C''$.
@@ -180,8 +173,8 @@ Let $\mathcal{Y}$ be the list of all such tuples across all regions, sorted by $
 
 If we suppose for a moment that each $y$-value is distinct, then for each one there is exactly one region $R$ which is transitioning from one phase of growth to another.
 That is, looking at the piecewise function $F(R, h)$ which determines the area of $R$ below a query line, a new piece of that function is taking over.
-To create the multi-region formula for a new critical height, we start by copying the formula for the predecessor height (the lowest $y$-value starts with 0).
-To update the multi-region formula, we subtract the coefficients of $R$ for its previous phase of growth so that they no longer influence the formula, and then add in the coefficients for the new phase.
+To create the multi-region formula for a new critical height, we copy the formula for the predecessor height (the lowest $y$-value starts with 0).
+To update the multi-region formula, we subtract the coefficients of $R$ for its previous phase of growth so that they no longer influence the formula, and then add the coefficients for the new phase.
 
 In practice, this algorithm does not require the values of $y$ to be distinct. Instead, several values of $y$ will be collapsed into a single critical height in the list of multi-region formulas. Algorithm \ref{alg:monotonep:mf} gives the details of this process more formally.
 
@@ -354,16 +347,17 @@ Considering $A_i$ now, if $\alpha = x_i$, then $A_i = F(R_i, h_\delta) - F(R_i, 
 In general, however, $x_i < \alpha < x_{i+1}$, and we cannot use our precalculated area formulas.
 Fortunately, the area $R_i \cap P$ is a polygon of $\BigOh{1}$ complexity, specifically a trapezoid, so its area can be calculated directly in constant time. 
 Recall from the construction of the list of regions, $\mathcal{R}$, that if $\iline{\alpha}$ passes between $x_i$ and $x_{i+1}$, then it passes through region $R_i$, which stores the edges $e_i$ and $e_i'$ defining its top and bottom. 
-We can calculate the intersection points with $\iline{\alpha}$ as $s = e_i \cap \iline{\alpha}$ and $s' = e_i' \cap \iline{\alpha}$. 
+We can calculate the intersection points with $\iline{\alpha}$ as $s = e_i \cap \iline{\alpha}$ and $s' = e_i' \cap \iline{\alpha}$.
+Recall that $a_{i+1} = \iline{x_{i+1}} \cap e_{i+1}$, and $a_{i+1}' = \iline{x_{i+1}} \cap e_{i+1}'$.
 Thus, the vertices of $R_i \cap P$ are:
 \begin{itemize}
  \item Its top-left: the lower of $(\alpha, s)$ and $(\alpha, \delta)$,
 
  \item Its bottom-left: the higher of $(\alpha, s')$ and $(\alpha, \beta)$,
 
- \item Its top-right: the lower of the point $x_{i+1}$ and  $h_\delta \cap \iline{x_{i+1}}$, and
+ \item Its top-right: the lower of $a_{i+1}$ and $h_\delta \cap \iline{x_{i+1}}$, and
 
- \item Its bottom-right: the higher of the point $x_{i+1}'$ and $h_\beta \cap \iline{x_{i+1}}$.
+ \item Its bottom-right: the higher of $a_{i+1}'$ and $h_\beta \cap \iline{x_{i+1}}$.
 
 \end{itemize}
 
@@ -408,7 +402,7 @@ Figure~\ref{fig:mono2:query} shows an example query and a decomposition of $P$ i
 \end{figure}
 
 Performing our query requires only a few steps which consider successively finer regions of our decomposition of $P$.
-With a binary search, we can identify the multi-regions $S_1, S_2, \ldots, S_{k-1}$, where $1 \leq k < \sqrt{n}$ which are \emph{entirely} to the left of $\gamma$, and at most one multi-region, $S_{k}$, which is intersected by $\gamma$.  
+With a binary search, we can identify the multi-regions $S_1, S_2, \ldots, S_{k-1}$, where $1 \leq k < \sqrt{n}$, which are \emph{entirely} to the left of $\gamma$, and at most one multi-region, $S_{k}$, which is intersected by $\gamma$.  
 For each $S_i$, $1 \leq i \leq k-1$, we evaluate the associated multi-region area formula with respect to $\delta$. 
 This requires $\BigOh{\log{|S_i|}} = \BigOh{\log{n}}$ time per multi-region for a total of $\BigOh{\sqrt{n}\log{n}}$ time.
 
@@ -481,11 +475,14 @@ Total time required for this query is as follows.
 \BigOh{\log{n}} + \BigOh{\sqrt{n}} + \BigOh{\log^2{n}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}}
 \]
 
-Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  Total space required is $\BigOh{n}$ as each trapezoidal region is considered in only one A-level regions and in one B-level region. We summarize these results with the following theorem.
+Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  
+Total space required is $\BigOh{n}$ as each trapezoidal region is considered in only one A-level region and in only one B-level region. 
+We summarize these results with the following theorem.
 
 \begin{theorem}
 \label{th:mono2}
-Let $P$ be a monotone polygon consisting of $n$ vertices. In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structure that allows us to determine $\area{Q \cap P}$ in $\BigOh{\sqrt{n}}$ time, for any axis-parallel rectangular query region $Q$.
+Let $P$ be a monotone polygon consisting of $n$ vertices. 
+In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structure which allows us to determine $\area{Q \cap P}$ in $\BigOh{\sqrt{n}}$ time, for any axis-parallel rectangular query region $Q$.
 \end{theorem}
 
 
@@ -504,7 +501,8 @@ Finally, querying the resulting list of multi-region formulas, $H$, is done usin
 
 \begin{corollary}
 \label{cor:monotonep:simplep-area}
-Let $P$ be a simple polygon consisting of $n$ vertices. In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structure that allows us to determine $\area{S \cap P}$ in $\BigOh{\log{n}}$ time for any horizontal slab query region $S$.
+Let $P$ be a simple polygon consisting of $n$ vertices.
+In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structure which allows us to determine $\area{S \cap P}$ in $\BigOh{\log{n}}$ time for any horizontal slab query region $S$.
 \end{corollary}
 
 Unfortunately, we cannot extend our method for rectangular queries to work with simple polygons so easily.
