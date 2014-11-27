@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
-<ipe version="70005" creator="Ipe 7.1.3">
-<info created="D:20140515115418" modified="D:20140515120345"/>
+<ipe version="70005" creator="Ipe 7.1.4">
+<info created="D:20140515115418" modified="D:20141127104009"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -202,13 +202,13 @@ h
 <dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
 <dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
 <textsize name="large" value="\large"/>
+<textsize name="small" value="\small"/>
+<textsize name="tiny" value="\tiny"/>
 <textsize name="Large" value="\Large"/>
 <textsize name="LARGE" value="\LARGE"/>
 <textsize name="huge" value="\huge"/>
 <textsize name="Huge" value="\Huge"/>
-<textsize name="small" value="\small"/>
 <textsize name="footnote" value="\footnotesize"/>
-<textsize name="tiny" value="\tiny"/>
 <textstyle name="center" begin="\begin{center}" end="\end{center}"/>
 <textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
 <textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
@@ -234,19 +234,19 @@ h
 <view layers="alpha" active="alpha"/>
 <path layer="alpha" stroke="black" dash="dashed">
 64 704 m
-352 704 l
+128 704 l
 </path>
 <path stroke="black" dash="dashed">
 64 608 m
-352 608 l
+128 608 l
 </path>
 <path stroke="black" dash="dashed">
 288 768 m
-288 544 l
+288 704 l
 </path>
 <path stroke="black" dash="dashed">
 128 768 m
-128 544 l
+128 704 l
 </path>
 <path matrix="0.625 0 0 0.6 48 243.2" stroke="black">
 128 768 m
@@ -258,7 +258,7 @@ h
 <use name="mark/disk(sx)" pos="128 608" size="normal" stroke="black"/>
 <use matrix="1 0 0 1 -96 -64" name="mark/disk(sx)" pos="384 768" size="normal" stroke="black"/>
 <text matrix="1 0 0 1 -13 4" transformations="translations" pos="112 592" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
+<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.693" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <text matrix="1 0 0 1 -48 -16" transformations="translations" pos="256 672" stroke="black" type="label" width="7.876" height="6.815" depth="1.93" valign="baseline">$Q$</text>
 <text matrix="1 0 0 1 0 16" transformations="translations" pos="96 640" stroke="black" type="label" width="3.598" height="6.808" depth="0" valign="baseline">$\textrm{I}$</text>
 <text matrix="1 0 0 1 0 32" transformations="translations" pos="96 544" stroke="black" type="label" width="7.472" height="6.808" depth="0" valign="baseline">$\textrm{II}$</text>
@@ -268,5 +268,21 @@ h
 <text matrix="1 0 0 1 -32 0" transformations="translations" pos="352 736" stroke="black" type="label" width="11.07" height="6.808" depth="0" valign="baseline">$\textrm{VI}$</text>
 <text matrix="1 0 0 1 -16 0" transformations="translations" pos="224 736" stroke="black" type="label" width="14.944" height="6.808" depth="0" valign="baseline">$\textrm{VII}$</text>
 <text transformations="translations" pos="96 736" stroke="black" type="label" width="18.818" height="6.808" depth="0" valign="baseline">$\textrm{VIII}$</text>
+<path matrix="1 0 0 1 0 -160" stroke="black" dash="dashed">
+128 768 m
+128 704 l
+</path>
+<path matrix="1 0 0 1 160 -160" stroke="black" dash="dashed">
+128 768 m
+128 704 l
+</path>
+<path matrix="1 0 0 1 224 0" stroke="black" dash="dashed">
+64 704 m
+128 704 l
+</path>
+<path matrix="1 0 0 1 224 -96" stroke="black" dash="dashed">
+64 704 m
+128 704 l
+</path>
 </page>
 </ipe>
