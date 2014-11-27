@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20140515115418" modified="D:20141107103135"/>
+<info created="D:20140515115418" modified="D:20141127112200"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -234,19 +234,19 @@ h
 <view layers="alpha" active="alpha"/>
 <path layer="alpha" stroke="black" dash="dashed">
 64 704 m
-352 704 l
+128 704 l
 </path>
 <path stroke="black" dash="dashed">
-64 608 m
+288 608 m
 352 608 l
 </path>
 <path stroke="black" dash="dashed">
-288 736 m
+288 608 m
 288 544 l
 </path>
 <path stroke="black" dash="dashed">
 128 736 m
-128 544 l
+128 704 l
 </path>
 <path stroke="blue" dash="dashed" pen="heavier">
 80 688 m
@@ -265,7 +265,7 @@ h
 </path>
 <use matrix="1 0 0 1 -96 -64" name="mark/disk(sx)" pos="384 768" size="normal" stroke="black"/>
 <text matrix="1 0 0 1 -13 4" transformations="translations" pos="112 592" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
+<text matrix="1 0 0 1 -108 -75" transformations="translations" pos="400 784" stroke="black" type="label" width="22.693" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <path stroke="black" pen="heavier">
 80 688 m
 272 560 l
@@ -288,5 +288,21 @@ h
 <text matrix="1 0 0 1 -69 -11" transformations="translations" pos="272 624" stroke="black" type="label" width="7.6" height="7.497" depth="1.93" valign="baseline">$q&apos;$</text>
 <text matrix="1 0 0 1 -106 -75" transformations="translations" pos="272 672" stroke="blue" type="label" width="7.982" height="7.49" depth="0" valign="baseline">$v&apos;$</text>
 <text matrix="1 0 0 1 -184 -119" transformations="translations" pos="352 672" stroke="blue" type="label" width="5.187" height="4.289" depth="0" valign="baseline">$v$</text>
+<path matrix="1 0 0 1 0 96" stroke="black" dash="dashed">
+288 608 m
+352 608 l
+</path>
+<path matrix="1 0 0 1 160 0" stroke="black" dash="dashed">
+128 736 m
+128 704 l
+</path>
+<path matrix="1 0 0 1 -160 0" stroke="black" dash="dashed">
+288 608 m
+288 544 l
+</path>
+<path matrix="1 0 0 1 0 -96" stroke="black" dash="dashed">
+64 704 m
+128 704 l
+</path>
 </page>
 </ipe>
