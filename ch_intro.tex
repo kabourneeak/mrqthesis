@@ -83,17 +83,45 @@ With such a method in hand, determining the area of a rectangle is a matter of e
 
 We contrast our problem from traditional range searching, which looks for objects which are entirely within a query region, and from intersection searching, which looks for any objects which have even a minimal intersection with a query region.
 
+``Almost all range searching structures are constructed by subdividing space into several regions with nice properties''
+
+And then walking through the structure looking at recursively finer partitioning.
+
+Decomposition Scheme [M6]
+
+
 \paragraph{Range Searching.} 
 XXX TODO
 
-Should explain why this is easier than our problem
+What is range searching.
+
+Applications
+
+General approaches?
+
+Why this is easier than our problem
+
+Multi-dimensional orthogonal range searching is an abstraction of multi-key searching [BF, Wi4]. Each key is considered as a component of a high dimensional point.
+
+Best structures for orthogonal range searching are by Chazelle [Ch, Ch4]
+
+Three-sided rectangles can be done with a priority search tree in less space, only $\BigOh{n}$ [Mc].
+
+Searching for rectangles inside of rectangles can be done by mapping them to points in $\mathcal{R}^{2d}$ and using orthogonal range searching.
+This is important as rectangles make easy approximations of more complicated objects that we may want to look for inside of a query box.
+
+\paragraph{Simplex range searching.}
+
+Lower bounds on the problem make it sort of hard.
+We can have linear space \emph{or} logarithmic query time.
 
 \paragraph{Intersection Searching.} 
 XXX TODO
 
 Should explain why this is easier than our problem
 
-This is either looking at objects that have \emph{any} intersection at all, or which are entirely intersected in a geometric sense; that is $o \cap Q = o$.  Whereas range searching is a bit more abstract.
+This is either looking at objects that have \emph{any} intersection at all, or which are entirely intersected in a geometric sense; that is $o \cap Q = o$. 
+Whereas range searching is a bit more abstract.
 
 
 %------------------------------------------------------------------------------
