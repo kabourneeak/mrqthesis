@@ -18,11 +18,14 @@ In this section, we develop a method for identifying horizontal line segments wh
 The formal statement of our problem is as follows.
 
 \begin{problem}
-Given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by an arbitrarily-oriented (i.e., slanted) slab $Q$ so as to satisfy the partial enclosure property.
-A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments which are sufficiently enclosed by an arbitrarily-oriented (i.e., slanted) slab $Q$ so as to satisfy the partial enclosure property.
+A segment $s$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
-Throughout this section, we use the following definitions. Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$. When discussing a single, general segment, we omit the $i$ subscripts for clarity.
+Throughout this section, we use the following definitions. 
+Let $S$ be a set of $n$ horizontal line segments.
+Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$. 
+When discussing a single, general segment, we omit the $i$ subscripts for clarity.
 
 A query $Q$ is given as three inputs: $\alpha, \beta, w$ which we use to define an arbitrarily-oriented slab.
 The left edge of the slab is defined by $L_1 : y = \alpha x + \beta$, while the right edge defined by $L_2: y = \alpha x + \beta - \alpha w$. 
@@ -268,11 +271,13 @@ The overall approach is very similar to Section~\ref{:slabs:one}, and the data s
 The formal statement of this problem is as follows.
 
 \begin{problem}
-Given a set $S$ of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by an arbitrarily-oriented parallelogram $Q$ so as to satisfy the partial enclosure property.
-A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set of $n$ horizontal line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments which are sufficiently enclosed by an arbitrarily-oriented parallelogram $Q$ so as to satisfy the partial enclosure property.
+A segment $s$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
-Throughout this section, we use the following definitions. Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$.
+Throughout this section, we use the following definitions. 
+Let $S$ be a set of $n$ horizontal line segments.
+Each segment $s_i \in S, 1 \leq i \leq n$ is defined by three values $a_i, b_i, l_i$ which in turn define the endpoints of the segment as $p_i = (a_i, b_i)$ and $q_i = (a_i + l_i, b_i)$.
 
 A query region is an arbitrarily-oriented parallelogram defined by the intersection of two slabs, $S_p$ and $S_n$, which have positive and negative slopes, respectively. See Figure \ref{fig:slabs:two:ds}.
 

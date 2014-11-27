@@ -368,12 +368,14 @@ With all three area calculations completed, a simple sum completes our query. We
 
 \begin{theorem}
 \label{th:monotonep:rect:area}
-Let $P$ be a monotone polygon consisting of $n$ vertices. In $\BigOh{n \log{n}}$ time and $\BigOh{n \log{n}}$ space, we can create a data structure that allows us to determine $\area{Q \cap P}$ in $\BigOh{\log{n}}$ time, for any axis-parallel rectangular query region $Q$.
+Let $P$ be a monotone polygon consisting of $n$ vertices. 
+In $\BigOh{n \log{n}}$ time and $\BigOh{n \log{n}}$ space, we can create a data structure which allows us to determine $\area{Q \cap P}$ in $\BigOh{\log{n}}$ time, for any axis-parallel rectangular query region $Q$.
 \end{theorem}
 
 \begin{corollary}
 \label{cor:monotonep:rect:mp}
-Let $P$ be a monotone polygon consisting of $n$ vertices, and let $0 < \rho \leq 1$ be a fixed parameter. With $\BigOh{n \log{n}}$ preprocessing time and $\BigOh{n \log{n}}$ space, we can determine if $\area{Q \cap P} \geq \rho \cdot \area{P}$ in $\BigOh{\log{n}}$ time for any axis-parallel rectangular query $Q$.
+Let $P$ be a monotone polygon consisting of $n$ vertices, and let $0 < \rho \leq 1$ be a fixed parameter.
+With $\BigOh{n \log{n}}$ preprocessing time and $\BigOh{n \log{n}}$ space, we can determine if $\area{Q \cap P} \geq \rho \cdot \area{P}$ in $\BigOh{\log{n}}$ time for any axis-parallel rectangular query $Q$.
 \end{corollary}
 
 

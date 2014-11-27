@@ -18,14 +18,15 @@ We will discuss only horizontal segments here.
 The solution for vertical segments is identical, and we discuss how to combine the two approaches at the end of the section. We define the problem as follows.
 
 \begin{problem}
-Given a set $S$ of $n$ axis-parallel line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by an axis-parallel query rectangle $Q$ so as to satisfy the partial enclosure property. 
-A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set of $n$ axis-parallel line segments in the plane, and a fixed parameter $\rho$ such that $0 < \rho \leq 1$, we want to identify those segments which are sufficiently enclosed by an axis-parallel query rectangle $Q$ so as to satisfy the partial enclosure property. 
+A segment $s$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
 
 \subsection{Definitions}
 \label{:rectangles:ap:defs}
 
+Let $S$ be a set of $n$ axis-parallel line segments.
 Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. 
 Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). 
 We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. 
@@ -153,7 +154,7 @@ Preprocessing and querying this extra orientation does not change our asymptotic
 
 \begin{theorem}
 \label{th:ap}
-Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the partial enclosure property for a given query rectangle in $\BigOh{\log^3{n}}$ time, using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\log^3{n}}$ time, using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
 \end{theorem}
 
 %------------------------------------------------------------------------------
@@ -165,11 +166,11 @@ It does not matter if segments intersect.
 The problem statement is as follows.
 
 \begin{problem}
-Given a set $S$ of $n$ arbitrarily-oriented line segments in the plane, and a fixed parameter $\rho$ such that $1/2 < \rho \leq 1$, we want to identify those segments from $S$ which are sufficiently enclosed by an axis-parallel query rectangle $Q$ so as to satisfy the partial enclosure property. 
-A segment $s \in S$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
+Given a set of $n$ arbitrarily-oriented line segments in the plane, and a fixed parameter $\rho$ such that $1/2 < \rho \leq 1$, we want to identify those segments which are sufficiently enclosed by an axis-parallel query rectangle $Q$ so as to satisfy the partial enclosure property. 
+A segment $s$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot |s|$.
 \end{problem}
 
-Throughout this section, the query region $Q$ and the segments in $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}. 
+Throughout this section, the query region $Q$ and the set of segments $S$ follow the same definitions as in Section~\ref{:rectangles:ap:defs}. 
 Observe that the definition for $\rho$ is different than in Section~\ref{:rectangles:ap}; we discuss this difference in the conclusion of this chapter.
 
 
