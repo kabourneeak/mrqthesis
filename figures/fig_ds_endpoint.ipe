@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20140908084236" modified="D:20141127140520"/>
+<info created="D:20141127152329" modified="D:20141128105630"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -232,43 +232,126 @@ h
 <page>
 <layer name="alpha"/>
 <view layers="alpha" active="alpha"/>
-<text layer="alpha" matrix="1 0 0 1 108 0" transformations="translations" pos="80 544" stroke="black" type="label" width="37.576" height="5.371" depth="2.85" valign="baseline">$w_p &lt; w_n$</text>
-<text matrix="1 0 0 1 -4 0" transformations="translations" pos="384 544" stroke="black" type="label" width="37.576" height="5.371" depth="2.85" valign="baseline">$w_p &gt; w_n$</text>
-<path matrix="1 0 0 1 112 32" stroke="black">
-128 672 m
-176 624 l
-96 544 l
-48 592 l
-128 672 l
+<path layer="alpha" matrix="1 0 0 1 -64 0" fill="lightgray">
+451.979 655.995 m
+427.975 688 l
+439.975 736 l
+463.975 704 l
+h
 </path>
-<path matrix="1 0 0 -1 272 1248" stroke="black">
-128 672 m
-176 624 l
-96 544 l
-48 592 l
-128 672 l
+<path fill="lightgray">
+267.975 688 m
+279.986 735.985 l
+303.975 704 l
+291.989 655.981 l
+h
 </path>
-<path stroke="blue" dash="dashed">
-128 624 m
-480 624 l
+<path matrix="1 0 0 1 64 0" fill="lightgray">
+120 736 m
+108 688 l
+132 656 l
+144 704 l
+h
 </path>
-<path stroke="blue" dash="dashed">
-128 656 m
-480 656 l
+<path matrix="1 0 0 1 52 0" stroke="black" dash="dashed">
+108 640 m
+136 752 l
 </path>
-<text matrix="1 0 0 1 8 0" transformations="translations" pos="224 672" stroke="black" type="label" width="12.696" height="6.815" depth="1.93" valign="baseline">$Q_a$</text>
-<text matrix="1 0 0 1 -8 -4" transformations="translations" pos="224 640" stroke="black" type="label" width="11.878" height="6.815" depth="1.93" valign="baseline">$Q_b$</text>
-<text matrix="1 0 0 1 8 -8" transformations="translations" pos="192 608" stroke="black" type="label" width="11.935" height="6.815" depth="1.93" valign="baseline">$Q_c$</text>
-<text matrix="1 0 0 1 136 0" transformations="translations" pos="224 672" stroke="black" type="label" width="12.696" height="6.815" depth="1.93" valign="baseline">$Q_a$</text>
-<text matrix="1 0 0 1 152 -4" transformations="translations" pos="224 640" stroke="black" type="label" width="11.878" height="6.815" depth="1.93" valign="baseline">$Q_b$</text>
-<text matrix="1 0 0 1 200 -8" transformations="translations" pos="192 608" stroke="black" type="label" width="11.935" height="6.815" depth="1.93" valign="baseline">$Q_c$</text>
-<path matrix="1 0 0 1 0 48" stroke="blue" dash="dashed">
-128 656 m
-480 656 l
+<path matrix="1 0 0 1 52 0" stroke="black" dash="dashed">
+140 640 m
+168 752 l
 </path>
-<path matrix="1 0 0 1 0 -80" stroke="blue" dash="dashed">
-128 656 m
-480 656 l
+<path matrix="1 0 0 1 52 0" stroke="black" dash="dashed">
+96 720 m
+156 640 l
 </path>
+<path matrix="1 0 0 1 52 0" stroke="black" dash="dashed">
+120 752 m
+180 672 l
+</path>
+<path matrix="1 0 0 1 52 0" stroke="red" pen="heavier" arrow="normal/normal" rarrow="normal/normal">
+120 752 m
+156 704 l
+180 704 l
+</path>
+<path matrix="1 0 0 1 52 0" stroke="blue" pen="heavier" arrow="normal/normal" rarrow="normal/normal">
+96 704 m
+124 704 l
+136 752 l
+</path>
+<path matrix="1 0 0 1 64 0" stroke="green" pen="heavier">
+112.736 703.936 m
+143.276 703.951 l
+120.293 734.507 l
+h
+</path>
+<text matrix="1 0 0 1 92 -3" transformations="translations" pos="91.164 712.406" stroke="black" type="label" width="12.696" height="6.815" depth="1.93" valign="baseline">$Q_a$</text>
+<path stroke="black" dash="dashed">
+255.975 640 m
+284 752 l
+</path>
+<path stroke="black" dash="dashed">
+287.975 640 m
+316 752 l
+</path>
+<path stroke="black" dash="dashed">
+244 720 m
+303.975 640 l
+</path>
+<path stroke="black" dash="dashed">
+268 752 m
+328 672 l
+</path>
+<path stroke="red" pen="heavier" arrow="normal/normal" rarrow="normal/normal">
+288 640 m
+303.975 704 l
+328 704 l
+</path>
+<path stroke="blue" pen="heavier" arrow="normal/normal" rarrow="normal/normal">
+244 688 m
+267.975 688 l
+284 752 l
+</path>
+<path stroke="green" pen="heavier">
+272.711 703.936 m
+303.169 703.953 l
+299.356 688.054 l
+268.592 687.99 l
+h
+</path>
+<text matrix="1 0 0 1 187.975 -19" transformations="translations" pos="91.164 712.406" stroke="black" type="label" width="11.878" height="6.815" depth="1.93" valign="baseline">$Q_b$</text>
+<path matrix="1 0 0 1 -52 0" stroke="black" dash="dashed">
+403.975 640 m
+432 752 l
+</path>
+<path matrix="1 0 0 1 -52 0" stroke="black" dash="dashed">
+435.975 640 m
+464 752 l
+</path>
+<path matrix="1 0 0 1 -52 0" stroke="black" dash="dashed">
+392 720 m
+451.975 640 l
+</path>
+<path matrix="1 0 0 1 -52 0" stroke="black" dash="dashed">
+416 752 m
+476 672 l
+</path>
+<path matrix="1 0 0 1 -52 0" stroke="red" pen="heavier" arrow="normal/normal" rarrow="normal/normal">
+436 640 m
+447.932 687.963 l
+480 688 l
+</path>
+<path matrix="1 0 0 1 -52 0" stroke="blue" pen="heavier" arrow="normal/normal" rarrow="normal/normal">
+392 688 m
+415.975 688 l
+452 640 l
+</path>
+<path matrix="1 0 0 1 -96 0" stroke="green" pen="heavier">
+483.737 657.219 m
+491.356 688.054 l
+460.592 687.99 l
+h
+</path>
+<text matrix="1 0 0 1 285.975 -35" transformations="translations" pos="91.164 712.406" stroke="black" type="label" width="11.935" height="6.815" depth="1.93" valign="baseline">$Q_c$</text>
 </page>
 </ipe>
