@@ -35,7 +35,7 @@ When we query $T$ for $\alpha$ and $\beta$, we identify two paths through $T$ in
 What makes range trees such versatile structures is not that they identify appropriate elements, but rather due to the way that they group the identified elements into at most $\BigOh{\log{n}}$ disjoint subsets.
 These subsets are precisely the elements found in the ``inner'' subtrees along the path from $a_\alpha$ to $a_\beta$, as illustrated in Figure~\ref{fig:pre:range1d}.
 
-With each non-leaf node of $T$, we can store additional information about the subset represented by its subtree.  The, during query time, we only need to consider the information stored at $\BigOh{\log{n}}$ nodes rather than the $\BigOh{n}$ elements they represent. Continuing our example on 2D points, with only $\BigOh{1}$ extra space per node, we could store which point has the highest $y$-coordinate in each subtree.  Then, we can use our range tree to find the highest point between two $x$-coordinates in $\BigOh{\log{n}}$ time.
+With each non-leaf node of $T$, we can store additional information about the subset represented by its subtree.  Then, during query time, we only need to consider the information stored at $\BigOh{\log{n}}$ nodes rather than the $\BigOh{n}$ elements they represent. Continuing our example on 2D points, with only $\BigOh{1}$ extra space per node, we could store which point has the highest $y$-coordinate in each subtree.  Then, we can use our range tree to find the highest point between two $x$-coordinates in $\BigOh{\log{n}}$ time.
 
 We are not limited to just storing simple values with each node, however.
 With each node, we can associate an entire additional data structure, constructed on the elements represented by that node.
@@ -75,7 +75,7 @@ We can form $\BigOh{n}$ canonical subsets of total size $\BigOh{n \log{n}}$ in $
 This structure is particularly well-suited to multi-part queries where we need to identify objects which satisfy a half-plane query, and which also satisfy some other arbitrary query condition for which we have an existing query method.
 To support such a query, we construct a canonical subsets structure to perform the half-plane component of the query. 
 Then, with the objects of each canonical subset, we construct a secondary query structure.
-A similar structure with slightly worse query time bounds is presented in \citep{debergch16}, along with a method for using it to construct multi-part queries.
+A similar structure with slightly worse query time bounds is presented in \cite{debergch16}, along with a method for using it to construct multi-part queries.
 
 A multi-level query is executed by first querying the canonical subsets structure for all points satisfying the half-plane.
 With each subset identified by the first step, we then evaluate the associated secondary structure.
@@ -99,67 +99,65 @@ Given a set of $n$ objects $a_1, a_2, \ldots, a_n$ which can be queried with a d
 
 \begin{proof}
 The preprocessing space of the multi-level structure requires $\BigOh{n \log{n}}$ space for the canonical subsets structure itself, plus
-\[
-\begin{split}
+\begin{align*}
 \sum_{i=1}^k{S(|C_i|)}
-&\leq \sum_{i=1}^k{|C_i| \log^f{|C_i|}} \\
+&\leq \sum_{i=1}^k{\BigOh{|C_i| \log^f{|C_i|}}} \\
 %
-&\leq \sum_{i=1}^k{|C_i| \log^f{n}} \\
+&\leq \BigOh{\sum_{i=1}^k{|C_i| \log^f{n}}} \\
 %
-&\leq \BigOh{\log^f{n}} \cdot \sum_{i=1}^k{|C_i|} \\
+&\leq \BigOh{\log^f{n} \cdot \sum_{i=1}^k{|C_i|}} \\
 %
-&\leq \BigOh{n\log^{f+1}{n}}
-\end{split}
-\]
+&\leq \BigOh{\log^f{n} \cdot n \log{n}} && \text{(by Theorem \ref{th:chan})}\\
+%
+&\leq \BigOh{n\log^{f+1}{n}} \\
+\end{align*}
 
 \noindent for the associate structures, for a total space complexity of $\BigOh{n\log^{f+1}{n}}$.
 
 Preprocessing time is calculated in the same manner. 
 We start with $\BigOh{n \log{n}}$ time for building the canonical subsets structure itself, plus
-\[
-\begin{split}
+\begin{align*}
 \sum_{i=1}^k{T(|C_i|)}
-&\leq \sum_{i=1}^k{|C_i| \log^g{|C_i|}} \\
+&\leq \sum_{i=1}^k{\BigOh{|C_i| \log^g{|C_i|}}} \\
 %
-&\leq \sum_{i=1}^k{|C_i| \log^g{n}} \\
+&\leq \BigOh{\sum_{i=1}^k{|C_i| \log^g{n}}} \\
 %
-&\leq \BigOh{\log^g{n}} \cdot \sum_{i=1}^k{|C_i|} \\
+&\leq \BigOh{\log^g{n} \cdot \sum_{i=1}^k{|C_i|}} \\
 %
-&\leq \BigOh{n\log^{g+1}{n}}
-\end{split}
-\]
+&\leq \BigOh{\log^g{n} \cdot n \log{n}} && \text{(by Theorem \ref{th:chan})} \\
+%
+&\leq \BigOh{n\log^{g+1}{n}} \\
+\end{align*}
 
 \noindent for building the associate structures, for a total time complexity of $\BigOh{n\log^{g+1}{n}}$.
 
-Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the elements found by the top-level canonical subsets query, plus the time required to query the associated data structures.  If $Q(n) \in \BigOh{\sqrt{n}\log^h{n}}$ then the total time to query the appropriate associated is
-\[
-\begin{split}
+Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the elements found by the top-level canonical subsets query, plus the time required to query the associated data structures.  If $Q(n) \in \BigOh{\sqrt{n}\log^h{n}}$ then the total time to query the appropriate associated structures is
+\begin{align*}
 \sum_{i=1}^{k'}{Q(|C_i|)}
 &\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{|C_i|}}} \\
 %
-&\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{n}}} \\
+&\leq \BigOh{\sum_{i=1}^{k'}{\sqrt{|C_i|}\log^h{n}}} \\
 %
-&\leq \BigOh{\log^h{n}} \cdot \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}}} \\
+&\leq \BigOh{\log^h{n} \cdot \sum_{i=1}^{k'}{\sqrt{|C_i|}}} \\
+%
+&\leq \BigOh{\log^h{n} \cdot \sqrt{n}\log{n}}  && \text{(by Theorem \ref{th:chan})} \\
 %
 &\leq \BigOh{\sqrt{n}\log^{h+1}{n}} \\
-\end{split}
-\]
+\end{align*}
 
-\noindent Otherwise, if $Q(n) \in \BigOh{\log^h{n}}$ then the total time to query the appropriate associated is
-\[
-\begin{split}
+\noindent Otherwise, if $Q(n) \in \BigOh{\log^h{n}}$ then the total time to query the appropriate associated structures is
+\begin{align*}
 \sum_{i=1}^{k'}{Q(|C_i|)}
 &\leq \sum_{i=1}^{k'}{\BigOh{\log^h{|C_i|}}} \\
 %
-&\leq \sum_{i=1}^{k'}{\BigOh{\log^h{n}}} \\
+&\leq \BigOh{\sum_{i=1}^{k'}{\log^h{n}}} \\
 %
-&\leq \BigOh{\log^h{n}} \cdot \sum_{i=1}^{k'}{1} \\
+&\leq \BigOh{\log^h{n} \cdot \sum_{i=1}^{k'}{1}} \\
 %
-&\leq \BigOh{\log^h{n}} \cdot \BigOh{\sqrt{n}\log{n}}\\
+&\leq \BigOh{\log^h{n} \cdot \sqrt{n}\log{n}} && \text{(by Theorem \ref{th:chan})}\\
 %
 &\leq \BigOh{\sqrt{n}\log^{h+1}{n}} \\
-\end{split}
-\]
+\end{align*}
 
 \noindent Thus, the query time for the associated structures is identical for both complexity classes of $Q(n)$ that we consider. 
 Total query time is $\BigOh{\sqrt{n}\log^{h+1}{n}}$.
