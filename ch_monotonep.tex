@@ -453,13 +453,12 @@ Given a query $Q$ defined by $(\gamma, \delta)$, we first consider what areas ar
 We start by considering the A-level regions which are entirely left of $\gamma$. 
 Each such region contains $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions, so querying the multi-region area formula stored there will require the following time.
 \[
-\log{\BigOh{\sqrt{n}\log{n}}} = \BigOh{\log{n}} + \BigOh{\log{\log{n}}} = \BigOh{\log{n}} \leq C \log{n}
+\log{\BigOh{\sqrt{n}\log{n}}} = \BigOh{\log{n}}
 \]
 
-\noindent where $C$ is a constant.
-Therefore, the worst case time required to query all of the necessary A-level regions is:
+\noindent Therefore, the worst case time required to query all necessary A-level regions is:
 \[
-\frac{\sqrt{n}}{\log{n}} \cdot C \log{n} = \BigOh{\sqrt{n}}
+\frac{\sqrt{n}}{\log{n}} \cdot \BigOh{\log{n}} = \BigOh{\sqrt{n}}
 \]
 
 At most one A-level region is intersected by $\gamma$, and if that is the case, we proceed to its respective B-level regions.

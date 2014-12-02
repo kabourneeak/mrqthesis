@@ -191,7 +191,7 @@ As we have described it here, this query requires $\BigOh{\log^2{n}}$ time, but 
 A different approach to solving half-plane range searches altogether is to consider a half-plane as a degenerate simplex, and then use any simplex range searching structure to answer a query.  
 Such structures are discussed below and in Section~\ref{:prelim:chan}.
 
-One final method for half-plane searches we would like to method is by Chazelle \emph{et al.}\cite{ChazelleGL85,Chazelle85} is worth mentioning as it does not obey the general trade-off between space and query time that we mentioned above.
+One final method for half-plane searches we would like to mention is by Chazelle \emph{et al.}\cite{ChazelleGL85,Chazelle85} as it does not obey the general trade-off between space and query time that we mentioned above.
 This method uses \emph{convex layers} and gives both $\BigOh{n}$ storage and $\BigOh{\log{n} + k}$ query time, where $k$ is the number of elements reported. 
 However, this method can only be used for reporting queries, and is not well suited to counting or multi-level queries.
 
