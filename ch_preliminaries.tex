@@ -69,8 +69,11 @@ The range trees introduced in the previous section can be used to query any expr
 
 \begin{theorem}[Corollary 7.3, part $i$, in Chan\cite{chan2012}]
 \label{th:chan}
-We can form $\BigOh{n}$ canonical subsets of total size $\BigOh{n \log{n}}$ in $\BigOh{n \log{n}}$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq \BigOh{\sqrt{n}\log{n}}$ in time $\BigOh{\sqrt{n}\log{n}}$ w.h.p. $(n)$.
+We can form $\BigOh{n}$ canonical subsets of total size $\BigOh{n \log{n}}$ in $\BigOh{n \log{n}}$ time, such that the subset of all points inside any query simplex can be reported as a union of disjoint canonical subsets $C_i$ with $\sum_i{\sqrt{|C_i|}} \leq \BigOh{\sqrt{n}\log{n}}$ in time $\BigOh{\sqrt{n}\log{n}}$ with high probability with respect to $n$.
 \end{theorem}
+
+In this theorem, ``with high probability with respect to $n$'', abbreviated ``w.h.p. $(n)$'', refers to the query phase of the data structure, and specifically that the total size of the canonical sets containing the points matching our simplex query will satisfy $\sum_i{\sqrt{|C_i|}} \leq \BigOh{\sqrt{n}\log{n}}$.
+It is possible that the total size may be larger, but the probability that the size of the results \emph{is} bounded as stated approaches 1 as $n$ tends to infinity.
 
 This structure is particularly well-suited to multi-part queries where we need to identify objects which satisfy a half-plane query, and which also satisfy some other arbitrary query condition for which we have an existing query method.
 To support such a query, we construct a canonical subsets structure to perform the half-plane component of the query. 
@@ -90,9 +93,9 @@ The following corollary formalizes the use of canonical subset structures to bui
 Given a set of $n$ objects $a_1, a_2, \ldots, a_n$ which can be queried with a data structure $A$ requiring preprocessing space $S(n)$, preprocessing time $T(n)$, and query time $Q(n)$, and where each $a_i$ also has an associated point $p_i$, we can construct a multi-level data structure which can identify all objects whose associated point $p_j$ satisfies a half-plane  \emph{and} where $a_j$ satisfies a query on $A$.
 
 \begin{enumerate}
-\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\sqrt{n} \log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\sqrt{n} \log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time w.h.p. $(n)$.
 
-\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time.
+\item If $S(n) \in \BigOh{n \log^f{n}}$, $T(n) \in \BigOh{n \log^g{n}}$, and $Q(n) \in \BigOh{\log^h{n}}$, where $f, g, h \in \BigOh{1}, 0 \leq f \leq g$, then the resulting multi-level data structure requires $\BigOh{n\log^{f+1}{n}}$ preprocessing space, $\BigOh{n\log^{g+1}{n}}$ preprocessing time, and $\BigOh{\sqrt{n}\log^{h+1}{n}}$ query time w.h.p. $(n)$.
 
 \end{enumerate}
 \end{corollary}
@@ -131,7 +134,8 @@ We start with $\BigOh{n \log{n}}$ time for building the canonical subsets struct
 
 \noindent for building the associate structures, for a total time complexity of $\BigOh{n\log^{g+1}{n}}$.
 
-Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canonical subsets representing the elements found by the top-level canonical subsets query, plus the time required to query the associated data structures.  If $Q(n) \in \BigOh{\sqrt{n}\log^h{n}}$ then the total time to query the appropriate associated structures is
+Querying requires $\BigOh{\sqrt{n}\log{n}}$ time w.h.p. $(n)$ to find the $k'$ disjoint canonical subsets representing the elements found by the top-level canonical subsets query, plus the time required to query the associated data structures.  
+If $Q(n) \in \BigOh{\sqrt{n}\log^h{n}}$ then the total time to query the appropriate associated structures is
 \begin{align*}
 \sum_{i=1}^{k'}{Q(|C_i|)}
 &\leq \sum_{i=1}^{k'}{\BigOh{\sqrt{|C_i|}\log^h{|C_i|}}} \\
@@ -163,7 +167,9 @@ Querying requires $\BigOh{\sqrt{n}\log{n}}$ time to find the $k'$ disjoint canon
 Total query time is $\BigOh{\sqrt{n}\log^{h+1}{n}}$.
 \end{proof}
 
-We give an example of how we can use this structure. 
+We use this theorem and corollary as ``black boxes'' throughout chapters \ref{:rectangles} and \ref{:slabs}, and omit the ``w.h.p. $(n)$'' for simplicity.
+We now give an example of how we can use these structures.
+
 Suppose we have $n$ line segments in the plane.
 Each line segment $s_i$, $1 \leq i \leq n$ is given by its left endpoint $p_i = (a_i, b_i)$ and its right endpoint $q_i = (c_i, d_i)$.
 We would like to identify all segments intersected by a query line $L: y = \alpha x + \beta$.
