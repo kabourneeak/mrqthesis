@@ -86,16 +86,16 @@ In this section, we review some existing variations of the range searching probl
 As a whole, due to its applicability to such a wide assortment of problems, range searching has received a great deal of research attention.
 Aside from the solutions to specific problems that this research has found, it has also resulted in a vast toolbox of observations and techniques, many of which apply to our own problem.
 
-Range searching structures are typically constructed by subdividing the input objects, or the space in which the input objects exist, into several regions which express helpful properties.
+Range searching structures are typically constructed by subdividing the input objects, or the space in which the input objects exist, into several regions which express useful properties.
 Ideally, we are able to choose these regions so that a query region will entirely contain, or not contain, most of the regions, while intersecting only a small number of them.
 On those intersected regions, we continue the query on the recursively finer subdivisions stored there.\cite{Matousek93}
 
 This recursive decomposition of the input into regions has an extremely beneficial side-effect. 
-At each hierarchical regions, we must associate the further decomposition of the regions, but we can associate other structures as well.
-These so-called multi-level structures can be used to answer complex queries by identifying objects which satisfy one property, and then continuing the query on the associated structures to satisfy additional properties.
+At each hierarchical region, we can associate any other structure of our choosing.
+These so-called multi-level structures can be used to answer complex queries by identifying objects which satisfy one property with respect to the outer structure, and then continuing with the associated structures to satisfy additional properties.
 We discuss examples of this type of multi-level query in detail in Chapter~\ref{:prelim}.
 
-The remainder of this section gives a brief introduction to some specific range search problems, and some methods for answering each. 
+The remainder of this section gives a brief introduction to some specific range searching problems, and history of some methods for answering each. 
 We refer the reader to an excellent survey on range searching by Agarwal and Erickson\cite{Agarwal99} for a more detailed introduction.
 
 
@@ -104,14 +104,16 @@ We refer the reader to an excellent survey on range searching by Agarwal and Eri
 In its general form, an orthogonal range searching problem starts with a set $S$ of points in $\mathbb{R}^d$, where $d$ is a small, fixed constant.
 A query is a $d$-dimensional, axis-parallel box, and our goal is to identify the subset of our input points which are contained within this box.
 
-\emph{Quadtrees} were first described by Finkel and Bentley\cite{Finkel74} (see also \cite{debergch14}) and are one of the very first structures for performing range searches.
-When we are considering points in the plane, a quadtree works by dividing the space into squares, and then recursively splitting any region which contains more than one point into four smaller, but equally-sized squares.
+\emph{Quadtrees}, first described by Finkel and Bentley\cite{Finkel74} (see also \cite{debergch14}), are one of the very first structures for performing range searches.
+When we are considering points in the plane, a quadtree works by dividing the space containing the points into squares, and then recursively splitting any region which contains more than one point into four smaller, but equally-sized squares.
+
 Because this recursion is based on splitting space rather than the points within the space, the recursion depth, and thus the depth of the quadtree, is not related to the number of points. 
 Instead, the size of the initial square from which we start splitting and the distance between the closest pair of points are the important factors.
 For an initial square with a side length of $s$ and a closest pair with distance $c$, the recursion depth is $\BigOh{\log{\frac{s}{c}} + \frac{3}{2}}$.
 The construction and query times are related to this recursion depth, making the structure somewhat slow, but it \emph{does} work!
-Quadtrees can also be extended to work in higher dimensions easily enough. 
-In $\mathbb{R}^3$ quadtrees are instead called \emph{Octrees}, and the general method can be extended to even higher dimensions. 
+
+Quadtrees can be easily extended to work in higher dimensions. 
+In $\mathbb{R}^3$ quadtrees are called \emph{Octrees}, and the general method can be extended to even higher dimensions. 
 For points and an initial box in $\mathbb{R}^d$, decomposition proceeds along the same basic rules, but using progressively smaller $d$-boxes instead of just squares.
 
 
@@ -121,13 +123,12 @@ For points in the plane, each level of the tree corresponds to a particular axis
 Suppose that we start with the $x$-axis at the root level.
 We consider the median point $m$ with respect to the $x$-coordinates of all the points, and then all remaining points are partitioned as left or right of this vertical \emph{splitting line} through $m$.
 
-On the next level of the recursion we alternate to the $y$-axis, select the median point with respect to their $y$-coordinates, and partition around the horizontal splitting line through that point.
+On the next level of the recursion we alternate to the $y$-axis, select the median point with respect to $y$-coordinates, and partition around the horizontal splitting line through that point.
 The process continues, alternating the axis on each level, until we create leaves containing single points.
-
 This process creates a balanced tree, where each path through the tree alternates between axes.
 Each node in the tree represents a region of the plane bounded by its own splitting line and the splitting lines of its ancestors.
 
-Querying a KD-Tree by a rectangular region involves traversing the tree while only visiting those nodes where their region is intersected by the query region.
+Querying a KD-Tree by a rectangular region involves traversing the tree while only visiting those nodes whose region is intersected by the query region.
 While the preprocessing requirements of a KD-Tree are quite good, at $\BigOh{n}$ space and $\BigOh{n\log{n}}$ preprocessing time, the query time is $\BigOh{\sqrt{n}}$.
 
 A final note about KD-trees, this recursive construction can be generalized to higher dimensions in a straight-forward manner, by simply cycling through each of the $d$ axes in order.
@@ -135,7 +136,7 @@ The preprocessing requirements are unchanged asymptotically, since we still crea
 The query algorithm is also similar to the $\mathbb{R}^2$ case, but with a query time of $\BigOh{n^{1-1/d}}$.
 
 The next improvement in orthogonal range searching came in the form of a polylogarithmic method known as \emph{Range Trees}. 
-This method was discovered by Bentley\cite{Bentley79}, who was involved in the last two structures, but  were also simultaneously developed by independent researchers.
+Range trees were discovered by Bentley\cite{Bentley79}, who was involved in the last two structures, but were also simultaneously developed by other independent researchers.
 This method is constructed on binary search trees and can query any open or closed query box in $\BigOh{\log^{d-1}{n}}$ time with only $\BigOh{\log^{d-1}{n}}$ time and space pre-processing.
 We discuss this structure in more detail in Section~\ref{:prelim:range-trees}.
 
@@ -156,64 +157,87 @@ In this way, multi-dimensional orthogonal range searching can be used to perform
 
 \subsection*{Half-plane Range Searching}
 
-History
-
-Lower bounds;  
-Half-planar searches cannot be done in near linear space with polylogarithmic query time, meaning that we will have to decide which we want more, low space or low query time, when choosing a structure for a problem at hand.
+In general, when performing half-plane queries, we need to make a choice between using a structure which has low space or one with a fast (polylogarithmic) query time.
 We introduce a structure suitable for each side of this trade-off.
 
 If we want to save space, we can use a \emph{Ham Sandwich Cut Tree}\cite{Edelsbrunner86, Edelsbrunner87}.
-To produce a ham sandwich cut tree, we divide all of our points into four quadrants of equal size, which we accomplish with an algorithm by Megiddo\cite{Megiddo85} in $\BigOh{n}$ time.
-We continue by repeating this construction on each quadrant recursively, and constructing a tree.
-This tree contains each point as a leaf, and recurses on a constant fraction of the points at each step, so the result is a tree of size $\BigOh{n}$ constructed in $\BigOh{n\log{n}}$ time.
+To construct this tree, we divide all of our points into four quadrants of equal size, which we accomplish with an algorithm by Megiddo\cite{Megiddo85} in $\BigOh{n}$ time.
+We continue construction by repeating this process on each quadrant recursively, and building a tree out of the results of each step.
+The final tree has size $\BigOh{n}$ and is constructed in $\BigOh{n\log{n}}$ time.
 
-We can query this tree with the line representing the boundary of our half-plane.
+We can query this tree with the line representing the boundary of a query half-plane.
 The quadrants at any step are the result of two intersecting lines, and thus, our query line will intersect at most three of them.
-The non-intersected quadrants, of which there is at least one, are entire entirely inside the half-plane bordered by the query line, or entirely outside of it.
+The non-intersected quadrants, of which there is at least one, are entirely inside the query half-plane, or entirely outside of it.
 The query then recurses on the intersected quadrants.
 Total query time is $\BigOh{n^{\log_2(1 + \sqrt{5}) - 1}} \approx \BigOh{n^{0.695}}$.
 
-If we want to save query time, then we can use a \emph{Level Arrangement}.  
-This structure has a query time of only $\BigOh{\log{n}}$, but requires $\BigOh{n^2}$ storage.
-The level arrangement structure is constructed on the dual lines corresponding to each point.
-That is, given a set $S$ of $n$ points $p_1, p_2, \ldots, p_n$ where each $p_i = (a_i, b_i)$, we map each point to a corresponding line $l_i: y = a_i \cdot x + b_i$.
 
-When we consider all of the intersection points and edges formed by the set of dual lines, our arrangement has size $\BigOh{n^2}$.
-By checking the intersections of the lines, we can enclose the ``interesting'' part of the environment inside a bounding box.
-From here, we construct envelops.
+If we want to save query time, then we can use a \emph{Level Arrangement}\cite{GoswamiDN04}.  
+This structure has a query time of only $\BigOh{\log{n}}$ but requires $\BigOh{n^2}$ storage.
+The level arrangement structure is constructed in a dual space.
+Given a set $S$ of $n$ points $p_1, p_2, \ldots, p_n$ where each $p_i = (a_i, b_i)$, we map each point to a corresponding dual line $l_i: y = a_i \cdot x - b_i$.
 
-In this dual space, the query line which defines the boundary to a half-plane becomes mapped to a point, and the original point satisfying the half-plane correspond to the levels which are found above or below the point in the arrangement.
+Considering all of the intersection points formed by the set of dual lines crossing each other, and the edges between them, we can easily see the $\BigOh{n^2}$ size.
+Preprocessing continues by enclosing the environment in a bounding box which contains all of the intersections.
+By following the monotone chains of intersections from left to right, we can determine the ``level'' of each edge, that is, the number of edges below (or above) each edge.
+Total preprocessing time is $\BigOh{n^2}$.
 
-What is the remainder of the construction? How does the query proceed?
+In this dual space, the line which defines the boundary to our query half-plane becomes mapped to a point.
+The query proceeds by selecting the median level of the arrangement, and then performing a binary search over its edges to find the one above or below the query point.
+This process is repeated in a binary search sort of fashion on the subset of levels containing the query point until we have found the levels directly above and below the query point. 
+Depending on the half-plane, the levels lying to one side of the query point or the other correspond to the input points satisfying the query half-plane.
+As we have described it here, this query requires $\BigOh{\log^2{n}}$ time, but this can be reduced to $\BigOh{\log{n}}$.\cite{NandyDG03}
 
-Finally, when we consider a half-plane as a degenerate simplex, this type of query can also be answered by the structure we discuss in Section~\ref{:prelim:chan}.
+A different approach to solving half-plane range searches altogether is to consider a half-plane as a degenerate simplex, and then use any simplex range searching structure to answer a query.  
+Such structures are discussed below and in Section~\ref{:prelim:chan}.
+
+One final method for half-plane searches we would like to method is by Chazelle \emph{et al.}\cite{ChazelleGL85,Chazelle85} is worth mentioning as it does not obey the general trade-off between space and query time that we mentioned above.
+This method uses \emph{convex layers} and gives both $\BigOh{n}$ storage and $\BigOh{\log{n} + k}$ query time, where $k$ is the number of elements reported. 
+However, this method can only be used for reporting queries, and is not well suited to counting or multi-level queries.
+
+Convex layers of a pointset are easiest to explain by their construction, which is performed iteratively by calculating the convex hull, deleting it, and then taking the convex hull of what remains, until all points are deleted.
+Convex layers can be constructed in $\BigOh{n\log{n}}$ time, and require $\BigOh{n}$ space.
+In order to use convex layers for half-plane queries, we will translate the pointset such that the origin point of the plane occurs inside the innermost layer.
+
+A query line which passes through the pointset will intersect some or all of the layers, from $l_1$ at the outside to $l_m$, the innermost layer which is intersected.
+The query is performed in two main steps: identify $l_m$, and then report all of the points.
+
+Locating $l_m$ is done in a dual space transformation.
+Our pointset becomes an arrangement of lines, and our query line becomes a point.
+A consequence of the origin point being inside the innermost convex layer in the primal space is that the dual space will be comprised of corresponding levels, although in reverse order.
+We can then perform any planar point location method we like on the query point to determine the level containing it; Chazelle \emph{et al.} give several $\BigOh{\log{n}}$ choices.
+
+With the convex layer $l_m$ known, we can compute the intersections of the query line with $l_m$ in $\BigOh{\log{n}}$ time, and in so doing, identify at least one point which is inside our query half-plane.
+During processing, we augment every vertex with pointers to the edges which appear above and below them in neighbouring convex layers, accomplished by walking around two neighbouring layers at a time simultaneously.
+Depending on which side of the query line our half-plane extends, we can walk these pointers from $l_m$ across the remaining levels, whether that first takes us deeper into the layers, or directly out.
+At each level, we then traverse left and right around the level for as long as we remain in the query half-plane reporting our matching points.
 
 
 \subsection*{Simplex Range Searching}
 
-When we leave axis-parallel boxes behind, we move into arbitrary simplices and half-spaces, which can be thought of as degenerate simplices.
+In simplex range searching in the plane, there is no known data structure which can answer a query in polylogarithmic time using linear (or nearly linear) storage.\cite{Agarwal99}  
 
-In $\mathbb{R}^2$, we get half-planes when we look for everything to one side of a line, or, for closed regions, a triangle.
+Considering structures with linear or near linear storage, the first sublinear query time algorithm in this area was by Willard in 1982\cite{Willard82}.
+His paper introduced a method using \emph{partition trees}.
+The general idea is to partition space into several regions each containing a roughly equal number of input points.
+Each region is then recursively built in the same way.
+The goal is to choose our regions in such a way that the largest number of regions which may be intersected by any line is minimized.  
+This property is known as the \emph{crossing number}.
+Willard's approach requires a query time of $\BigOh{n^{0.774}}$.
+Moreover, the partition tree approach in general expresses a ``nice'' recursive structure which lends itself to multi-level query structures.
 
-There is no known data structure which can answer a simplex range search in polylogarithmic time using near linear storage, and the lower bounds which have been discovered for this problem leave us looking for tradeoffs.\cite{Agarwal99}
-
-If we would like to save space and spend more time on queries, then we will probably use a partition tree approach, as introduced by Willard~\cite{Willard82}. 
-His method is specifically for points in the plane and expresses the ``nice'' recursive structure idea we mentioned above by exploiting the Ham Sandwich cut theorem~\cite{XXX}.
-His result requires query time of $\BigOh{n^{\log_3{4}}}$.
-This was improved by \cite{EW} to approximately $\BigOh{n^{0.695}}$.
-
-As the partition tree approach is most concerned with how many partitions are intersected by a query, as opposed to those partitions which are entirely to one side of a query, understanding the \emph{crossing number} of a set of partitions is key to reducing the query time.
-Welzl\cite{W} was able to develop a partitioning method with a crossing number of $\BigOh{n^{1-1/d}\log{n}}$, and later, Chazelle and Welzl\cite{CW} got this number down to just $\BigOh{n^{1-1/d}}$.
-In the plane, this gives us roughly $\BigOh{\sqrt{n}}$ query time for $d \leq 2$, but does not extend to $d \geq 3$.
-
-If we would like to have a logarithmic query time.
+Following this first approach, a series of improvements were made to the partition tree method, mostly concentrating on developing a lower crossing number.
+For many years, the best known approach was by Matousek\cite{Matousek92} which requires $\BigOh{n\log{n}}$ preprocessing time and $\BigOh{\sqrt{n}\log^{\BigOh{1}}{n}}$ query time.
+Recently, this has been improved to a query time of just $\BigOh{\sqrt{n}}$ by Chan\cite{chan2012} with the same preprocessing time.
+We use this latter method throughout Chapters \ref{:rectangles} and \ref{:slabs}, and discuss it in more detail in Section~\ref{:prelim:chan}.
 
 
 \subsection*{Intersection Searching} 
 
 Intersection searching is similar to range searching, except that we consider different types of geometric input objects aside from points.
-Given a query range, we are looking for any objects which have even a single point of intersection in common with the query itself.
+Given a query region, we are looking for any objects which have even a single point of intersection in common with the query itself; that is, the object need not be entirely enclosed with the query region.
 In this way, we can think of range searching as a specialization of intersection searching.
+There are many variations of intersection searching, of which we introduce a few.
 
 In \emph{Segment Intersection Searching}, the query range is a line segment. 
 If both the input objects and the query range are segments, 
@@ -231,6 +255,8 @@ For the hierarchical structures above, ``identifying'' points satisfying a query
 What we do with them at that point is somewhat flexible.
 For example, we can simply count the points we have identified with only a constant factor of extra time and space by having the partitions store their own sizes.
 We could instead report the points by traversing each terminal of the partition, which will cost us an extra linear factor with respect to to the number of reported items.
+
+We conclude this section by comparing and contrasting our own problem with the ones we have just introduced.
 
 Our problem is notably different from standard range searching problems because we are not just looking for items which are entirely contained inside of a query region.
 This immediately rules out a simple application of orthogonal range searching like we saw with the rectangles-in-rectangles problems.
