@@ -1,6 +1,6 @@
 #!/bin/sh
-latex hesis.tex
-latex hesis.tex
+latex thesis.tex
+latex thesis.tex
 bibtex thesis
 latex thesis.tex
 latex thesis.tex

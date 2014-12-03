@@ -104,7 +104,7 @@ We refer the reader to an excellent survey on range searching by Agarwal and Eri
 In its general form, an orthogonal range searching problem starts with a set $S$ of points in $\mathbb{R}^d$, where $d$ is a small, fixed constant.
 A query is a $d$-dimensional, axis-parallel box, and our goal is to identify the subset of our input points which are contained within this box.
 
-\emph{Quadtrees}, first described by Finkel and Bentley\cite{Finkel74} (see also \cite{debergch14}), are one of the very first structures for performing range searches.
+\emph{Quadtrees}, first described by Finkel and Bentley\cite{Finkel74} (see also \cite[Chapter~14]{deberg}), are one of the very first structures for performing range searches.
 When we are considering points in the plane, a quadtree works by dividing the space containing the points into squares, and then recursively splitting any region which contains more than one point into four smaller, but equally-sized squares.
 
 Because this recursion is based on splitting space rather than the points within the space, the recursion depth, and thus the depth of the quadtree, is not related to the number of points. 
