@@ -341,7 +341,10 @@ A_c
 = \sum_{k=i+1}^{j-1} F(R_k, h_\delta) - F(R_k, h_\beta)
 \]
 
-Performing this sum naively takes $\BigOh{n}$ time as there may be a linear number of regions spanned by $Q$.  However, using $T$, we can answer this query for any values of $i$ and $j$ by checking at most $\BigOh{\log{n}}$ subtrees. At each subtree, we require $\BigOh{\log{n}}$ time to find the correct formula, for a total query time of $\BigOh{\log^2{n}}$.  However, since each subtree queries for the same value of $h$, we can reduce this query time to only $\BigOh{\log{n}}$ by using fractional cascading.\cite{cg-fc-86, cg-fc2-86}
+\noindent Performing this sum naively takes $\BigOh{n}$ time as there may be a linear number of regions spanned by $Q$.
+However, using $T$, we can answer this query for any values of $i$ and $j$ by checking at most $\BigOh{\log{n}}$ subtrees. 
+At each subtree, we require $\BigOh{\log{n}}$ time to find the correct formula, for a total query time of $\BigOh{\log^2{n}}$.
+However, since each subtree queries for the same value of $h$, we can reduce this query time to only $\BigOh{\log{n}}$ by using fractional cascading.\cite{cg-fc-86, cg-fc2-86}
 
 Considering $A_i$ now, if $\alpha = x_i$, then $A_i = F(R_i, h_\delta) - F(R_i, h_\beta)$. 
 In general, however, $x_i < \alpha < x_{i+1}$, and we cannot use our precalculated area formulas.
@@ -418,7 +421,7 @@ This completes the query. In total, we require the following time to calculate t
 \BigOh{\log{n}} + \BigOh{\sqrt{n}\log{n}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}\log{n}}
 \]
 
-We can extend this method to query on a closed rectangle by combining the results of four separate open box queries.
+\noindent We can extend this method to query on a closed rectangle by combining the results of four separate open box queries.
 Let $Q'$ be a closed rectangle defined by its lower-left point $(\alpha, \beta)$ and its upper-right point $(\gamma, \delta)$.
 We can find $\area{Q'}$ in the following way:
 
@@ -461,7 +464,7 @@ Each such region contains $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions, so quer
 \frac{\sqrt{n}}{\log{n}} \cdot \BigOh{\log{n}} = \BigOh{\sqrt{n}}
 \]
 
-At most one A-level region is intersected by $\gamma$, and if that is the case, we proceed to its respective B-level regions.
+\noindent At most one A-level region is intersected by $\gamma$, and if that is the case, we proceed to its respective B-level regions.
 Of these B-level regions, at most $\BigOh{\log{n}}$ are entirely to the left of $\gamma$.
 Each has size $\BigOh{\sqrt{n}}$, so querying the multi-region area formulas stored with them requires $\BigOh{\log{n}}$ time each. Thus, the total query time for B-level regions is $\BigOh{\log^2{n}}$.
 
@@ -476,7 +479,7 @@ Total time required for this query is as follows.
 \BigOh{\log{n}} + \BigOh{\sqrt{n}} + \BigOh{\log^2{n}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}}
 \]
 
-Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  
+\noindent Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  
 Total space required is $\BigOh{n}$ as each trapezoidal region is considered in only one A-level region and in only one B-level region. 
 We summarize these results with the following theorem.
 
