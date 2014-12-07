@@ -328,16 +328,16 @@ Let $V(Q)$ be the vertical slab defined by $Q$; that is, the vertical area betwe
 We can calculate the area of $Q \cap P$ by considering how $Q$ interacts with the following areas:
 
 \begin{enumerate}
- \item The leftmost region, where $R_i \not \subset V(Q)$. Let $A_i = R_i \cap Q$.
- \item The center regions $R_{i+1}, R_{i+2}, \ldots, R_{j-1}$, where  $R_k \subset V(Q)$ for $i + 1 \leq k \leq j -1$. Let $A_c = \left ( \bigcup_{k=i+1}^{j-1}{R_k} \right ) \cap P $.
- \item The rightmost region, where $R_j \not \subset V(Q)$. Let $A_j = R_j \cap Q$. 
+ \item The leftmost region, where $R_i \not \subset V(Q)$. Let $A_i = \area{Q \cap R_i}$.
+ \item The center regions $R_{i+1}, R_{i+2}, \ldots, R_{j-1}$, where  $R_k \subset V(Q)$ for $i + 1 \leq k \leq j -1$. Let $A_c = \area{Q \cap \left ( \bigcup_{k=i+1}^{j-1}{R_k} \right )}$.
+ \item The rightmost region, where $R_j \not \subset V(Q)$. Let $A_j = \area{Q \cap R_j}$.
 \end{enumerate}
 
 See Figure \ref{fig:monotonep:extra} for an example. We begin with the center regions. All of these regions are entirely within $V(Q)$, and so we can use their precalculated area formulas directly. That is:
 
 \[
 A_c
-= \left ( \bigcup_{k=i+1}^{j-1}{R_k} \right ) \cap P 
+= \area{Q \cap \left ( \bigcup_{k=i+1}^{j-1}{R_k} \right )}
 = \sum_{k=i+1}^{j-1} F(R_k, h_\delta) - F(R_k, h_\beta)
 \]
 
@@ -348,11 +348,11 @@ However, since each subtree queries for the same value of $h$, we can reduce thi
 
 Considering $A_i$ now, if $\alpha = x_i$, then $A_i = F(R_i, h_\delta) - F(R_i, h_\beta)$. 
 In general, however, $x_i < \alpha < x_{i+1}$, and we cannot use our precalculated area formulas.
-Fortunately, the area $R_i \cap P$ is a polygon of $\BigOh{1}$ complexity, specifically a trapezoid, so its area can be calculated directly in constant time. 
+Fortunately, $Q \cap R_i$ is a polygon of $\BigOh{1}$ complexity, specifically a trapezoid, so its area can be calculated directly in constant time. 
 Recall from the construction of the list of regions, $\mathcal{R}$, that if $\iline{\alpha}$ passes between $x_i$ and $x_{i+1}$, then it passes through region $R_i$, which stores the edges $e_i$ and $e_i'$ defining its top and bottom. 
 We can calculate the intersection points with $\iline{\alpha}$ as $s = e_i \cap \iline{\alpha}$ and $s' = e_i' \cap \iline{\alpha}$.
 Recall that $a_{i+1} = \iline{x_{i+1}} \cap e_{i+1}$, and $a_{i+1}' = \iline{x_{i+1}} \cap e_{i+1}'$.
-Thus, the vertices of $R_i \cap P$ are:
+Thus, the vertices of $Q \cap R_i$ are:
 \begin{itemize}
  \item Its top-left: the lower of $(\alpha, s)$ and $(\alpha, \delta)$,
 
@@ -365,7 +365,7 @@ Thus, the vertices of $R_i \cap P$ are:
 \end{itemize}
 
 Likewise, if $\gamma = x_j$, then $A_j = 0$. But, in general, $x_j < \gamma < x_{j+1}$, and, again, we cannot use our precalculated area formulas.
-The area $R_j \cap P$ is also trapezoid, however, so its area can also be calculated directly in a similar way to $A_i$.
+$Q \cap R_j$ is also a trapezoid, however, so its area can be calculated directly in a similar way to $A_i$.
 
 With all three area calculations completed, a simple sum completes our query. We summarize our results with the following theorem and corollary.
 
