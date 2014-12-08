@@ -25,7 +25,7 @@ A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$
 \begin{figure}[t]
 \begin{center}
   \includegraphics[width=0.80\textwidth]{figures/fig_mono_query}
-  \caption[A monotone polygon $P$ with query $Q$.]{A monotone polygon $P$ with query $Q$. The area of $P$ enclosed by $Q$, $P \cap Q$, is highlighted.}
+  \caption[A monotone polygon $P$ with query $Q$.]{A monotone polygon $P$ with query $Q$. The area of $P$ enclosed by $Q$, $Q \cap P$, is highlighted.}
   \label{fig:monotonep:query-example}
 \end{center}
 \end{figure}
@@ -40,7 +40,7 @@ We say that $P$ is sufficiently enclosed by $Q$ to satisfy the partial enclosure
 We will first describe an algorithm which solves a simpler problem, and then extend that solution into one for our main problem.
 
 \begin{problem}
-Given a monotone polygon $P$, and a query in the form of a horizontal slab $S$, what is the total area of $P$ enclosed in $S$?  i.e., what is $\area{S \cap P}$?
+Given a monotone polygon $P$, and a query in the form of a horizontal slab $S$, what is the total area of $P$ enclosed by $S$?  i.e., what is $\area{S \cap P}$?
 \end{problem}
 
 Our overall approach for this problem is to define a function (actually, a collection of functions) which returns the area below a given horizontal query line. 
@@ -62,7 +62,7 @@ For every line $\iline{x_i}$, let $a_i = \iline{x_i} \cap P_U$ and $a_i' = \ilin
 We will calculate all of these intersections as we walk from left to right over both $P_U$ and $P_L$ simultaneously. 
 We also keep track of $e_i$ and $e_i'$, the edges of $P_U$ and $P_L$, respectively, which are intersected by $\iline{x_i}$, and upon which reside the points $a_i$ and $a_i'$. 
 Where $\iline{x_i}$ intersects a vertex of $P_U$ or $P_L$, we store the edge to the right of that vertex as the corresponding value of $e_i$ or $e_i'$.
-Finally, this walk allows us to generate a sequence of regions $R_1, R_2, \dots, R_{n-1}$ which have the following, equivalent definitions.
+This walk allows us to generate a sequence of regions $R_1, R_2, \dots, R_{n-1}$ which have the following, equivalent definitions.
 \begin{itemize}
  \item For each $1 \leq i \leq n - 1$, let $X_i$ be the vertical slab between $\iline{x_i}$ and $\iline{x_{i+1}}$, then $R_i = X_i \cap P$.
 
@@ -99,7 +99,7 @@ For a general region $R$, these 4 critical heights are:
 \item $h_3$, where $R$ ends.
 \end{itemize}
 
-These 4 critical heights give rise to a piece-wise function representing the area which is defined as follows.
+These 4 critical heights give rise to a piecewise function representing the area, defined as follows.
 \[
 F(R, h) = \begin{cases}
 0                  & \text{if }          h < h_0 \\
@@ -124,14 +124,14 @@ The angle $\theta'$ between $e_i'$ and the vertical can be calculated as
 Let $t'$ be this ratio, then at $h'$, the base of the triangle has width $h' \cdot t'$. The area of the triangle is therefore $\frac{1}{2} (h')^2 t'$ and we set the constant $A = \frac{1}{2} t'$.
 
 \item When $h_1 \leq h < h_2$, the area of $R$ includes all of the area between $h_0$ and $h_1$, which we store as the constant $C$.
-The remaining area of $R$ up to $h'$ grows as a rectangle.
+The remaining area of $R$ up to $h$ grows as a rectangle.
 Let $h' = h - h_1$, then the rectangular area is $(x_{i+1} - x_i)\cdot h'$, and we define the constant $B = (x_{i+1} - x_i)$.
 Thus, the total area of $R_i$ up to $h'$ is $Bh' + C$.
 
 \item When $h_2 \leq h < h_3$, the area of $R$ includes all of the area between $h_0$ and $h_2$, which we store as the constant $C_a'$.
 The remaining area of $R$ up to $h$ grows as the base trapezoid of a triangle.
 Let $h' = h_3 - h$ (note that this definition is somewhat reversed from the other cases).
-We can calculate this area by taking the total area of the triangle, and subtracting the area of the triangle from $h_3$ down to $h'$.  
+We can calculate this area by taking the total area of the triangle, and subtracting the area of the triangle from $h_3$ down to $h$.  
 
 The overall triangle between $h_2$ and $h_3$ has area 
 \[ 
@@ -143,7 +143,7 @@ The angle $\theta$ between $e_i$ and the vertical can be calculated as
 \tan(\theta) = \frac{x_{i+1} - x_i}{h_3 - h_2}
 \]
 
-Let $t$ be this ratio, then the smaller triangle from $h_3$ down to $h'$ can be calculated as in case 2, giving $a' = \frac{1}{2}(h')^2 t$. 
+Let $t$ be this ratio, then the smaller triangle from $h_3$ down to $h$ can be calculated as in case 2, giving $a' = \frac{1}{2}(h')^2 t$. 
 The overall area from $h_2$ up to $h$ is then
 \[ 
 \begin{split}
@@ -173,10 +173,12 @@ Let $\mathcal{Y}$ be the list of all such tuples across all regions, sorted by $
 
 If we suppose for a moment that each $y$-value is distinct, then for each one there is exactly one region $R$ which is transitioning from one phase of growth to another.
 That is, looking at the piecewise function $F(R, h)$ which determines the area of $R$ below a query line, a new piece of that function is taking over.
-To create the multi-region formula for a new critical height, we copy the formula for the predecessor height (the lowest $y$-value starts with 0).
+To create the multi-region formula for a new critical height, we copy the formula for the predecessor height (the lowest $y$-value starts with a formula set to 0).
 To update the multi-region formula, we subtract the coefficients of $R$ for its previous phase of growth so that they no longer influence the formula, and then add the coefficients for the new phase.
 
-In practice, this algorithm does not require the values of $y$ to be distinct. Instead, several values of $y$ will be collapsed into a single critical height in the list of multi-region formulas. Algorithm \ref{alg:monotonep:mf} gives the details of this process more formally.
+Since neighbouring regions share vertices, the $y$-values will not be distinct.
+Instead, several $y$-values will be collapsed into a single critical height in the list of multi-region formulas, with all appropriate constants from contributing regions added or subtracted as necessary.
+Algorithm \ref{alg:monotonep:mf} gives the details of this process more formally.
 
 \begin{algorithm}
 \LinesNumbered
@@ -196,7 +198,7 @@ $\mathcal{Y} \gets \mathcal{Y} \cup \{ (y,R) \;|\; y \in \{R.h_0, R.h_1, R.h_2, 
 $y' \gets $ minimum $y$-value in $\mathcal{Y}$\;
 $F(P, y') \gets $ coefficients $A,B,C$ set to 0\;
 \BlankLine
-\ForEach{$y, R$ in $\mathcal{Y}$}
+\ForEach{$(y, R)$ in $\mathcal{Y}$}
 {
 $F(P, y) = F(P, y')$\;
 $i \gets \{0,1,2,3\}$ such that $y = h_i \in \{R.h_0, R.h_1, R.h_2, R.h_3\}$\;
@@ -225,12 +227,12 @@ The output of this algorithm is the list $H$ of multi-region formulas. Since $\m
 
 We are now ready to query horizontal slabs against $P$. 
 Let $F(P,h)$ be the multi-region area function for $P$, which is essentially a very big piecewise function given by Algorithm \ref{alg:monotonep:mf} in the form of a sorted list $H$.
-Given two horizontal lines defining our query slab, located at $\beta$ and $\delta$, $\beta \leq \delta$, our query requires only a few steps.
+Given two horizontal lines $\iline{\beta}$ and $\iline{\delta}$ defining our query slab, which have $y$-components $\beta$ and $\delta$, respectively with $\beta \leq \delta$, our query requires only a few steps.
 
 \begin{enumerate}
 \item Our query parameter $\beta$ will not generally correspond to a critical height in $H$.
 Perform a binary search on $H$ to find the formula stored with the \emph{predecessor} of $\beta$.
-Denote this formula as $F_\beta$. 
+Denote this formula as $F_\beta$.
 Evaluating $F_\beta(P, \beta)$ tells us the area of $P$ below $\beta$.
 
 \item For $\delta$, we perform another binary search on $H$ to find $F_\delta$ such that $F_\delta(P, \delta)$ tells us the area of $P$ below $\delta$.
@@ -262,7 +264,7 @@ With $\BigOh{n \log{n}}$ preprocessing time and $\BigOh{n}$ space, we can determ
 \section{Extending to Rectangular Queries}
 \label{:monotonep:rect}
 
-Our actual query, as introduced in Figure \ref{fig:monotonep:query-example}, is a rectangular area. Our solution to this type of query is extended from the methods we used to solve the horizontal slab queries.
+Our actual query, as introduced in Figure \ref{fig:monotonep:query-example}, is a rectangular area. Our solution to this type of query is extended from the methods we used to solve a horizontal slab query.
 
 \subsection{Preprocessing}
 \label{:monotonep:rect:pre}
@@ -305,7 +307,11 @@ $H(T) \gets $ Merge $H(T_l)$ and $H(T_r)$ using Algorithm~\ref{alg:monotonep:mf}
 \KwRet{$T, H(T)$}
 \end{algorithm}
 
-In the last step of the algorithm we create a list of formulas over all regions, which implies that we can answer horizontal slab queries from the root of $T$. Recursing on half of the regions at each step gives us a tree which will be balanced with depth $\BigOh{\log{n}}$. At each level of $T$, every critical height for every region is considered, resulting in $\BigOh{n}$ area formulas in the worst case where every critical height is distinct. As mentioned, the merging step at each node is completed in linear time with respect to the number of regions processed. Therefore, the total time and storage required to build $T$ is $\BigOh{n\log{n}}$.  
+In the last step of the algorithm we create a list of formulas over all regions, which implies that we can answer horizontal slab queries from the root of $T$. 
+Recursing on half of the regions at each step gives us a tree which will be balanced with depth $\BigOh{\log{n}}$. 
+At each level of $T$, every critical height for every region is considered, resulting in $\BigOh{n}$ area formulas.
+As mentioned, the merging step at each node is completed in linear time with respect to the number of regions processed. 
+Therefore, the total time and storage required to build $T$ is $\BigOh{n\log{n}}$.  
 
 
 % -----------------------------------------------------------------------------
@@ -320,25 +326,24 @@ In the last step of the algorithm we create a list of formulas over all regions,
 \end{center}
 \end{figure}
 
-Our query rectangle $Q$ is given by the lower-left and upper-right coordinates $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. We define $h_\beta$ and $h_\delta$ as the horizontal lines through $\beta$ and $\delta$, respectively, which we can use as inputs to our region area formulas.
+Our query rectangle $Q$ is given by the lower-left and upper-right coordinates $(\alpha, \beta)$ and $(\gamma, \delta)$, respectively. We define $\iline{\beta}$ and $\iline{\delta}$ as the horizontal lines through $\beta$ and $\delta$, and $\iline{\alpha}$ and $\iline{\gamma}$ as vertical lines through $\alpha$ and $\gamma$, respectively.
 
-Let $\iline{\alpha}$ and $\iline{\gamma}$ be vertical lines through $\alpha$ and $\gamma$, respectively.
-Using a binary search on the $x$-values of $P$, we can identify the regions which $\iline{\alpha}$ and $\iline{\gamma}$ pass through.
+Using a binary search on the $x$-values of $P$, we can identify the regions which $\iline{\alpha}$ and $\iline{\gamma}$ pass through; let these regions be $R_i$ and $R_j$, respectively.
 Let $V(Q)$ be the vertical slab defined by $Q$; that is, the vertical area between $\iline{\alpha}$ and $\iline{\gamma}$.
 We can calculate the area of $Q \cap P$ by considering how $Q$ interacts with the following areas:
 
 \begin{enumerate}
- \item The leftmost region, where $R_i \not \subset V(Q)$. Let $A_i = \area{Q \cap R_i}$.
+ \item The leftmost region $R_i$, where $R_i \not \subset V(Q)$. Let $A_i = \area{Q \cap R_i}$.
  \item The center regions $R_{i+1}, R_{i+2}, \ldots, R_{j-1}$, where  $R_k \subset V(Q)$ for $i + 1 \leq k \leq j -1$. Let $A_c = \area{Q \cap \left ( \bigcup_{k=i+1}^{j-1}{R_k} \right )}$.
- \item The rightmost region, where $R_j \not \subset V(Q)$. Let $A_j = \area{Q \cap R_j}$.
+ \item The rightmost region $R_j$, where $R_j \not \subset V(Q)$. Let $A_j = \area{Q \cap R_j}$.
 \end{enumerate}
 
-See Figure \ref{fig:monotonep:extra} for an example. We begin with the center regions. All of these regions are entirely within $V(Q)$, and so we can use their precalculated area formulas directly. That is:
+See Figure \ref{fig:monotonep:extra} for an example. To calculate $A_i$, $A_c$, and $A_j$, we begin with the center regions. All of these regions are entirely within $V(Q)$, and so we can use their precalculated area formulas directly. That is:
 
 \[
 A_c
 = \area{Q \cap \left ( \bigcup_{k=i+1}^{j-1}{R_k} \right )}
-= \sum_{k=i+1}^{j-1} F(R_k, h_\delta) - F(R_k, h_\beta)
+= \sum_{k=i+1}^{j-1} F(R_k, \delta) - F(R_k, \beta)
 \]
 
 \noindent Performing this sum naively takes $\BigOh{n}$ time as there may be a linear number of regions spanned by $Q$.
@@ -346,7 +351,7 @@ However, using $T$, we can answer this query for any values of $i$ and $j$ by ch
 At each subtree, we require $\BigOh{\log{n}}$ time to find the correct formula, for a total query time of $\BigOh{\log^2{n}}$.
 However, since each subtree queries for the same value of $h$, we can reduce this query time to only $\BigOh{\log{n}}$ by using fractional cascading.\cite{cg-fc-86, cg-fc2-86}
 
-Considering $A_i$ now, if $\alpha = x_i$, then $A_i = F(R_i, h_\delta) - F(R_i, h_\beta)$. 
+Considering $A_i$ now, if $\alpha = x_i$, then $A_i = F(R_i, \delta) - F(R_i, \beta)$. 
 In general, however, $x_i < \alpha < x_{i+1}$, and we cannot use our precalculated area formulas.
 Fortunately, $Q \cap R_i$ is a polygon of $\BigOh{1}$ complexity, specifically a trapezoid, so its area can be calculated directly in constant time. 
 Recall from the construction of the list of regions, $\mathcal{R}$, that if $\iline{\alpha}$ passes between $x_i$ and $x_{i+1}$, then it passes through region $R_i$, which stores the edges $e_i$ and $e_i'$ defining its top and bottom. 
@@ -358,9 +363,9 @@ Thus, the vertices of $Q \cap R_i$ are:
 
  \item Its bottom-left: the higher of $(\alpha, s')$ and $(\alpha, \beta)$,
 
- \item Its top-right: the lower of $a_{i+1}$ and $h_\delta \cap \iline{x_{i+1}}$, and
+ \item Its top-right: the lower of $a_{i+1}$ and $\iline{\delta} \cap \iline{x_{i+1}}$, and
 
- \item Its bottom-right: the higher of $a_{i+1}'$ and $h_\beta \cap \iline{x_{i+1}}$.
+ \item Its bottom-right: the higher of $a_{i+1}'$ and $\iline{\beta} \cap \iline{x_{i+1}}$.
 
 \end{itemize}
 
@@ -407,11 +412,11 @@ Figure~\ref{fig:mono2:query} shows an example query and a decomposition of $P$ i
 \end{figure}
 
 Performing our query requires only a few steps which consider successively finer regions of our decomposition of $P$.
-With a binary search, we can identify the multi-regions $S_1, S_2, \ldots, S_{k-1}$, where $1 \leq k < \sqrt{n}$, which are \emph{entirely} to the left of $\gamma$, and at most one multi-region, $S_{k}$, which is intersected by $\gamma$.  
+With a binary search, we can identify the multi-regions $S_1, S_2, \ldots, S_{k-1}$, where $1 \leq k < \sqrt{n}$, which are \emph{entirely} to the left of $\gamma$, and the at most one multi-region $S_{k}$ which is intersected by $\gamma$.  
 For each $S_i$, $1 \leq i \leq k-1$, we evaluate the associated multi-region area formula with respect to $\delta$. 
 This requires $\BigOh{\log{|S_i|}} = \BigOh{\log{n}}$ time per multi-region for a total of $\BigOh{\sqrt{n}\log{n}}$ time.
 
-We then consider $S_k$, which is intersected by $\gamma$.  
+We then consider $S_k$, which is intersected by $\gamma$.
 $S_k$ is comprised of $\BigOh{\sqrt{n}}$ trapezoidal regions, some of which are entirely left of $\gamma$, and at most one of which is intersected by $\gamma$. 
 For all of those regions entirely left of $\gamma$, we evaluate the regional area formulas associated with them with respect to $\delta$. 
 The intersection of the final, partial trapezoidal region which is intersected by $\gamma$ has only $\BigOh{1}$ complexity, so we can evaluate its area directly.
@@ -441,7 +446,7 @@ We can find $\area{Q'}$ in the following way:
 \subsection{Improving Query Time}
 \label{:mono2:bitfaster}
 
-We can reduce the query time from the above method to only $\BigOh{\sqrt{n}}$ by grouping the regions into three different sized groups instead of just two.
+We can reduce our query time to only $\BigOh{\sqrt{n}}$ by grouping the regions into three different sized groups instead of just two.
 
 As before, we decompose $P$ into $\BigOh{n}$ trapezoidal regions and create their area formulas.
 Next, from left to right, we group the regions into $\frac{\sqrt{n}}{\log{n}}$ multi-regions each containing $\BigOh{\sqrt{n}\log{n}}$ trapezoidal regions.
@@ -479,7 +484,7 @@ Total time required for this query is as follows.
 \BigOh{\log{n}} + \BigOh{\sqrt{n}} + \BigOh{\log^2{n}} + \BigOh{\sqrt{n}} + \BigOh{1} = \BigOh{\sqrt{n}}
 \]
 
-\noindent Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building region and multi-region area formulas.  
+\noindent Total preprocessing time is $\BigOh{n \log{n}}$ time for sorting and building the region and multi-region area formulas.  
 Total space required is $\BigOh{n}$ as each trapezoidal region is considered in only one A-level region and in only one B-level region. 
 We summarize these results with the following theorem.
 
@@ -495,11 +500,12 @@ In $\BigOh{n \log{n}}$ time and $\BigOh{n}$ space, we can create a data structur
 \subsection{Remarks on Simple Polygons}
 \label{:monotonep:simplep}
 
-We can apply our method for horizontal slab queries ``as is'' to simple polygons since nothing about the way that we decompose $P$, build the multi-region area formulas, or query them, depends on the monotone property.  Put another way, we do not require any special handling for regions which appear above or below other regions.
+We can apply our method for horizontal slab queries from Section~\ref{:monotonep:approach} ``as is'' to simple polygons since nothing about the way that we decompose $P$, build the multi-region area formulas, or query them, depends on the monotone property.
+Put another way, we do not require any special handling for regions which appear above or below other regions.
 
 To answer slab queries on simple polygons, we decompose $P$ by extending rays from each vertex into the interior of $P$ until they strike the next boundary.  The regions will have the same 4-sided shape as in the monotone polygon case, and we can create an area formula for each one over the, at most, four critical heights of $h$.
 
-Each region still maintains its own critical heights for $h$, and we use Algorithm \ref{alg:monotonep:mf} without modification, first sorting all critical points together, then maintaining a set of coefficients which we adjust by region as we sweep from bottom to top.
+Each region still maintains its own critical heights for $h$, and we use Algorithm \ref{alg:monotonep:mf} without modification, first sorting all critical heights together, then maintaining a set of coefficients which we adjust by region as we sweep from bottom to top.
 
 Finally, querying the resulting list of multi-region formulas, $H$, is done using the same binary search method as in the monotone case. This result is summarized in the following corollary.
 
