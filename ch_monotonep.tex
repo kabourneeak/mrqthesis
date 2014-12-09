@@ -147,13 +147,13 @@ Let $t$ be this ratio, then the smaller triangle from $h_3$ down to $h$ can be c
 The overall area from $h_2$ up to $h$ is then
 \[ 
 \begin{split}
-a' - a &= \frac{1}{2}(h')^2 t - \frac{1}{2} \cdot (h_2 - h_3) \cdot (x_{i+1} - x_i) \\
+a - a' &= \frac{1}{2} \cdot (h_2 - h_3) \cdot (x_{i+1} - x_i) - \frac{1}{2}(h')^2 t \\
 %
 \end{split}
 \]
 
-This expression is of the form $A'(h')^2 + C_b'$.
-Thus we set the constants $A' = \frac{1}{2}t$, $C_b' = -\frac{1}{2} \cdot (h_2 - h_3) \cdot (x_{i+1} - x_i)$, and $C' = C_a' + C_b'$ to complete the formula for this part of $F(R, h)$.
+This expression is of the form $C_b' + A'(h')^2$.
+Thus we set the constants $A' = -\frac{1}{2}t$, $C_b' = \frac{1}{2} \cdot (h_2 - h_3) \cdot (x_{i+1} - x_i)$, and $C' = C_a' + C_b'$ to complete the formula for this part of $F(R, h)$.
 
 \item When $h_3 \leq h$, the total area of $R$ should be reported, which we store in $C''$.
 
