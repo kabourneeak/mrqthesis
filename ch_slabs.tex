@@ -1,8 +1,8 @@
 \chapter{Partial Enclosure Range Searching with Arbitrarily-Oriented Slabs}
 \label{:slabs}
 
-In this chapter, we show how we can answer partial enclosure range searches over horizontal line segments with queries in the form of an arbitrarily-oriented slab.
-In Section~\ref{:slabs:two}, we extend our solution to a query region which is the intersection of two slabs; this type of query is a generalization of querying with an arbitrarily-oriented rectangle.
+In this chapter, we show how we can answer partial enclosure range searches over horizontal line segments where queries are in the form of an arbitrarily-oriented slab.
+In Section~\ref{:slabs:two}, we extend our solution to query regions which are the intersection of two slabs; this type of query is a generalization of querying with an arbitrarily-oriented rectangle.
 
 %------------------------------------------------------------------------------
 \section{Querying with One Slab}
@@ -43,23 +43,23 @@ Identifying segments which satisfy the partial enclosure property requires three
 \begin{enumerate}
  \item Restrict segments to those which are ``not too long'' to fit sufficiently inside $Q$.
 
- \item Classify all segments depending on the location of their left endpoints. We are interested in those segments whose left endpoints are left of $L_1$ and those which are between $L_1$ and $L_2$.
+ \item Classify all segments by whether their left endpoints are left or right of $L_1$.
 
- \item For each class of interesting segments, test an appropriate partial enclosure expression.
+ \item For each class of segments, test an appropriate partial enclosure expression.
 
 \end{enumerate}
 
 To answer these queries, we will use a multi-level canonical sets data structure, as described in Section~\ref{:prelim:chan}. 
-We describe the different steps of the query in more detail next, while Section~\ref{:slabs:one:analysis} describes the construction and analysis of the data structure.
+We describe the different steps of the query in more detail next, while Section~\ref{:slabs:one:analysis} describes the construction and analysis of the overall data structure.
 
 
 %------------------------------------------------------------------------------
 \subsubsection{Restrict Length}
 \label{:slabs:one:details:restrict}
 
-The first step of the query is to perform a length test, as it simplifies some later queries.
-We want to identify all segments which are not so long that they could never be sufficiently enclosed by $Q$, regardless of their position.
-With the query parameter $w$ given, we know that only segments with length $l \leq \frac{w}{\rho}$ can ever be selected.
+The first step of the query is to perform a length test, as it simplifies future steps.
+We want to identify all segments which are not so long that they could never be sufficiently enclosed by $Q$.
+With the query parameter $w$ given, only segments with length $l \leq \frac{w}{\rho}$ can satisfy the partial enclosure property.
 Reworking the equation to $w \geq \rho l$ provides a 1-dimensional orthogonal range to query.
 Let $S_1 = \{ s \in S \st \rho l \leq w \}$.
 
@@ -70,7 +70,7 @@ Let $S_1 = \{ s \in S \st \rho l \leq w \}$.
 
 There are three different regions where we may find the left endpoints of our line segments: (1) left of $L_1$, (2) between $L_1$ and $L_2$, and (3) right of $L_2$.
 However, only those segments belonging to cases (1) and (2) are interesting to us, since any segment in case (3) cannot intersect $Q$ at all. 
-We will see that partitioning segments as left or right of $L_1$ is sufficient, as we can discriminate between cases (2) and (3) when testing partial enclosure expressions.
+We will see that partitioning segments as left or right of $L_1$ is sufficient, as we can discriminate between cases (2) and (3) when testing partial enclosure expressions in the next step.
 
 Identifying segments whose left endpoints appear to one side of $L_1$ can be accomplished using a half-plane query directly on the positions of the left endpoints and the definition of $L_1$ itself.
 Let $S_L = \{ s \in S_1 \st p \text{ is left of } L_1 \}$, and let $S_R = \{ s \in S_1 \st p \text{ is right of } L_1 \}$.
@@ -80,7 +80,7 @@ Let $S_L = \{ s \in S_1 \st p \text{ is left of } L_1 \}$, and let $S_R = \{ s \
 \subsubsection{Check the Partial Enclosure Property}
 \label{:slabs:one:details:pep}
 
-For each of $S_L$ and $S_R$, the final query step is to identify those segments which satisfy the partial enclosure property.
+For each of $S_L$ and $S_R$, the final step is to identify those segments which satisfy the partial enclosure property.
 
 \begin{figure}[t]
 \begin{center}
@@ -105,7 +105,7 @@ For each of $S_L$ and $S_R$, the final query step is to identify those segments 
 
 Given a segment $s \in S_L$ with left endpoint $p = (a,b)$, let $\iline{s}$ be the line through $s$, given by the equation $y = b$ (the slope is 0). 
 Let $(a', b)$ be the intersection point of $\iline{s}$ and $L_1$. 
-Solving the equations of the two lines gives $a' = \frac{b - \beta}{\alpha}$. 
+Solving the equations of these two lines gives $a' = \frac{b - \beta}{\alpha}$. 
 It is sufficient to show that $s \in_\rho Q$ when ``not too much of $s$ is outside of $Q$'', which we can test with the expression $a' - a < (1 - \rho)l$.
 
 \begin{proof}
@@ -131,7 +131,7 @@ a + (1 - \rho)l &> \frac{1}{\alpha} b - \frac{\beta}{\alpha}  \\
 \]
 
 From this inequality, we can construct an appropriate dual-space to perform the half-plane query. We map each segment $s$ to a dual-point with coordinates $(b, a + (1-\rho)l)$. 
-Segments matching the partial enclosure expression then correspond to the dual-points satisfying the half-plane $y > \frac{1}{\alpha} - \frac{\beta}{\alpha}$.
+Segments matching the partial enclosure expression then correspond to the dual-points satisfying the half-plane $y > \frac{1}{\alpha}x - \frac{\beta}{\alpha}$.
 
 %------------------------------------------------------------------------------
 
@@ -148,9 +148,9 @@ There are 4 cases of segments whose left-endpoints are right of $L_1$, as shown 
 
 
 \begin{enumerate}
- \item The entire segment is between $L_1$ and $L_2$. Since $s \in Q \imply s \in_\rho Q$, this segment should be counted.
+ \item The entire segment is between $L_1$ and $L_2$. Since $s \in Q$ implies $s \in_\rho Q$, this segment should be counted.
 
- \item The entire segment is right of $L_2$. No part of $s$ is in $Q$, so it should not be counted.
+ \item The entire segment is right of $L_2$. Since $s \cap Q = \emptyset$ implies $s \not \in_\rho Q$, this segment should not be counted.
 
  \item The segment intersects $L_2$, and $s \in_\rho Q$.
 
@@ -158,7 +158,7 @@ There are 4 cases of segments whose left-endpoints are right of $L_1$, as shown 
 
 \end{enumerate}
 
-For each $s \in S_R$, we test the partial enclosure property by checking that ``enough of the segment is inside of $Q$''.
+For each $s \in S_R$, we test the partial enclosure property by checking that ``enough of the segment is inside $Q$''.
 Just as we did with the segments of $S_L$, let $\iline{s}$ be the horizontal line through $s$.
 Let $(a'', b)$ be the intersection point of $\iline{s}$ with $L_2$.
 Solving their respective equations gives $a'' = \frac{b - \beta}{\alpha} + w$.  
@@ -215,7 +215,7 @@ By Theorem~\ref{:prelim:chan}, we can answer this type of half-plane query direc
 
 \begin{lemma}
 \label{lem:slabs:one:step2a}
-Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ time.
+Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ preprocessing time.
 \end{lemma}
 
 With each subset created for this structure, we will associate the structure required for Lemma~\ref{lem:slabs:one:step1}.
@@ -223,7 +223,7 @@ Applying Corollary~\ref{cor:multichan} gives us the following result.
 
 \begin{lemma}
 \label{lem:slabs:one:step2b}
-Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line \emph{and} do not exceed a maximum length in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
+Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line \emph{and} which do not exceed a maximum length in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ preprocessing time.
 \end{lemma}
 
 
@@ -237,8 +237,9 @@ Applying Corollary~\ref{cor:multichan} gives us the following result.
 
 \begin{lemma}
 \label{lem:slabs:one:step3}
-Given a set of $n$ horizontal line segments, we can locate all segments whose left endpoints are to one side of a line, which are not ``too much'' to one side of a query line, \emph{and} do not exceed a maximum length in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log{n}^2}$, which can be built in $\BigOh{n\log^3{n}}$ time.
+Given a set of $n$ horizontal line segments, we can locate all segments whose left endpoints are to one side of a line, which are not ``too much'' to one side of a query line, \emph{and} which do not exceed a maximum length in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^3{n}}$ preprocessing time.
 \end{lemma}
+
 
 % -----------------------------------------------------------------------------
 \subsubsection{Combining the Steps}
@@ -290,7 +291,7 @@ A query region is an arbitrarily-oriented parallelogram defined by the intersect
 \end{center}
 \end{figure}
 
-Specifically, a query is given as six inputs $\alpha, \beta, w_p, \gamma, \delta, w_n$, where $\alpha > 0$, $w_p > 0$, $w_n > 0$, and $\gamma < 0$. With these inputs, we define:
+Specifically, a query is given as six inputs $\alpha, \beta, w_p, \gamma, \delta, w_n$, where $\alpha > 0$, $w_p > 0$, $\gamma < 0$, and $w_n > 0$. With these inputs, we define:
 
 \begin{itemize}
  \item The line $L_1 : y = \alpha x + \beta$, the left edge of $S_p$,
@@ -309,7 +310,7 @@ Specifically, a query is given as six inputs $\alpha, \beta, w_p, \gamma, \delta
 
 \end{itemize}
 
-We say that $s_i \in_\rho Q$ if and only if $s_i$ satisfies the partial enclosure property with respect to $Q$, otherwise $s \not \in_\rho Q$.
+We say that $s_i \in_\rho Q$ if and only if $s_i$ satisfies the partial enclosure property with respect to $Q$, otherwise $s_i \not \in_\rho Q$.
 
 
 % -----------------------------------------------------------------------------
@@ -370,9 +371,9 @@ During the query, any time that we consider $Z_C$ for $Q_b$, we will query both 
 Any segment interacting with a particular query region must have its endpoints in one of 6 combinations of classification zones: $(Z_L, Z_L)$, $(Z_L, Z_C)$, $(Z_L, Z_R)$, $(Z_C,\allowbreak Z_C)$, $(Z_C, Z_R)$, or $(Z_R, Z_R)$. 
 For a segment $s \in S$ with endpoints $p$ and $q$:
 \begin{itemize}
-\item If $p, q \in (Z_C, Z_C)$, then $s$ is entirely inside $Q$.
-\item If $p, q \in (Z_L, Z_L)$, or $p, q \in (Z_R, Z_R)$ then $s$ is entirely outside $Q$.
-\item Otherwise, $s$ crosses one or both boundaries of the query region and we need to test partial enclosure expressions.
+\item If $p, q \in (Z_C, Z_C)$, then $s$ is entirely inside $Q$ and $s \in_\rho Q$.
+\item If $p, q \in (Z_L, Z_L)$, or $p, q \in (Z_R, Z_R)$ then $s$ is entirely outside $Q$ and $s \not \in_\rho Q$.
+\item Otherwise, $s$ crosses one or both boundaries of the query region and we need to test the appropriate partial enclosure expression.
 \end{itemize}
 
 
@@ -380,7 +381,7 @@ For a segment $s \in S$ with endpoints $p$ and $q$:
 
 We begin by examining $Q_a$ in detail.
 Let $s \in S$ be a horizontal line segment and let $\iline{s}$ be the line through $s$, defined by the equation $y = b$.
-Let $(a', b) = \iline{s} \cap L_1$ and $(a'', b) = \iline{s} \cap L_4$, be the intersection points of $\iline{s}$ with $L_1$ and $L_4$, respectively, then $a' = \frac{b - \beta}{\alpha}$ and $a'' = \frac{b - \delta}{\gamma} + w_n$.
+Let $(a', b) = \iline{s} \cap L_1$ and $(a'', b) = \iline{s} \cap L_4$, be the intersection points of $\iline{s}$ with $L_1$ and $L_4$, respectively, then $a' = \frac{b - \beta}{\alpha}$ and $a'' = \frac{b - \delta}{\gamma} - w_n$.
 We have three combinations of classification zones that need further testing.
 
 For the $(Z_L, Z_C)$ case, we know that $s$ only crosses $L_1$.
@@ -405,14 +406,14 @@ We check that enough of $s$ is inside $Q_a$, which gives the following partial e
 \begin{split}
 a'' - a &\geq \rho l \\
 %
-\frac{b - \delta}{\gamma} + w_n - a &\geq \rho l \\
+\frac{b - \delta}{\gamma} - w_n - a &\geq \rho l \\
 %
-b \cdot \frac{1}{\gamma} - \frac{\delta}{\gamma} + w_n &\geq a + \rho l \\
+b \cdot \frac{1}{\gamma} - \frac{\delta}{\gamma} - w_n &\geq a + \rho l \\
 %
 \end{split}
 \]
 
-\noindent We can test this expression by mapping each segment $s$ to a dual-point with coordinates $(b, a + \rho l)$ and then querying with the half-plane $y \leq \frac{1}{\gamma} x - \frac{\delta}{\gamma} + w_n$.
+\noindent We can test this expression by mapping each segment $s$ to a dual-point with coordinates $(b, a + \rho l)$ and then querying with the half-plane $y \leq \frac{1}{\gamma} x - \frac{\delta}{\gamma} - w_n$.
 
 Finally, for the $(Z_L, Z_R)$ case, we know that both endpoints of $s$ are outside of $Q_a$, so we only need to measure the width of $s \cap Q_a$.  
 Specifically, we require that:
@@ -420,18 +421,18 @@ Specifically, we require that:
 \begin{split} 
 a'' - a' &\geq \rho l \\
 %
-\frac{b - \delta}{\gamma} + w_n - \frac{b - \beta}{\alpha} &\geq \rho l \\
+\frac{b - \delta}{\gamma} - w_n - \frac{b - \beta}{\alpha} &\geq \rho l \\
 %
-\frac{b}{\gamma} - \frac{\delta}{\gamma} + w_n - \frac{b}{\alpha} + \frac{\beta}{\alpha} &\geq \rho l \\
+\frac{b}{\gamma} - \frac{\delta}{\gamma} - w_n - \frac{b}{\alpha} + \frac{\beta}{\alpha} &\geq \rho l \\
 %
-b \cdot \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) + \left ( \frac{\beta}{\alpha} - \frac{\delta}{\gamma} + w_n \right ) &\geq \rho l \\
+b \cdot \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) + \left ( \frac{\beta}{\alpha} - \frac{\delta}{\gamma} - w_n \right ) &\geq \rho l \\
 %
 \end{split}
 \]
 
 \noindent We can test this expression by mapping each segment $s$ to a dual-point with coordinates $(b, \rho l)$ and then querying with the following half-plane.
 \[
-y \leq \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) \cdot x + \left ( \frac{\beta}{\alpha} - \frac{\delta}{\gamma} + w_n \right )
+y \leq \left ( \frac{1}{\gamma} - \frac{1}{\alpha} \right ) \cdot x + \left ( \frac{\beta}{\alpha} - \frac{\delta}{\gamma} - w_n \right )
 \]
 
 \noindent Classification into the left and right zones is somewhat ``rough'', as the zone continues above $Q_a$ itself. 
@@ -477,7 +478,7 @@ Given a set of $n$ horizontal line segments, we can identify all segments which 
 
 We need to be able to classify the left endpoints of our segments into any of the classification zones as well, which will use another canonical subsets data structure.
 With each subset of this structure, we continue to build up our multi-level structure by associating the structure from Lemma~\ref{lem:slabs:two:step2}. 
-By applying Corollary~\ref{cor:multichan} again, we have the following lemma.
+By applying Corollary~\ref{cor:multichan} again, we have the following.
 
 \begin{lemma}
 \label{lem:slabs:two:step3}
@@ -535,7 +536,7 @@ a'' &= \frac{\beta - t - \alpha w}{m - \alpha}
 
 Multiplying and squaring these expressions to calculate $\|p'q'\|^2$ results in a high degree polynomial with respect to the number of independent query variable expressions.
 The situation worsens when we consider intersections between $L_1$ or $L_2$ with $L_3$ or $L_4$, as we have to consider $\gamma$ and $\delta$ as well.
-Such an expression \emph{can} be queried with a canonical subset structure, but the space and query times suffer.
+Such an expression \emph{can} be mapped to a high-degree half-space and then be queried with a canonical subset structure, but the space and query times suffer.
 
 %------------------------------------------------------------------------------
 %------------------------------------------------------------------------------
