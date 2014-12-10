@@ -28,7 +28,7 @@ A query $Q$ is given by its lower-left and upper-right corners $(\alpha, \beta)$
 
 We say that $P$ is sufficiently enclosed by $Q$ to satisfy the partial enclosure property if and only if $\area{Q \cap P} \geq \rho \cdot \area{P}$. 
 Throughout this chapter we will assume that $Q$ is an axis-parallel rectangle for ease of discussion. 
-In Section~\ref{:convexp:remarks} we will show how to use our method even when relax some restrictions on $Q$.
+In Section~\ref{:convexp:remarks} we will show how to use our method even when relaxing some restrictions on $Q$.
 
 %------------------------------------------------------------------------------
 \section{Overview of the Algorithm}
@@ -37,22 +37,24 @@ In Section~\ref{:convexp:remarks} we will show how to use our method even when r
 To achieve a fast query time, our algorithm requires some preprocessing on $P$ to speed up certain area calculations. Before describing the preprocessing, we outline the query algorithm here.
 
 \begin{enumerate}
- \item Identify which edges of $P$ intersect $Q$.
+ \item Identify which edges of $P$ are intersected by $Q$.
  
  \item Enumerate the intersecting edges in clockwise order to determine which areas of $Q$ are inside of $P$, and which are outside. There are at most 4 pairs of intersecting edges where $P$ crosses into $Q$, and subsequently back out.
  
  \item For each entrance/exit pair:
  \begin{enumerate}
-  \item Consider the point $s$ on the entrance edge and the point $t$ on the exit edge where $P$ intersects the boundary of $Q$. The segment $st$  through the interior of $Q$ forms a \emph{chord} of $P$.
+  \item Consider the point $s$ on the entrance edge and the point $t$ on the exit edge where $P$ intersects the boundary of $Q$.
+  The segment $st$ through the interior of $Q$ forms a \emph{chord} of $P$.
   
-  \item On one side of $st$, we have a subpolygon $P_{st}$ defined by a subchain of $P$ (including some partial component of the entrance and exit edges) and the segment $st$ itself. $P_{st} \subseteq Q$, so we must calculate its area as part of our overall determination.
+  \item On one side of $st$, we have the subpolygon $P_{st}$ defined by a subchain of $P$ (including some partial component of the entrance and exit edges) and the segment $st$ itself. 
+  $P_{st} \subseteq Q$, so we must calculate its area as part of our overall query.
   
  \end{enumerate}
 
  \item Assuming that $P$ and $Q$ \emph{do} intersect, the assembled collection of all such entrance and exit points from the previous step, as well as any corners of $Q$ which are inside $P$ define $P_I$.
 We can also think of this as the space on the ``insides'' of all the chords. 
 $P_I$ is a polygon of not more than 8 edges. 
-$P_I \subseteq Q$, so we must calculate its area as part of our determination.
+$P_I \subseteq Q$, so we must calculate its area as part of our overall query.
  
 \end{enumerate}
 
@@ -65,10 +67,10 @@ In order to help with calculating the area of the subpolygons identified by step
 
 We will look at chords between pairs of edges. 
 A chord from edge $e_i$ to $e_j$, $i < j$, is defined as the segment through the interior of $P$ from the vertex of $e_i$ which is not shared with $e_{i+1}$ to the vertex of $e_j$ which is not shared with $e_{j-1}$.
-For certain values of $i$ and $j$, we will calculate the area of the subpolygon defined by the chord segment itself and the edges $e_i, e_{i+1}, \ldots, e_j$.
+For certain values of $i$ and $j$ (detailed below), we will calculate the area of the subpolygon defined by the chord segment itself and the edges $e_i, e_{i+1}, \ldots, e_j$.
 
 During our query, it may be helpful to query chords between two edges $e$ and $e'$ such that the sequence of edges includes $e_n$.
-That is, that the edge sequence is of the form $e, \ldots, e_{n-1}, e_{n}, e_{1}, e_{2}, \ldots e'$.
+That is, the edge sequence is of the form $e, \ldots, e_{n-1}, e_{n}, e_{1}, e_{2}, \ldots e'$.
 To perform these queries easily, we will double the edge list for the sake of preprocessing to $e_1, e_2, \ldots, e_{n-1}, e_{n}, e_{1}', e_{2}', \ldots, e_{n-1}', e_n'$ where $e_i = e_i'$ for $1 \leq i \leq n$.
 Any chord query between two edges $e_i$ and $e_j$ where $j < i$ is instead queried as $e_i$ and $e_j'$.
 
@@ -115,18 +117,23 @@ $a(T) \gets a + a(T_l) + a(T_r)$\;
 \end{center}
 \end{figure}
 
-Essentially, $T_P$ is defined recursively by splitting $E$ into halves. The resulting tree has a depth of $\BigOh{\log{n}}$, and requires only $\BigOh{1}$ processing and storage per node for total preprocessing time of $\BigOh{n}$. Each node $t$ of $T_P$ records the labels of the left and right edges of $P$ that it spans, and the total area of the subpolygon between those edges. Given two edge labels $i$ and $j$, we can query $T_P$ and identify $\BigOh{\log{n}}$ subtrees between those labels which correspond to precalculated subpolygons. This will not give us the total area of the subpolygon between any arbitrary $e_i$ and $e_j$, but it does reduce the problem significantly, as the remaining area to be calculated is bounded by a path of only $\BigOh{\log{n}}$ chords rather than $\BigOh{n}$ edges of $P$.
+Essentially, $T_P$ is defined recursively by splitting $E$ into halves. 
+The resulting tree has a depth of $\BigOh{\log{n}}$, and requires only $\BigOh{1}$ processing and storage per node for a total preprocessing time of $\BigOh{n}$. 
+Each node $t$ of $T_P$ records the labels of the left and right edges of $P$ that it spans, and the total area of the subpolygon between those edges.
+Given two edge labels $i$ and $j$, we can query $T_P$ and identify $\BigOh{\log{n}}$ subtrees between those labels which correspond to precalculated subpolygons.
+This will not give us the total area of the subpolygon between any arbitrary $e_i$ and $e_j$, but it does reduce the problem significantly, as the remaining area to be calculated is bounded by a path of only $\BigOh{\log{n}}$ chords rather than $\BigOh{n}$ edges of $P$.
 
 
 %------------------------------------------------------------------------------
 \section{Locating Intersections}
 \label{:convexp:intersections}
 
-The query rectangle $Q$ can intersect $P$ at most $8$ times. This follows from the fact that $P$ is convex, and a straight-line through $P$ will therefore have at most 2 intersections. Extending each of the 4 boundaries of $Q$ into lines then yields at most 8 intersections.
+Following from the convexity of $P$, there can be at most $8$ intersections between $P$ and $Q$. 
+Any straight-line through $P$ will intersect at most twice, so extending each of the 4 boundaries of $Q$ into lines yields at most 8 intersections.
 
 Each intersection can be found in the following way. 
 Let $b_\alpha$ be the vertical boundary of $Q$ with $x$-coordinate at $\alpha$. 
-Let $\iline{\alpha}$ be the vertical line through $\alpha$. 
+Let $\iline{\alpha}$ be the vertical line through $b_\alpha$. 
 Using a binary search on the edges of $P$, we can identify the edges $e_\alpha$ and $e_\alpha'$ which intersect $\iline{\alpha}$, if they exist, such that $e_\alpha$ is clockwise from $e_\alpha'$ along $P$.
 Specifically, we test only the top chain of $P$ to find $e_\alpha$ and only the bottom chain of $P$ to find $e_\alpha'$.
 We then determine if $e_\alpha$ and $e_\alpha'$ are intersected by the segment $b_\alpha$ itself by checking the $y$-coordinate of the intersection point. 
@@ -172,7 +179,7 @@ We can find all entrance/exit pairs with the following steps.
  
  \item Mark any corners of $Q$ which are bypassed by step 2 as outside of $P$. The corners which remain inside will be important later.
  
- \item We are finished when we visit a non-nil entry for the second time.
+ \item We are finished when we visit a non-nil entry label for the second time.
 \end{enumerate}
 
 Figure \ref{fig:convexp:chord} shows an example. In the figure, $e_\beta$ is an edge that enters into $Q$, while $e_\delta'$ is the corresponding exit edge. Both $e_\alpha'$ and $e_\alpha$ are nil. The corners of $Q$ at $(\alpha, \beta)$ and $(\alpha, \delta)$ are outside of $P$ since we know $P$ entered $Q$ before $(\alpha, \beta)$, and therefore all corners of $Q$ must be outside until the next non-nil entrance label.
@@ -185,14 +192,16 @@ Figure \ref{fig:convexp:chord} shows an example. In the figure, $e_\beta$ is an 
 \end{center}
 \end{figure}
 
-For an entrance edge $e_i$ and exit edge $e_j$, let $s$ and $t$ be the intersection points of $e_i$ and $e_j$ with the boundary of $Q$, respectively. The segment $st$ partitions $Q$ into two and forms a chord of $P$.
+For an entrance edge $e_i$ and exit edge $e_j$, let $s$ and $t$ be the intersection points of $e_i$ and $e_j$ with the boundary of $Q$, respectively. 
+The segment $st$ partitions $Q$ into two parts and forms a chord of $P$.
 
-This ``cap'' of $P$ is the subpolygon defined by the segment $st$, the portion of $e_i$ from $s$ towards $e_{i+1}$, the edges $e_{i+1}, e_{i+2}, ..., e_{j-1}$, and the portion of $e_j$ from $e_{j-1}$ to $t$. We denote this area by $P_{st}$. Since $P_{st} \subset Q$, we need to calculate its area.
+Let $P_{st}$ be the subpolygon ``cap'' of $P$ defined by the segment $st$, the portion of $e_i$ from $s$ towards $e_{i+1}$, the edges $e_{i+1}, e_{i+2}, ..., e_{j-1}$, and the portion of $e_j$ from $e_{j-1}$ to $t$.
+Since $P_{st} \subset Q$, we need to calculate its area.
 
 We first check if $e_i = e_j$.
 In that case, a single edge of $P$ has formed both the entrance and exit of $Q$, the chord $st$ is a subsegment of that edge, and the area of $P_{st}$ is 0.
 Otherwise, $P_{st}$ is a convex polygon.
-Using the preprocessed subpolygon areas stored in $T_P$, the chain of edges $e_{i+1}$ to $e_{j-1}$ can be decomposed into $\log{n}$ preprocessed subpolygons whose total area is found in the tree.
+Using the preprocessed subpolygon areas stored in $T_P$, the chain of edges $e_{i+1}$ to $e_{j-1}$ can be decomposed into $\BigOh{\log{n}}$ preprocessed subpolygons whose total area is found in the tree.
 The remaining region of $P_{st}$ for which we do not yet know the area is comprised of a path of $\BigOh{\log{n}}$ chords from $T_P$, the partial edges of $P_{st}$ up to $s$ and $t$, and the segment $st$.
 This region is a convex polygon with $\BigOh{\log{n}}$ vertices and its area can be calculated in $\BigOh{\log{n}}$ time.
 
