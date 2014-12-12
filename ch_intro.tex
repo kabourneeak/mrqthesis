@@ -109,7 +109,7 @@ When we are considering points in the plane, a quadtree works by dividing the sp
 
 Because this recursion is based on splitting space rather than the points within the space, the recursion depth, and thus the depth of the quadtree, is not related to the number of points. 
 Instead, the size of the initial square from which we start splitting and the distance between the closest pair of points are the important factors.
-For an initial square with a side length of $s$ and a closest pair with distance $c$, the recursion depth is $\BigOh{\log{\frac{s}{c}} + \frac{3}{2}}$.
+For an initial square with a side length of $s$ and a closest pair with distance $c$, the recursion depth is $\BigOh{\log{\frac{s}{c}}}$.
 The construction and query times are related to this recursion depth, making the structure somewhat slow, but it \emph{does} work!
 
 Quadtrees can be easily extended to work in higher dimensions. 

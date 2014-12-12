@@ -10,14 +10,14 @@ This thesis presents several contributions in the area of partial enclosure rang
 
 In Chapter~\ref{:rectangles}, we developed methods for querying line segments with axis-parallel rectangles. 
 We first considered axis-parallel segments and gave a method for expressing the partial enclosure property as an orthogonal range query. 
-Next we considered arbitrarily-oriented line segments and we saw that the uncertainty of where a segment may intersect the query significantly increases the complexity of testing partial enclosure expressions.
+Next we considered arbitrarily-oriented line segments and we saw that the uncertainty of where a segment may intersect the query region significantly increases the complexity of testing partial enclosure expressions.
 
 In Chapter~\ref{:slabs}, we consider axis-parallel line segments against a query region which is either an arbitrarily-oriented slab, or the intersection of two such slabs; the latter is a generalization of querying with an arbitrarily-oriented rectangle. 
 We gave a method for expressing the partial enclosure property as a half-plane query in a dual-space.
 
 In Chapter~\ref{:convexp}, we moved away from line segments to consider convex polygons and partial enclosure range searches involving area. 
 We developed a method for preprocessing a convex polygon such that the area to one side of any chord can be found in logarithmic time with respect to the number of edges in the polygon. 
-We gave an algorithm for decomposing the intersection of a rectangle with a convex polygon in such a way that the area of their intersection could be found in logarithmic time. 
+We gave an algorithm for decomposing the intersection of a rectangle with a convex polygon in such a way that the area of their intersection could be found in logarithmic time with respect to the number of edges in the polygon.
 
 In Chapter~\ref{:monotonep}, we considered monotone polygons. 
 We gave an algorithm which produces a list of area formulas which can be queried for the area of the polygon underneath a horizontal query line.
@@ -31,7 +31,7 @@ In this section, we summarize the future work that has appeared in previous chap
 
 \begin{enumerate}
 \item From Chapter~\ref{:rectangles}, can we remove the limitation that $1/2 < \rho$ when querying on arbitrarily-oriented line segments?  
-This limitation stems from our current solution relying on the centrepoint residing inside the query region.
+This limitation stems from our current solution relying on the centrepoint of any matching segment residing inside the query region.
 
 \item From Chapter~\ref{:rectangles}, can we classify the endpoints of the segments in a way that reduces the number of partial enclosure expressions that we need to test?
 The correct partial enclosure expression depends on which boundaries of the query rectangle are crossed by a segment, but our current classification technique is limited in how well it can identify these.
@@ -39,9 +39,12 @@ The correct partial enclosure expression depends on which boundaries of the quer
 \item From Chapter~\ref{:rectangles}, in a practical setting, when we are better off saving a constant factor of space by sharing the endpoint classification structures versus saving a $\log{n}$ factor by performing the half-plane queries first?
 
 \item From Chapter~\ref{:slabs}, extending our method to arbitrarily-oriented segments results in a very case-heavy data structure. 
-Moreover, the partial enclosure expressions involve several query variable expressions resulting in high-degree half-plane queries. 
+Moreover, the partial enclosure expressions involve several query variable expressions resulting in high-degree half-space queries. 
 Can a better method of classification reduce this?
 
-\item From Chapter~\ref{:monotonep}, can we modify our approach to building a multi-region formula tree to support querying on simple polygons?  Our tree relies on clean boundaries between regions so that we can query a single formula for any horizontal line query. In a simple polygon setting, two regions may be located one over top of the other without sharing common boundaries.  Attempting to partition the polygon by the boundary of one region can create subregions which break our area formulas.
+\item From Chapter~\ref{:monotonep}, can we modify our approach to building a multi-region formula tree to support querying on simple polygons?  
+Our tree relies on clean boundaries between regions so that we can query a single formula for any horizontal line query. 
+In a simple polygon setting, two regions may be located one over top of the other without sharing common boundaries.
+Attempting to partition the polygon by the boundary of one region can therefore result in subregions which break our area formulas.
 
 \end{enumerate}

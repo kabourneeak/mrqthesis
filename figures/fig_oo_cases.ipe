@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20141106093852" modified="D:20141106111619"/>
+<info created="D:20141106093852" modified="D:20141212150502"/>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
 <path stroke="sym-stroke" fill="sym-stroke" pen="sym-pen">
@@ -202,13 +202,13 @@ h
 <dashstyle name="dash dotted" value="[4 2 1 2] 0"/>
 <dashstyle name="dash dot dotted" value="[4 2 1 2 1 2] 0"/>
 <textsize name="large" value="\large"/>
+<textsize name="small" value="\small"/>
+<textsize name="tiny" value="\tiny"/>
 <textsize name="Large" value="\Large"/>
 <textsize name="LARGE" value="\LARGE"/>
 <textsize name="huge" value="\huge"/>
 <textsize name="Huge" value="\Huge"/>
-<textsize name="small" value="\small"/>
 <textsize name="footnote" value="\footnotesize"/>
-<textsize name="tiny" value="\tiny"/>
 <textstyle name="center" begin="\begin{center}" end="\end{center}"/>
 <textstyle name="itemize" begin="\begin{itemize}" end="\end{itemize}"/>
 <textstyle name="item" begin="\begin{itemize}\item{}" end="\end{itemize}"/>
@@ -240,7 +240,7 @@ h
 h
 </path>
 <text matrix="1 0 0 1 54 20" transformations="translations" pos="112 592" stroke="black" type="label" width="24.747" height="7.473" depth="2.49" valign="baseline">$(\alpha, \beta)$</text>
-<text matrix="1 0 0 1 -46 4" transformations="translations" pos="448 768" stroke="black" type="label" width="22.139" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
+<text matrix="1 0 0 1 -46 4" transformations="translations" pos="448 768" stroke="black" type="label" width="22.693" height="7.473" depth="2.49" valign="baseline">$(\gamma, \delta)$</text>
 <use matrix="1 0 0 1 64 16" name="mark/disk(sx)" pos="128 608" size="normal" stroke="black"/>
 <use matrix="1 0 0 1 -48 0" name="mark/disk(sx)" pos="448 768" size="normal" stroke="black"/>
 <path matrix="1 0 0 1 80 0" stroke="blue" pen="heavier">
@@ -289,5 +289,9 @@ h
 </text>
 <text matrix="1 0 0 1 -4 0" transformations="translations" pos="160 664" stroke="black" type="label" width="17.996" height="7.473" depth="2.49" valign="baseline">$(6a)$</text>
 <text matrix="1 0 0 1 -4 0" transformations="translations" pos="56 648" stroke="black" type="label" width="17.006" height="7.473" depth="2.49" valign="baseline">$(6b)$</text>
+<use name="mark/disk(sx)" pos="240 736" size="normal" stroke="blue"/>
+<use name="mark/disk(sx)" pos="336 736" size="normal" stroke="0 0 1"/>
+<text matrix="1 0 0 1 -1 4" transformations="translations" pos="240 720" stroke="blue" type="label" width="21.718" height="7.473" depth="2.49" valign="baseline">$(a,b)$</text>
+<text matrix="1 0 0 1 -5 4" transformations="translations" pos="320 720" stroke="blue" type="label" width="21.673" height="7.473" depth="2.49" valign="baseline">$(c,d)$</text>
 </page>
 </ipe>

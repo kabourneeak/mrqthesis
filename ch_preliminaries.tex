@@ -22,7 +22,11 @@ To answer this, we look at a simple example.
 Suppose $A$ is a set of 2D points embedded in the plane, and that, for our query, we wish to identify all points whose $x$-coordinate is between $\alpha$ and $\beta$.
 To answer this query, we can construct a range tree $T$ where each point $a_i$, $1 \leq i \leq n$ is represented by leaf node whose key value is set to the $x$-coordinate of $a_i$; that is, where $v_i = a_i.x$.
 
-When we query $T$ for $\alpha$ and $\beta$, we identify two paths through $T$ in $\BigOh{\log{n}}$ time. The leaf with key value $\alpha$ (or with the successor value to $\alpha$, if the exact value is not present) is $a_\alpha$ and is the leftmost point in $A$ matching our query.  Similarly, the leaf with key value $\beta$ (or with the  predecessor to $\beta$, if the exact value is not present) is $a_\beta$ and is the rightmost point in $A$ matching our query. Since the leaves in a binary search tree are sorted, the sequence of points from $a_\alpha$ to $a_\beta$ are exactly the points we need to identify. We can report these points with an inorder traversal.
+When we query $T$ for $\alpha$ and $\beta$, we identify two paths through $T$ in $\BigOh{\log{n}}$ time.
+The leaf with key value $\alpha$ (or with the successor value to $\alpha$, if the exact value is not present) is $a_\alpha$ and is the leftmost point in $A$ matching our query.
+Similarly, the leaf with key value $\beta$ (or with the  predecessor value to $\beta$, if the exact value is not present) is $a_\beta$ and is the rightmost point in $A$ matching our query.
+Since the leaves in a binary search tree are sorted, the sequence of points from $a_\alpha$ to $a_\beta$ are exactly the points we need to identify. 
+We can report these points with an inorder traversal.
 
 \begin{figure}
 \begin{center}
@@ -35,13 +39,15 @@ When we query $T$ for $\alpha$ and $\beta$, we identify two paths through $T$ in
 What makes range trees such versatile structures is not that they identify appropriate elements, but rather due to the way that they group the identified elements into at most $\BigOh{\log{n}}$ disjoint subsets.
 These subsets are precisely the elements found in the ``inner'' subtrees along the path from $a_\alpha$ to $a_\beta$, as illustrated in Figure~\ref{fig:pre:range1d}.
 
-With each non-leaf node of $T$, we can store additional information about the subset represented by its subtree.  Then, during query time, we only need to consider the information stored at $\BigOh{\log{n}}$ nodes rather than the $\BigOh{n}$ elements they represent. Continuing our example on 2D points, with only $\BigOh{1}$ extra space per node, we could store which point has the highest $y$-coordinate in each subtree.  Then, we can use our range tree to find the highest point between two $x$-coordinates in $\BigOh{\log{n}}$ time.
+With each non-leaf node of $T$, we can store additional information about the subset represented by its subtree.
+Then, during query time, we can aggregate information relating to the entire matching subset by considering the preprocessed information stored in only $\BigOh{\log{n}}$ nodes.
+Continuing our example on 2D points, with only $\BigOh{1}$ extra space per node, we could store which point has the highest $y$-coordinate in each subtree.
+Then, we can use our range tree to find the highest point between two $x$-coordinates in $\BigOh{\log{n}}$ time.
 
 We are not limited to just storing simple values with each node, however.
-With each node, we can associate an entire additional data structure, constructed on the elements represented by that node.
+We could also associate an entire additional data structure, constructed on the elements represented by that node.
 In particular, we can store another range tree which is based on some other property of each element.
-When we query this two-level range tree, our query at the first level identifies $\BigOh{\log{n}}$ subsets.
-Each subset represents elements which satisfy a particular query condition.
+When we query this two-level range tree, our query at the first level identifies $\BigOh{\log{n}}$ matching subsets.
 Then, for each subset, we query the associated data structure to identify elements satisfying a second query condition.
 The elements identified here satisfy both conditions.
 This technique can be repeated to create \emph{multi-level range trees} with several levels.
