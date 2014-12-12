@@ -12,7 +12,7 @@ In the first variation, the line segments will also be axis-parallel, whereas in
 \section{Axis-Parallel Segments}
 \label{:rectangles:ap}
 
-In this section we consider axis-parallel line segments in the plane and queries in the form of axis-parallel rectangles.
+In this section, our input is a set of axis-parallel line segments in the plane and our queries are in the form of axis-parallel rectangles.
 This is the simplest 2D environment on which we can perform \PERS{} as the objects and query region are both simple geometric objects, and we can rely on their fixed orientations while expressing equations about them. 
 We will discuss only horizontal segments here.
 The solution for vertical segments is identical, and we discuss how to combine the two approaches at the end of the section. We define the problem as follows.
@@ -26,12 +26,12 @@ A segment $s$ satisfies this property if and only if $|s \cap Q| \geq \rho \cdot
 \subsection{Definitions}
 \label{:rectangles:ap:defs}
 
-Let $S$ be a set of $n$ axis-parallel line segments.
-Each segment $s_i \in S, 1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. 
+Let $S$ be a set of $n$ axis-parallel line segments in the plane.
+Each segment $s_i \in S$, $1 \leq i \leq n$ is defined by its two endpoints $p_i = (a_i, b_i)$ and $q_i = (c_i, d_i)$. 
 Without loss of generality, we will assume that $p_i$ is the leftmost endpoint of $s_i$ (or the lower endpoint if $s_i$ is vertical). 
 We define $l_i = |s_i|$ as the length of $s_i$; for horizontal segments the length is easily calculated as $l_i = c_i - a_i$. 
 Our query $Q$ is given by its lower-left corner $(\alpha, \beta)$ and its upper-right corner $(\gamma, \delta)$. 
-We say that $s_i \in_\rho Q$ if and only if $s_i$ satisfies the partial enclosure property with respect to $Q$, otherwise $s \not \in_\rho Q$.
+We say that $s_i \in_\rho Q$ if and only if $s_i$ satisfies the partial enclosure property w.r.t. $Q$, otherwise $s \not \in_\rho Q$.
 
 For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly, for any $y$-coordinate, $\iline{y}$ is the horizontal line through $y$. For example, $\iline{\beta}$ is the horizontal line through the bottom boundary of $Q$, while $\iline{a_i}$ is the vertical line through $a_i$, and thus, through the left endpoint of $s_i$. Finally, we define $\iline{s_i}$ as the line through the segment $s_i$; for a horizontal segment $s_i$, the lines $\iline{s_i}$, $\iline{b_i}$, and $\iline{d_i}$ are all equivalent. When we focus on any single, general segment, we omit the $i$ subscripts for clarity.
 
@@ -49,12 +49,13 @@ For any $x$-coordinate, $\iline{x}$ is the vertical line through $x$. Similarly,
 As Figure~\ref{:fig:rectangles:ap:cases} illustrates, there are several cases to consider regarding how a horizontal segment $s \in S$ may interact with $Q$. Cases $(1)$, $(2)$, and $(3)$, where $s$ is entirely left, entirely within, or entirely right of $Q$, respectively, are exactly an instance of  standard range searching problems where we look to find elements which are completely inside or completely outside of a query region.  
 
 Case $(4)$ considers segments where $s$ crosses only the left boundary of $Q$. 
-Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint $q$ satisfies $\alpha \leq q \leq \gamma$.  
+Looking at it another way, $s$ has its left endpoint left of $\alpha$, while its right endpoint satisfies $\alpha \leq c \leq \gamma$.
 We further subdivide case $(4)$ into cases where, for a fixed value of $\rho$, $s \in_\rho Q$ in case $(4a)$ and $s \not \in_\rho Q$ in case $(4b)$.
 Cases $(5a)$ and $(5b)$ are similar to cases $(4a)$ and $(4b)$, but with respect to $\gamma$. 
-Specifically, $s$ falls into case $(5)$ when $\alpha \leq p \leq \gamma$ and $q > \gamma$. 
+Specifically, $s$ falls into case $(5a)$ or $(5b)$ when $\alpha \leq a \leq \gamma$ and $c > \gamma$. 
 
-In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, crucially, neither $p$ nor $q$ are inside $Q$. As like in cases $(4)$ and $(5)$, $s$ is in case $(6a)$ if $s \in_\rho Q$ and $(6b)$ if $s \not \in_\rho Q$.
+In case $(6)$, $s$ crosses both the left and right boundaries of $Q$, and, crucially, neither $p$ nor $q$ are inside $Q$. 
+Just as in cases $(4)$ and $(5)$, $s$ falls into case $(6a)$ if $s \in_\rho Q$ and into case $(6b)$ if $s \not \in_\rho Q$.
 
 Our goal is to identify all segments belonging to cases $(2)$, $(4a)$, $(5a)$, and $(6a)$, and none of the segments belonging to any other case.
 
@@ -62,8 +63,10 @@ Our approach to solving this problem involves restricting and classifying segmen
 
 \paragraph{Step 1.} As we are only considering horizontal segments for now, we only need to consider those segments which are neither above nor below $Q$, since they are the only ones which can intersect $Q$ at all. Let $S_1 = \{ s \in S \st \beta \leq b \leq \delta\}$. 
 
-\paragraph{Step 2.} Identify those segments which are not ``too long''.  Let $w = \gamma - \alpha$ be the width of $Q$.  Any segment $s$ having the property $|s| > \frac{w}{\rho}$ can never have its partial enclosure property satisfied.
-Let $S_2 = \{ s \in S_1 \st |s| \leq \frac{w}{\rho} \}$.
+\paragraph{Step 2.} Identify those segments which are not ``too long''.  
+Let $w = \gamma - \alpha$ be the width of $Q$.
+Any segment $s$ with length $l$ where $l > \frac{w}{\rho}$ can never have its partial enclosure property satisfied.
+Let $S_2 = \{ s \in S_1 \st l \leq \frac{w}{\rho} \}$.
 
 \paragraph{Step 3.} Partition the remaining segments according the location of their left endpoint with respect to $\alpha$.
 Specifically, let $S_L = \{s \in S_2 \st a < \alpha \}$ and let $S_R = \{ s \in S_2 \st a \geq \alpha \}$.
@@ -74,13 +77,16 @@ For segments whose left endpoint is at or right of $\alpha$, we want to ensure t
 Our claim is that the subset of segments satisfying the partial enclosure property is $S_\rho = S_L' \cup S_R'$. 
 
 \begin{proof}
-The correctness of Steps 1 and 2 are straight-forward, and Step 3 merely partitions the remaining segments. Thus, we focus on Step 4 and show that for each case, a segment belonging to that case is correctly accepted or rejected.
+The correctness of Steps 1 and 2 is straight-forward, and Step 3 merely partitions the remaining segments. 
+Thus, we focus on Step 4 and show that, for each case, a segment belonging to that case is correctly accepted or rejected.
 
 Consider the segments in $S_L$, which we check against the partial enclosure expression $\alpha - a < (1 - \rho) \cdot l$ measuring how much of $s$ is outside of $Q$. 
 Segments in case $(1)$ have $\alpha - a > l$, so they are correctly rejected. 
 Segments in cases $(4a)$ and $(4b)$ are accepted or rejected straight-forwardly by this condition as we measure precisely how much of $s$ is outside of $Q$, and thus, how much is inside. 
 
-The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.  After Step 2, we know that $|s| < \frac{w}{\rho}$, which implies that any segment in $s \in S_L$ that crosses both $\alpha$ and $\gamma$ must satisfy $s \in_\rho Q$, since $|s \cap Q|$ is exactly $w$, and $w$ is sufficient. This property allows us to avoid explicitly deciding if $s$ crosses $\gamma$, since if not too much of $s$ is outside $Q$, then $s$ either crosses only $\alpha$ and case $(4)$ holds, or it crosses $\alpha$ and $\gamma$, and $w$ is sufficient.
+The most interesting cases are $(6a)$ and $(6b)$, and they are the motivation behind Step 2.
+After that step, for any segment we are still considering, we know that $l \leq \frac{w}{\rho}$. 
+This allows us to avoid explicitly deciding if $s$ crosses $\gamma$, since if not too much of $s$ is left of $Q$, then $s$ either crosses only $\alpha$ and case $(4)$ holds, or it crosses $\alpha$ and $\gamma$, $|s \cap Q| = w$, and $w$ is sufficient.
 
 Next, we consider the segments in $S_R$, which we check against the partial enclosure expression $\gamma - a \geq  \rho l$. 
 For case $(2)$, $\gamma - a \geq l$, and since $l \geq \rho l$ for all valid values of $\rho$, these segments are accepted.
@@ -142,7 +148,7 @@ As our points are in 4D, such a tree requires $\BigOh{n \log^3{n}}$ time and spa
 To find all horizontal segments satisfying their partial enclosure property, we need to perform both queries and combine the results.  
 
 A second data structure and query does not change the asymptotic requirements of the algorithm, however, we note that since both point mappings start with the same three components, we can save a constant factor of space by sharing the first three levels of the multi-level range tree. 
-At the third level of the tree, we create \emph{two} associate structures, one for each of the partial enclosure expressions, and query each one as needed. 
+At the third level of the tree, we create \emph{two} associated structures, one for each of the partial enclosure expressions, and query each one as needed. 
 In a similar way, we can save a constant factor of time during our queries, since both queries begin with the same two values.
 
 
@@ -154,7 +160,7 @@ Preprocessing and querying this extra orientation does not change our asymptotic
 
 \begin{theorem}
 \label{th:ap}
-Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\log^3{n}}$ time, using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\log^3{n}}$ time, with a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
 \end{theorem}
 
 %------------------------------------------------------------------------------
@@ -199,8 +205,7 @@ We can query these higher dimensional points by applying the multi-level range t
 \subsection{Handling Endpoints Outside of $Q$}
 \label{:rectangles:ao:bothout}
 
-Just as we saw in Section~\ref{:rectangles:ap:approach}, the case where both endpoints are outside of $Q$ will be the most challenging case to handle.
-
+The case where both endpoints of a segment are outside $Q$ is the most challenging case to handle.
 We begin by partitioning the space around $Q$ into 8 regions by extending lines through its horizontal and vertical boundaries. 
 These regions are labelled anti-clockwise from left-middle as $I, II, \ldots, VIII$; see Figure~\ref{fig:rectangles:ao:regions}. 
 Any segment which passes through $Q$ but which has neither endpoint in $Q$ will have its endpoints in two distinct regions. 
@@ -373,7 +378,7 @@ To construct an appropriate dual-space for the half-plane query, we reorder the 
 \left (\frac{c-a}{b-d}, \left ( (1 - \rho) + \frac{d}{b-d} \right ) \cdot (c-a) + a \right )
 \]
 
-\noindent In this space, segments matching the partial enclosure expression correspond to dual-points satisfying the half-plane $y \geq \beta \cdot x + \alpha$
+\noindent In this space, segments matching the partial enclosure expression correspond to dual-points satisfying the half-plane $y \geq \beta x + \alpha$
 
 Just as in class (i), when $o \not \in Q$, we cannot construct appropriate similar triangles for our method, but it remains sufficient for the expressions to reject any such segment. Observe that if $o$ is left of $\alpha$, then $\frac{\alpha - a}{c - a} > 1/2$. Likewise, if $o$ is below $\beta$, then $\frac{\beta - d}{b - d} > 1/2$. Their sum is therefore strictly greater than $1/2$, and larger than any allowable value for $(1 - \rho)$, rejecting the segment as desired.
 
@@ -434,7 +439,7 @@ We present the details of the partial enclosure property for the case where $p \
   \hspace{1.0em}
   \includegraphics[width=0.45\textwidth]{figures/fig_ao_case4d}
 
-  \caption[An example of a segment in class (iv), case $(II, VI)$.]{An example of segments from each subcase of class (iv), case $(II, VI)$. The blue lines show the proper handling of the subcase.}
+  \caption[An example of a segment in class (iv), case $(II, VI)$.]{An example of segments from each subcase of class (iv), case $(II, VI)$. The blue lines show the proper handling of each.}
   \label{fig:rectangles:ao:case4}
 \end{center}
 \end{figure}
@@ -529,7 +534,7 @@ Given a set of $n$ line segments, we can identify segments belonging to class (i
 
 \paragraph{Class (iii); $(p, q) \in (I, IV)$ case.} 
 This case can use the same orthogonal structure that we developed in Lemma~\ref{lem:ao:class1:v} and the same half-plane expression as in Lemma~\ref{lem:ao:class2:h}. 
-One component of the query box needs to be updated to account for region IV as follows.
+One component of the query box needs to be updated to account for region IV, giving the following.
 \[
 (-\infty, \alpha) \times [\beta, \delta] \times (\gamma, \infty) \times (-\infty, \beta) \times (-\infty, \gamma - \alpha]
 \]
@@ -544,7 +549,7 @@ Given a set of $n$ line segments, we can identify segments belonging to class (i
 
 \paragraph{Class (iv); $(p, q) \in (II, VI)$ case.} 
 This case has the largest number of partial enclosure expressions which need checking, in addition to the usual endpoint classification step. 
-As a result, it will take the largest data structure to query.
+As a result, it will be the largest data structure to build.
 
 The basic steps are just as in the last three cases. 
 To cover endpoint classification and the two orthogonal partial enclosure expressions, we will use a data structure and query box similar to Lemma~\ref{lem:ao:class1:v}, but extended to 6D to cover the extra partial enclosure expression.
@@ -578,7 +583,7 @@ We have seen that the most challenging cases occur when both endpoints of a segm
 We have also seen how we can transform partial enclosure expressions into dual-spaces which can be easily queried with a half-plane.
 
 There are several possibilities for future work.
-Most notably is the condition that $\rho > 1/2$ for the arbitrary-orientation problem, which we will see is the only problem with such a limitation presented in this thesis.
+Most notably is the condition that $\rho > 1/2$ for the arbitrary-orientation problem, which is the only problem with such a limitation presented in this thesis.
 The limitation stems from our use of similar triangles anchored on the centrepoint of the segment.
 When $\rho > 1/2$, the centrepoint of any segment satisfying the partial enclosure property will be found inside the query region, guaranteeing intersections between $Q$ and our similar triangles.
 
