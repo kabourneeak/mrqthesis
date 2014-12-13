@@ -71,7 +71,7 @@ We also consider a query defined as the intersection of two slabs.
 
 \paragraph{Convex Polygons and Query Rectangles.} Moving away from line segments, we consider problems of partial enclosure with respect to area.  
 For any such problem, deciding on the partial enclosure property is straight-forward once we know the area of the input object and the area enclosed by a query region.  
-We consider how to determine what proportion of a convex polygon is enclosed by a rectangular query.
+We consider how to determine the proportion of a convex polygon enclosed by a query rectangle.
  
 \paragraph{Monotone Polygons and Query Rectangles.} This more complex shape does not generally decompose into big convex regions, so a different method of preprocessing will be needed.
 We consider methods for calculating the area of the polygon to one side of a query line. 
@@ -90,7 +90,7 @@ Range searching structures are typically constructed by subdividing the input ob
 Ideally, we are able to choose these regions so that a query region will entirely contain, or not contain, most of the regions, while intersecting only a small number of them.
 On those intersected regions, we continue the query on the recursively finer subdivisions stored there.\cite{Matousek93}
 
-This recursive decomposition of the input into regions has an extremely beneficial side-effect. 
+This recursive decomposition into regions which is employed by many techniques has an extremely beneficial side-effect. 
 At each hierarchical region, we can associate any other structure of our choosing.
 These so-called multi-level structures can be used to answer complex queries by identifying objects which satisfy one property with respect to the outer structure, and then continuing with the associated structures to satisfy additional properties.
 We discuss examples of this type of multi-level query in detail in Chapter~\ref{:prelim}.
@@ -143,13 +143,13 @@ We discuss this structure in more detail in Section~\ref{:prelim:range-trees}.
 %Best known by Chazelle [Dutch 90,91] in 2D and higher dimensions with time/space of XXX
 
 Finally, a noteworthy special case occurs when our points are in the plane and our query is a three-sided rectangle, i.e., when it is open to one side.
-In this case, we can use a method developed by McCreight\cite{McCreight85} which gives $\BigOh{\log{n}}$ query time while using only $\BigOh{n}$ space and $\BigOh{n\log{n}}$ preprocessing time.
+In this case, we can use a method developed by McCreight\cite{McCreight85} which gives $\BigOh{\log{n} + k}$ query time, where $k$ is the number of points found, while using only $\BigOh{n}$ space and $\BigOh{n\log{n}}$ preprocessing time.
 
 The real power of orthogonal range searching is in how other problems can be reduced to instances of it by encoding query keys as coordinates of a high-dimensional point.  
 For example, in the geometric sense, we can search for rectangles inside of rectangles by mapping the coordinates of an input rectangle in $\mathcal{R}^{d}$ to a point in $\mathcal{R}^{2d}$, and performing an orthogonal range search in that space.
 Rectangle-in-rectangle queries are important as rectangles make easy approximations of more complicated geometric objects that we may want to look for.
 
-Outside of purely geometric applications, many more general types of range searching problems can be reduced to instances of orthogonal range searching by encoding query keys as coordinates of a high-dimensional point.
+Outside of purely geometric applications, many more general types of range searching problems can be similarly reduced to instances of orthogonal range searching.
 For example, given some integer representation of a date, we can search for emails received within a date range by encoding the date stamp of each email into a point, and then searching for points between the two integer representations of our query range.
 Extending this idea to more complex queries is just a matter of mapping each key we wish to search on to further components of a higher-dimensional point.  
 In this way, multi-dimensional orthogonal range searching can be used to perform multi-key searching.\cite{Willard96} 
@@ -166,8 +166,9 @@ We continue construction by repeating this process on each quadrant recursively,
 The final tree has size $\BigOh{n}$ and is constructed in $\BigOh{n\log{n}}$ time.
 
 We can query this tree with the line representing the boundary of a query half-plane.
-The quadrants at any step are the result of two intersecting lines, and thus, our query line will intersect at most three of them.
-The non-intersected quadrants, of which there is at least one, are entirely inside the query half-plane, or entirely outside of it.
+The quadrants at any step are the result of two intersecting lines. 
+Their intersection point must be on or to one side of any query line, and thus, the query line will intersect at most three quadrants.
+The non-intersected quadrants must then be either entirely inside the query half-plane, or entirely outside of it.
 The query then recurses on the intersected quadrants.
 Total query time is $\BigOh{n^{\log_2(1 + \sqrt{5}) - 1}} \approx \BigOh{n^{0.695}}$.
 
@@ -192,12 +193,11 @@ A different approach to solving half-plane range searches altogether is to consi
 Such structures are discussed below and in Section~\ref{:prelim:chan}.
 
 One final method for half-plane searches we would like to mention is by Chazelle \emph{et al.}\cite{ChazelleGL85,Chazelle85} as it does not obey the general trade-off between space and query time that we mentioned above.
-This method uses \emph{convex layers} and gives both $\BigOh{n}$ storage and $\BigOh{\log{n} + k}$ query time, where $k$ is the number of elements reported. 
-However, this method can only be used for reporting queries, and is not well suited to counting or multi-level queries.
+This method uses \emph{convex layers} and gives $\BigOh{n}$ storage and $\BigOh{\log{n} + k}$ query time, where $k$ is the number of points found. 
 
 Convex layers of a pointset are easiest to explain by their construction, which is performed iteratively by calculating the convex hull, deleting it, and then taking the convex hull of what remains, until all points are deleted.
 Convex layers can be constructed in $\BigOh{n\log{n}}$ time, and require $\BigOh{n}$ space.
-In order to use convex layers for half-plane queries, we will translate the pointset such that the origin point of the plane occurs inside the innermost layer.
+In order to use convex layers for half-plane queries, we will translate the pointset such that the origin point of the plane occurs inside the innermost convex layer.
 
 A query line which passes through the pointset will intersect some or all of the layers, from $l_1$ at the outside to $l_m$, the innermost layer which is intersected.
 The query is performed in two main steps: identify $l_m$, and then report all of the points.
@@ -208,7 +208,7 @@ A consequence of the origin point being inside the innermost convex layer in the
 We can then perform any planar point location method we like on the query point to determine the level containing it; Chazelle \emph{et al.} give several $\BigOh{\log{n}}$ choices.
 
 With the convex layer $l_m$ known, we can compute the intersections of the query line with $l_m$ in $\BigOh{\log{n}}$ time, and in so doing, identify at least one point which is inside our query half-plane.
-During processing, we augment every vertex with pointers to the edges which appear above and below them in neighbouring convex layers, accomplished by walking around two neighbouring layers at a time simultaneously.
+During preprocessing, we augment every vertex with pointers to the edges which appear above and below them in neighbouring convex layers, accomplished by walking around two neighbouring layers at a time simultaneously.
 Depending on which side of the query line our half-plane extends, we can walk these pointers from $l_m$ across the remaining levels, whether that first takes us deeper into the layers, or directly out.
 At each level, we then traverse left and right around the level for as long as we remain in the query half-plane reporting our matching points.
 
@@ -237,15 +237,16 @@ We use this latter method throughout Chapters \ref{:rectangles} and \ref{:slabs}
 Intersection searching is similar to range searching, except that we consider different types of geometric input objects aside from points.
 Given a query region, we are looking for any objects which have even a single point of intersection in common with the query itself; that is, the object need not be entirely enclosed with the query region.
 In this way, we can think of range searching as a specialization of intersection searching.
-There are many variations of intersection searching, of which we introduce a few.
+We introduce just a few of the many variations of intersection searching problems.
 
-In \emph{Segment Intersection Searching}, the query range is a line segment. 
-If both the input objects and the query range are segments, 
+In \emph{Segment Intersection Searching}, the query is a line segment. 
+The case where both the input objects and the query are orthogonal line segments has many applications in VLSI design.
+Orthogonal or otherwise, segment intersection searching can be efficiently solved using plane-sweep algorithms.
 
 \emph{Rectangle Intersection Searching}, also known as \emph{Windowing Queries} identify polygons which intersect a rectangular query region. 
 Many computer graphics problems are related to this problem as, for example, we might want to determine what items need to be rendered on screen from a 3D environment.
 
-Finally, \emph{Point Intersection Searching} is sort of the opposite of an normal range searching query. In this problem, we are interested in reporting all objects which contain a query point.
+Finally, \emph{Point Intersection Searching} is sort of the opposite of a normal range searching query. In this problem, we are interested in reporting all objects which contain a query point.
 
 
 \subsection*{Completing a Search}
@@ -254,14 +255,14 @@ Throughout this section, we've used the term ``identify'' rather loosely.
 For the hierarchical structures above, ``identifying'' points satisfying a query really comes down to isolating those partitions which contain them.
 What we do with them at that point is somewhat flexible.
 For example, we can simply count the points we have identified with only a constant factor of extra time and space by having the partitions store their own sizes.
-We could instead report the points by traversing each terminal of the partition, which will cost us an extra linear factor with respect to to the number of reported items.
+We could instead report the points by traversing the contents of the partition, although this will cost us an extra linear factor with respect to to the number of reported items.
 
 We conclude this section by comparing and contrasting our own problem with the ones we have just introduced.
 
 Our problem is notably different from standard range searching problems because we are not just looking for items which are entirely contained inside of a query region.
 This immediately rules out a simple application of orthogonal range searching like we saw with the rectangles-in-rectangles problems.
 
-Our problem differs from intersection searching as well, since we have the extra constraint of requiring a specific proportion of the input objects to be contained in the query region, rather than just any point.
+Our problem also differs from intersection searching, since we have the extra constraint of requiring a specific proportion of the input objects to be contained in the query region, rather than just any point.
 
 
 %------------------------------------------------------------------------------
@@ -270,8 +271,8 @@ Our problem differs from intersection searching as well, since we have the extra
 \label{:intro:contributions}
 
 In this thesis, we develop contributions to several variations of the \PERS{} problem, along with some noteworthy ancillary methods. 
-Table~\ref{tab:contributions} gives a broad overview of the data structures we develop. 
-The table uses `AP' for ``Axis-Parallel'', `AO' for ``Arbitrary Orientation'', and `P' for ``Polygon'', and omits ``Big Oh'' for clarity.
+Table~\ref{tab:contributions} gives a broad overview of these techniques. 
+The table uses `AP' for ``Axis-Parallel'', `AO' for ``Arbitrary Orientation'', `P' for ``Polygon'', and omits ``Big Oh'' for clarity.
 
 \begin{table}[t]
 \caption{Summary of Contributions}
@@ -295,7 +296,7 @@ Simple P & Horiz Slab & Cor~\ref{cor:monotonep:simplep-area} & ${n}$ & ${n}$ & $
 \end{table}
 
 In the line segment cases, we develop methods for restating the partial enclosure property as something which can be evaluated as a one or two variable inequality. 
-These expressions can then be queried by known structures for orthogonal or half-plane queries. 
+These expressions can then be queried by known structures for orthogonal or half-plane range searching. 
 We discuss the transformations to appropriate dual-spaces and the design of data structures which can answer the necessary multi-part queries.
 
 In the polygon cases, we primarily develop methods for calculating area within a simple region, e.g., below a query line.
