@@ -156,11 +156,14 @@ In a similar way, we can save a constant factor of time during our queries, sinc
 Preprocessing and querying this extra orientation does not change our asymptotic analysis, since the number of orientations remains fixed.
 
 
-\paragraph{Combining the Steps.} We maintain the structures necessary for both the horizontal and vertical portions of the query. During query time, each is queried independently and their results combined, which is straight-forward for counting or reporting queries. Our solution is summarized by the following theorem.
+\paragraph{Combining the Steps.} We maintain the structures necessary for both the horizontal and vertical portions of the query.
+At query time, each structure is queried independently. 
+The subtrees found in the last level of each structure contain matching segments, and these results can be combined in a straight-forward manner for counting or reporting queries.
+The following theorem summarizes the solution.
 
 \begin{theorem}
 \label{th:ap}
-Given a set of $n$ axis-parallel line segments, we can identify all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\log^3{n}}$ time, with a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+Given a set of $n$ axis-parallel line segments, we can identify a set of disjoint subsets containing all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\log^3{n}}$ time, with a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
 \end{theorem}
 
 %------------------------------------------------------------------------------
@@ -498,7 +501,7 @@ v_i = (a_i, b_i, c_i, d_i, \rho(c_i - a_i))
 
 \begin{lemma}
 \label{lem:ao:class1:v}
-Given a set of $n$ line segments, we can identify segments belonging to class (i) \emph{and} which satisfy their partial enclosure property in $\BigOh{\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify a set of disjoint subsets containing all segments belonging to class (i) \emph{and} which satisfy their partial enclosure property in $\BigOh{\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
 \end{lemma}
 
 \paragraph{Class (ii), $(p, q) \in (I, III)$ case.} 
@@ -513,14 +516,14 @@ We need to construct a data structure which can answer queries on pairs $(v_i, h
 By Theorem~\ref{th:rangetree}, we can query the classification component using a range tree according to the following lemma.
 \begin{lemma}
 \label{lem:ao:class2:v}
-Given a set of $n$ line segments, we can identify segments belonging to class (ii) in $\BigOh{\log^3{n}}$ time using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify a set of disjoint subsets containing all segments belonging to class (ii) in $\BigOh{\log^3{n}}$ time using a data structure requiring $\BigOh{n\log^3{n}}$ preprocessing time and space.
 \end{lemma}
 
 By Theorem~\ref{th:chan}, we can query the half-plane component of our query objects using a canonical subsets data structure, giving the following lemma.
 
 \begin{lemma}
 \label{lem:ao:class2:h}
-Given a set of $n$ line segments, we can identify segments satisfying a half-plane representation of a partial enclosure expression in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure requiring $\BigOh{n\log{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify a set of disjoint subsets containing all segments satisfying a half-plane representation of a partial enclosure expression in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure requiring $\BigOh{n\log{n}}$ preprocessing time and space.
 \end{lemma}
 
 Since the order that we check our conditions in does not affect correctness, we will check the half-plane condition first, then the endpoint classification.  
@@ -528,7 +531,7 @@ By Corollary~\ref{cor:multichan}, we can accomplish this by associating a classi
 
 \begin{lemma}
 \label{lem:ao:class2:c}
-Given a set of $n$ line segments, we can identify segments belonging to class (ii) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify a set of disjoint subsets containing all segments belonging to class (ii) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^4{n}}$ time using a data structure requiring $\BigOh{n\log^4{n}}$ preprocessing time and space.
 \end{lemma}
 
 
@@ -543,7 +546,7 @@ By Corollary~\ref{cor:multichan}, we can combine these two data structures to cr
 
 \begin{lemma}
 \label{lem:ao:class3:c}
-Given a set of $n$ line segments, we can identify segments belonging to class (iii) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^5{n}}$ time using a data structure requiring $\BigOh{n\log^5{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify a set of disjoint subsets containing all segments belonging to class (iii) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^5{n}}$ time using a data structure requiring $\BigOh{n\log^5{n}}$ preprocessing time and space.
 \end{lemma}
 
 
@@ -558,7 +561,7 @@ The entire structure for this case is summarized by the following lemma.
 
 \begin{lemma}
 \label{lem:ao:class4:c}
-Given a set of $n$ line segments, we can identify segments belonging to class (iv) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^7{n}}$ time using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
+Given a set of $n$ line segments, we can identify a set of disjoint subsets containing all segments belonging to class (iv) \emph{and} which satisfy their partial enclosure property in $\BigOh{\sqrt{n}\log^7{n}}$ time using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
 \end{lemma}
 
 
@@ -570,7 +573,7 @@ The following theorem summarizes the overall solution.
 
 \begin{theorem}
 \label{th:ao}
-Given a set of $n$ arbitrarily-oriented line segments, we can identify all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\sqrt{n}\log^7{n}}$ time, using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
+Given a set of $n$ arbitrarily-oriented line segments, we can identify a set of disjoint subsets containing all segments which satisfy the partial enclosure property for an axis-parallel query rectangle in $\BigOh{\sqrt{n}\log^7{n}}$ time, using a data structure requiring $\BigOh{n\log^7{n}}$ preprocessing time and space.
 \end{theorem}
 
 

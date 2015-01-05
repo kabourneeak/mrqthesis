@@ -198,11 +198,13 @@ It is easiest to describe the structure inside-out, so we begin with the innermo
 %------------------------------------------------------------------------------
 \subsubsection{Length Restriction}
 
-The innermost structure answers the length restriction step of the overall query. This is easily answered using a 1-dimensional range tree, as described in Section~\ref{:prelim:range-trees}, keyed on the segment lengths. The following lemma summarizes the time and space requirements of this structure.
+The innermost structure answers the length restriction step of the overall query. 
+This is easily answered using a 1-dimensional range tree, as described in Section~\ref{:prelim:range-trees}, keyed on the segment lengths. 
+The following lemma summarizes the time and space requirements of this structure.
 
 \begin{lemma}
 \label{lem:slabs:one:step1}
-Given a set of $n$ horizontal line segments, we can count all segments with length at most $\frac{w}{\rho}$ in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built in $\BigOh{n \log{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments with length at most $\frac{w}{\rho}$ in $\BigOh{\log{n}}$ time, using a data structure of size $\BigOh{n}$, which can be built in $\BigOh{n \log{n}}$ preprocessing time.
 \end{lemma}
 
 
@@ -215,7 +217,7 @@ By Theorem~\ref{:prelim:chan}, we can answer this type of half-plane query direc
 
 \begin{lemma}
 \label{lem:slabs:one:step2a}
-Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ preprocessing time.
 \end{lemma}
 
 With each subset created for this structure, we will associate the structure required for Lemma~\ref{lem:slabs:one:step1}.
@@ -223,7 +225,7 @@ Applying Corollary~\ref{cor:multichan} gives us the following result.
 
 \begin{lemma}
 \label{lem:slabs:one:step2b}
-Given a set of $n$ horizontal line segments, we can locate all segments which are not ``too much'' to one side of a query line \emph{and} which do not exceed a maximum length in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments which are not ``too much'' to one side of a query line \emph{and} which do not exceed a maximum length in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log^2{n}}$ preprocessing time.
 \end{lemma}
 
 
@@ -237,7 +239,7 @@ Applying Corollary~\ref{cor:multichan} gives us the following result.
 
 \begin{lemma}
 \label{lem:slabs:one:step3}
-Given a set of $n$ horizontal line segments, we can locate all segments whose left endpoints are to one side of a line, which are not ``too much'' to one side of a query line, \emph{and} which do not exceed a maximum length in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^3{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments whose left endpoints are to one side of a line, which are not ``too much'' to one side of a query line, \emph{and} which do not exceed a maximum length in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^3{n}}$ preprocessing time.
 \end{lemma}
 
 
@@ -250,7 +252,7 @@ The following theorem summarizes the overall solution.
 
 \begin{theorem}
 \label{th:slabs:one}
-Given a set of $n$ horizontal line segments, we can identify all segments which satisfy the partial enclosure property for an arbitrarily-oriented query slab in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments which satisfy the partial enclosure property for an arbitrarily-oriented query slab in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
 \end{theorem}
 
 
@@ -458,7 +460,7 @@ By Theorem~\ref{:prelim:chan}, we can answer such a half-plane query directly us
 
 \begin{lemma}
 \label{lem:slabs:two:step1}
-Given a set of $n$ horizontal line segments, we can identify all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments which are not ``too much'' to one side of a query line in $\BigOh{\sqrt{n}\log{n}}$ time, using a data structure of size $\BigOh{n\log{n}}$, which can be built in $\BigOh{n\log{n}}$ time.
 \end{lemma}
 
 \subsubsection{Classify Right Endpoint}
@@ -470,7 +472,7 @@ Applying Corollary~\ref{cor:multichan} gives us the following result.
 
 \begin{lemma}
 \label{lem:slabs:two:step2}
-Given a set of $n$ horizontal line segments, we can identify all segments which have their right endpoint in a query triangle, and which are not ``too much'' to one side of a query line, in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments which have their right endpoint in a query triangle, and which are not ``too much'' to one side of a query line, in $\BigOh{\sqrt{n}\log^2{n}}$ time, using a data structure of size $\BigOh{n\log^2{n}}$, which can be built in $\BigOh{n\log^2{n}}$ time.
 \end{lemma}
 
 
@@ -482,7 +484,7 @@ By applying Corollary~\ref{cor:multichan} again, we have the following.
 
 \begin{lemma}
 \label{lem:slabs:two:step3}
-Given a set of $n$ horizontal line segments, we can identify all segments which have their left and right endpoints in given query triangles, and which are not ``too much'' to one side of a query line, in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^3{n}}$ time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments which have their left and right endpoints in given query triangles, and which are not ``too much'' to one side of a query line, in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, which can be built in $\BigOh{n\log^3{n}}$ time.
 \end{lemma}
 
 
@@ -497,13 +499,13 @@ The following theorem summarizes this process.
 
 \begin{theorem}
 \label{th:slabs:two}
-Given a set of $n$ horizontal line segments, we can identify all segments which satisfy the partial enclosure property with respect to the intersection of two query slabs in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
+Given a set of $n$ horizontal line segments, we can identify a set of disjoint subsets containing all segments which satisfy the partial enclosure property with respect to the intersection of two query slabs in $\BigOh{\sqrt{n}\log^3{n}}$ time, using a data structure of size $\BigOh{n\log^3{n}}$, requiring $\BigOh{n\log^3{n}}$ preprocessing time.
 \end{theorem}
 
 
 %------------------------------------------------------------------------------
 %------------------------------------------------------------------------------
-\section{Notes about Arbitrarily-Oriented Segments}
+\section{Remarks on Arbitrarily-Oriented Segments}
 \label{:slabs:remarks}
 
 Our general approach can be extended to identify arbitrarily-oriented line segments which satisfy the partial enclosure property for one or two slabs, however, the resulting structure is very ``case heavy'' and involves a large number of query variables.

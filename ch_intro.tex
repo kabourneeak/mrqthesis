@@ -87,12 +87,12 @@ As a whole, due to its applicability to such a wide assortment of problems, rang
 Aside from the solutions to specific problems that this research has found, it has also resulted in a vast toolbox of observations and techniques, many of which apply to our own problem.
 
 Range searching structures are typically constructed by subdividing the input objects, or the space in which the input objects exist, into several regions which express useful properties.
-Ideally, we are able to choose these regions so that a query region will entirely contain, or not contain, most of the regions, while intersecting only a small number of them.
+Ideally, we are able to choose these regions so that a query area will entirely contain, or not contain, most of these regions, while intersecting only a small number of them.
 On those intersected regions, we continue the query on the recursively finer subdivisions stored there.\cite{Matousek93}
 
 This recursive decomposition into regions which is employed by many techniques has an extremely beneficial side-effect. 
-At each hierarchical region, we can associate any other structure of our choosing.
-These so-called multi-level structures can be used to answer complex queries by identifying objects which satisfy one property with respect to the outer structure, and then continuing with the associated structures to satisfy additional properties.
+At each region in this hierarchy, we can associate any other structure of our choosing.
+These so-called multi-level structures can be used to answer complex queries by using the outer structure to find objects satisfying one query parameter, and then continuing with the associated structures to find objects which satisfy additional properties.
 We discuss examples of this type of multi-level query in detail in Chapter~\ref{:prelim}.
 
 The remainder of this section gives a brief introduction to some specific range searching problems, and history of some methods for answering each. 
@@ -248,14 +248,19 @@ Many computer graphics problems are related to this problem as, for example, we 
 
 Finally, \emph{Point Intersection Searching} is sort of the opposite of a normal range searching query. In this problem, we are interested in reporting all objects which contain a query point.
 
+Some of these methods, notably windowing queries, initially seemed as though they would be helpful in solving \PERS{} problems.
+For example, looking at our line segment problems, we could start by considering only those segments that at all intersect a query region, and then perform additional steps to identify only those which are sufficiently enclosed.
+However, in the worst case, the number of segments intersecting the query region could be much, much higher than the number satisfying the partial enclosure property, such that the added steps of the intersection query do not help at all.
+
 
 \subsection*{Completing a Search}
 
 Throughout this section, we've used the term ``identify'' rather loosely.
-For the hierarchical structures above, ``identifying'' points satisfying a query really comes down to isolating those partitions which contain them.
-What we do with them at that point is somewhat flexible.
+For the hierarchical structures above, ``identifying'' points satisfying a query really comes down to isolating those partitions, or disjoint subsets, which contain them.
+What we do with the partitions at that point is somewhat flexible.
 For example, we can simply count the points we have identified with only a constant factor of extra time and space by having the partitions store their own sizes.
 We could instead report the points by traversing the contents of the partition, although this will cost us an extra linear factor with respect to to the number of reported items.
+We use the term ``identify'' in this way throughout the thesis.
 
 We conclude this section by comparing and contrasting our own problem with the ones we have just introduced.
 
